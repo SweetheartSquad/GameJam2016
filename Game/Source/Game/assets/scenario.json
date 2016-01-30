@@ -8,17 +8,17 @@
   	{
   		"type":"texture",
   		"id":"demon_1",
-  		"src":"demon_1.png"
+  		"src":"enemy1.png"
   	},
     {
       "type":"texture",
       "id":"demon_2",
-      "src":"demon_2.png"
+      "src":"enemy2.png"
     },
     {
       "type":"texture",
       "id":"demon_spirit",
-      "src":"demon_spirit.png"
+      "src":"demonToken4.png"
     },
     {
       "type":"texture",
@@ -48,6 +48,12 @@
       "type":"audio",
       "id":"BGM_2",
       "src":"MyGirlfriendsADemon.ogg",
+      "category": "music"
+    },
+    {
+      "type":"audio",
+      "id":"BGM_3",
+      "src":"DevilIsADickweed.ogg",
       "category": "music"
     }
 

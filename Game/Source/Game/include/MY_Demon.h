@@ -2,6 +2,7 @@
 
 #include <Sprite.h>
 #include <Timeout.h>
+#include <Animation.h>
 
 enum DemonState {
 	kWALKING,
@@ -26,7 +27,11 @@ private:
 	// when ripped, the spirit is stunned and stops targeting its body
 	// after a timer runs out, it starts going back
 	Timeout * stunTimer;
+
+	Animation<float> * idleScaleAnim;
 public:
+	glm::vec3 scaleAnim;
+	glm::vec3 origin;
 	DemonSpiritState state;
 	// reference to the character this spirit is possessing
 	MY_Demon * possessed;

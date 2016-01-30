@@ -16,7 +16,8 @@
 
 
 MY_Game::MY_Game() :
-	Game("main", new MY_Scene_Main(this), true) // initialize our game with a menu scene
+	Game("main", new MY_Scene_Main(this), true), // initialize our game with a menu scene,
+	bgm(nullptr)
 {
 	// initialize all of our scenes in the game's scene map for later use
 	// only the current scene is updated/rendered by default, so these shouldn't affect performance
@@ -30,9 +31,7 @@ MY_Game::MY_Game() :
 	scenes["surfaceshaders"] = new MY_Scene_SurfaceShaders(this);
 	scenes["vr"] = new MY_Scene_VR(this);
 
-	std::stringstream ss;
-	ss << "BGM_" << sweet::NumberUtils::randomInt(1,2);
-	MY_ResourceManager::globalAssets->getAudio(ss.str())->sound->play(true);
+	playBGM();
 }
 
 MY_Game::~MY_Game(){}
@@ -43,4 +42,15 @@ void MY_Game::addSplashes(){
 
 	// add custom splashes
 	//addSplash(new Scene_Splash(this, MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture, MY_ResourceManager::globalAssets->getAudio("DEFAULT")->sound));
+}
+
+void MY_Game::playBGM(){
+	if(bgm != nullptr){
+		bgm->stop();
+	}
+	
+	std::stringstream ss;
+	ss << "BGM_" << sweet::NumberUtils::randomInt(1,3);
+	bgm = MY_ResourceManager::globalAssets->getAudio(ss.str())->sound;
+	bgm->play(true);
 }

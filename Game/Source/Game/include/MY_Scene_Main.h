@@ -12,6 +12,7 @@
 #include <MY_UI_Counter.h>
 
 class Room;
+class MY_Game;
 
 class MY_Scene_Main : public MY_Scene_Base{
 public:
@@ -24,15 +25,15 @@ public:
 	Room * room;
 
 	std::vector<MY_Demon *> demons;
-	MY_Demon * spawnDemon();
-	MY_Player * spawnPlayer();
+	MY_Demon * spawnDemon(Room * _room);
+	MY_Player * spawnPlayer(Room * _room);
 
 	MY_Cam * mainCam;
 
 	MY_UI_Counter * livesCounter;
 	MY_UI_Counter * demonsCounter;
 
-	explicit MY_Scene_Main(Game * _game);
+	explicit MY_Scene_Main(MY_Game * _game);
 	~MY_Scene_Main();
 
 	virtual void update(Step * _step) override;
@@ -61,4 +62,6 @@ public:
 	MY_DemonSpirit * hoverTarget;
 	MY_DemonSpirit * ripTarget;
 	MY_DemonSpirit * gripTarget;
+
+	Room * goToNewRoom();
 };
