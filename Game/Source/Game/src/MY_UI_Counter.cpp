@@ -43,11 +43,13 @@ void MY_UI_Counter::increment(){
 }
 
 void MY_UI_Counter::decrement(){
-	lostItems.push_back(items.back());
-	if(itemTextureAlt != nullptr){
-		items.back()->background->mesh->replaceTextures(itemTextureAlt);
-	}else{
-		items.back()->setVisible(false); // or remove, or use transparent texture
+	if(items.size() > 0){
+		lostItems.push_back(items.back());
+		if(itemTextureAlt != nullptr){
+			items.back()->background->mesh->replaceTextures(itemTextureAlt);
+		}else{
+			items.back()->setVisible(false); // or remove, or use transparent texture
+		}
+		items.pop_back();
 	}
-	items.pop_back();
 }

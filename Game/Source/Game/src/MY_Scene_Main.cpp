@@ -69,8 +69,9 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 
 	room->placeFG();
 
-	player->eventManager.addEventListener("invincibilityStart", [this](sweet::Event * _event){
+	player->eventManager.addEventListener("tookDamage", [this](sweet::Event * _event){
 		mainCam->shakeTimer->restart();
+		livesCounter->decrement();
 	});
 
 	// setup UI
