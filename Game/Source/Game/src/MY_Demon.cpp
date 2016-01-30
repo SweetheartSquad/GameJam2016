@@ -19,9 +19,9 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	stateTimeout = new Timeout(TIMEOUT_TIME, [this](sweet::Event * _event){
 		bool randState = sweet::NumberUtils::randomBool();
 		if(randState) {
-			randState = kWALKING;
+			currentState = kWALKING;
 		}else {
-			randState = kIDLE;
+			currentState = kIDLE;
 		}
 		stateTimeout->restart();
 	});
@@ -35,7 +35,7 @@ void MY_Demon::render(sweet::MatrixStack* _matrixStack, RenderOptions* _renderOp
 
 void MY_Demon::update(Step * _step) {
 	stateTimeout->update(_step);
-	if(target != nullptr && currentState == kIDLE){
+	if(target != nullptr && currentState == kWALKING){
 		float targDir = target->getTranslationVector().x < firstParent()->getTranslationVector().x ? -1.f : 1.f;
 		firstParent()->translate(speed * targDir, 0.f, 0.f);
 	}
