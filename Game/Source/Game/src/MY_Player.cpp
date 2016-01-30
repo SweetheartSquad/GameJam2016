@@ -8,7 +8,7 @@
 
 MY_Player::MY_Player(Shader * _shader) :
 	Sprite(_shader),
-	speed(0.25f),
+	speed(0.1f),
 	lives(5),
 	invincibilityTimer(0.f),
 	invincibilityTimerLength(2.f),
@@ -22,11 +22,11 @@ MY_Player::MY_Player(Shader * _shader) :
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("player")->texture);
 	
 	auto anim = new SpriteSheetAnimation(0.4f);
-	anim->pushFramesInRange(0, 3, 256, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	anim->pushFramesInRange(4, 5, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	spriteSheet->addAnimation("idle", anim);
 
-	anim = new SpriteSheetAnimation(0.4f);
-	anim->pushFramesInRange(8, 11, 256, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	anim = new SpriteSheetAnimation(0.16f);
+	anim->pushFramesInRange(0, 3, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	spriteSheet->addAnimation("walk", anim);
 
 	mesh->setScaleMode(GL_NEAREST);
@@ -102,9 +102,11 @@ void MY_Player::update(Step * _step) {
 			if(joystick->getAxis(joystick->axisLeftX) > 0.5f) {
 				firstParent()->translate(speed, 0.f, 0.f);
 				setCurrentAnimation("walk");
+				meshTransform->scale(1,1,1, false);
 			}else if(joystick->getAxis(joystick->axisLeftX) < -0.5f) {
 				firstParent()->translate(-speed, 0.f, 0.f);
 				setCurrentAnimation("walk");
+				meshTransform->scale(-1,1,1, false);
 			}
 		}
 	}

@@ -119,7 +119,7 @@ glm::vec3 MY_DemonSpirit::getGamePos(){
 
 MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	Sprite(_shader), 
-	speed(0.1f),
+	speed(0.02f),
 	damage(10.f),
 	currentState(kWALKING),
 	target(_target),
