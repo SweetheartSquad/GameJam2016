@@ -23,6 +23,7 @@ MY_Player::MY_Player(Shader * _shader) :
 	anim->pushFramesInRange(8, 11, 256, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	spriteSheet->addAnimation("walk", anim);
 
+	mesh->setScaleMode(GL_NEAREST);
 
 	setCurrentAnimation("idle");
 

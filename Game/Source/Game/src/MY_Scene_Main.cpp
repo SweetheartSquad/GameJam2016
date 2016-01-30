@@ -20,7 +20,7 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	activeCamera = mainCam;
 	//mainCam->childTransform->addChild(new CameraController(mainCam));
 	mainCam->farClip = 1000.f;
-	mainCam->firstParent()->translate(0.0f, 0.5f, 20.f);
+	mainCam->firstParent()->translate(0.0f, 0.5f, 5.f);
 	mainCam->yaw = 90.0f;
 	mainCam->pitch = 0.0f;
 

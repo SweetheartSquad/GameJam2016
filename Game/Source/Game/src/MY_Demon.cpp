@@ -33,7 +33,7 @@ void MY_DemonSpirit::update(Step * _step){
 		accelMod = 0.1f;
 		damping = 0.1f;
 		// if the spirit is far from the origin, they get ripped out
-		if(ma > 5){
+		if(ma > (firstParent()->getScaleVector().x + possessed->firstParent()->getScaleVector().x) * 0.5f){
 			ripIt();
 		}
 		break;
@@ -49,7 +49,7 @@ void MY_DemonSpirit::update(Step * _step){
 		a += sweet::NumberUtils::randomVec3(glm::vec3(-3), glm::vec3(3));
 		damping = 0.2f;
 		// if the spirit is close to the origin, they can repossess the body
-		if(ma < 5){
+		if(ma < (firstParent()->getScaleVector().x + possessed->firstParent()->getScaleVector().x) * 0.5f){
 			getBackInThere();
 		}
 		break;
