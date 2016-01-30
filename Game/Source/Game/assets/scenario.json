@@ -118,7 +118,7 @@
     {
 		"type":"audio",
       	"id":"GRIPIT_SOUND_1",
-      	"src":"GRS/Ripit_Sound_1.ogg.ogg",
+      	"src":"GRS/Ripit_Sound_1.ogg",
       	"category": "sfx"
     },
 	{
@@ -281,19 +281,6 @@
 		"type":"audio",
       	"id":"DEMON_DEATH_4",
       	"src":"GS/Demon_Death_4.ogg",
-      	"category": "sfx"
-    },
-	{
-		"type":"audio",
-      	"id":"DEMON_DEATH_5",
-      	"src":"GS/Demon_Death_5.ogg",
-      	"category": "sfx"
-    },
-	
-	{
-		"type":"audio",
-      	"id":"DEMON_DEATH_6",
-      	"src":"GS/Demon_Death_6.ogg",
       	"category": "sfx"
     },
 	{

@@ -192,11 +192,11 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("enemy_" + std::to_string(demonTexId))->texture);
 	
 	auto anim = new SpriteSheetAnimation(0.4f);
-	anim->pushFramesInRange(0, 0, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	anim->pushFramesInRange(0, 1, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	spriteSheet->addAnimation("idle", anim);
 
 	anim = new SpriteSheetAnimation(0.4f);
-	anim->pushFramesInRange(0, 3, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	anim->pushFramesInRange(4, 5, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	anim->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
 	spriteSheet->addAnimation("die", anim);
 
