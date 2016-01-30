@@ -23,6 +23,7 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	ripTarget(nullptr),
 	gripTarget(nullptr),
 	gameOver(false),
+	started(false),
 	baseShaderWithDepth(new ComponentShaderBase(true))
 {
 	
@@ -71,6 +72,26 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	player->eventManager.addEventListener("invincibilityStart", [this](sweet::Event * _event){
 		mainCam->shakeTimer->restart();
 	});
+
+	// setup UI
+	livesCounter = new MY_UI_Counter(uiLayer->world, MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture, MY_ResourceManager::globalAssets->getTexture("demon_1")->texture);
+	livesCounter->setBackgroundColour(1.f, 0.f, 0.f, 0.5f);
+	livesCounter->setRationalWidth(1.f);
+	livesCounter->setRationalHeight(1.f);
+	livesCounter->setMarginRight(0.5f);
+	livesCounter->setMarginBottom(0.9f);
+	livesCounter->horizontalAlignment = kLEFT;
+
+	demonsCounter = new MY_UI_Counter(uiLayer->world, MY_ResourceManager::globalAssets->getTexture("demon_spirit")->texture);
+	demonsCounter->setBackgroundColour(0.f, 0.f, 1.f, 0.5f);
+	demonsCounter->setRationalWidth(1.f);
+	demonsCounter->setRationalHeight(1.f);
+	demonsCounter->setMarginLeft(0.5f);
+	demonsCounter->setMarginBottom(0.9f);
+	demonsCounter->horizontalAlignment = kRIGHT;
+
+	uiLayer->addChild(livesCounter);
+	uiLayer->addChild(demonsCounter);
 }
 
 MY_Scene_Main::~MY_Scene_Main(){
@@ -83,9 +104,13 @@ void MY_Scene_Main::update(Step * _step){
 	// Scene update
 	MY_Scene_Base::update(_step);
 
+	if(!started){
+		started = true;
+		livesCounter->setItemCount(5);
+	}
 	// camera
 	//mainCam->firstParent()->translate(glm::vec3(sin(_step->time), cos(_step->time), 0));
-
+	
 
 	collideEntities();
 
