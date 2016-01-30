@@ -35,19 +35,20 @@ MY_Player::MY_Player(Shader * _shader) :
 
 	eventManager.addEventListener("demonCollision", [this](sweet::Event * _event){
 		// Demon collision code
-		
-		if(invincibilityTimer <= FLT_EPSILON){
-			// Take damage
-			health -= _event->getFloatData("damage");
-			std::stringstream s;
-			s << "HEALTH: " << health;
-			Log::info(s.str());
+		if(!isDead){
+			if(invincibilityTimer <= FLT_EPSILON){
+				// Take damage
+				health -= _event->getFloatData("damage");
+				std::stringstream s;
+				s << "HEALTH: " << health;
+				Log::info(s.str());
 
-			// Reset invincibility timer
-			invincibilityTimer = invincibilityTimerLength;
-			// Invincibility starts
-			eventManager.triggerEvent("invincibilityStart");
-			invincible = true;
+				// Reset invincibility timer
+				invincibilityTimer = invincibilityTimerLength;
+				// Invincibility starts
+				eventManager.triggerEvent("invincibilityStart");
+				invincible = true;
+			}
 		}
 	});
 
@@ -72,36 +73,36 @@ void MY_Player::update(Step * _step) {
 	eventManager.update(_step);
 	joystick->update(_step);
 
-	// Update invincibility timer if needed
-	if(invincibilityTimer > 0){
-		invincibilityTimer -= _step->getDeltaTime();
-		if(invincibilityTimer <= 0){
-			// Invincibililty ends
-			eventManager.triggerEvent("invincibilityEnd");
+	if(!isDead){
+		// Update invincibility timer if needed
+		if(invincibilityTimer > FLT_EPSILON){
+			invincibilityTimer -= _step->getDeltaTime();
+			if(invincibilityTimer <= 0){
+				// Invincibililty ends
+				eventManager.triggerEvent("invincibilityEnd");
 			invincible = false;
+			}
+		}
+
+		// Check health
+		if(health <= 0.f){
+			// lives?
+			// game over
+			isDead = true;
+			eventManager.triggerEvent("gameOver");
+		}
+		setCurrentAnimation("idle");
+		idleScaleAnim->update(_step);
+		childTransform->scale(scaleAnim, false);
+
+		if(joystick->getAxis(joystick->axisLeftX) > 0.5f) {
+			firstParent()->translate(speed, 0.f, 0.f);
+			setCurrentAnimation("walk");
+		}else if(joystick->getAxis(joystick->axisLeftX) < -0.5f) {
+			firstParent()->translate(-speed, 0.f, 0.f);
+			setCurrentAnimation("walk");
 		}
 	}
-
-	// Check health
-	if(health <= 0.f){
-		// lives?
-		// game over
-		isDead = true;
-		eventManager.triggerEvent("dead");
-	}
-	
-	setCurrentAnimation("idle");
-	idleScaleAnim->update(_step);
-	childTransform->scale(scaleAnim, false);
-
-	if(joystick->getAxis(joystick->axisLeftX) > 0.5f) {
-		firstParent()->translate(speed, 0.f, 0.f);
-		setCurrentAnimation("walk");
-	}else if(joystick->getAxis(joystick->axisLeftX) < -0.5f) {
-		firstParent()->translate(-speed, 0.f, 0.f);
-		setCurrentAnimation("walk");
-	}
-
 	Sprite::update(_step);
 }
 

@@ -14,6 +14,7 @@ class Room;
 
 class MY_Scene_Main : public MY_Scene_Base{
 public:
+	bool gameOver;
 
 	ComponentShaderBase * baseShaderWithDepth;
 

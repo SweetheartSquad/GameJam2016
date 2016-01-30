@@ -22,6 +22,7 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	hoverTarget(nullptr),
 	ripTarget(nullptr),
 	gripTarget(nullptr),
+	gameOver(false),
 	baseShaderWithDepth(new ComponentShaderBase(true))
 {
 	
@@ -45,14 +46,23 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 
 	mouseIndicator = uiLayer->addMouseIndicator();
 
+	// Setup a room
 	room = new Room(baseShader);
+
+	// Setup the player
+	player = spawnPlayer();
+	player->eventManager.addEventListener("gameOver", [this](sweet::Event * _event){
+		gameOver = true;
+		// gameOver stuff
+		Log::info("GAME OVER");
+	});
 
 	childTransform->addChild(room);
 	
 	room->placeBG();
 	room->placeGG();
 
-	player = spawnPlayer();
+	
 	spawnDemon();
 	spawnDemon();
 
@@ -78,6 +88,17 @@ void MY_Scene_Main::update(Step * _step){
 
 
 	collideEntities();
+
+	// Check enemy count
+	if(demons.size() == 0){
+		// unlock door
+		room->unlock();
+	}
+
+	if(room->unlocked && player->firstParent()->getTranslationVector().x >= room->doorPos){
+		// go to next room
+		Log::info("go to next room");
+	}
 
 	hoverTarget = getHovered();
 	if(hoverTarget != nullptr){

@@ -8,16 +8,16 @@
 
 Room::Room(Shader * _shader) :
 	MeshEntity(Resource::loadMeshFromObj("assets/meshes/room.obj", true).at(0), _shader),
+	doorPos(mesh->calcBoundingBox().width),
 	foreground(new Transform()),
 	gameground(new Transform()),
-	background(new Transform())
+	background(new Transform()),
+	unlocked(true)
 {
 	Texture * roomTex = new Texture("assets/textures/testUVAI.png", false, true, false);
 	roomTex->load();
 	mesh->pushTexture2D(roomTex);
 	mesh->setScaleMode(GL_NEAREST);
-
-
 	
 	Texture * doorTex = new Texture("assets/textures/testDoorUV.png", false, true, false);
 	doorTex->load();
@@ -56,7 +56,6 @@ void Room::placeBG(){
 		testBackground->mesh->vertices.at(i).y += 0.5f;
 	}
 	background->addChild(testBackground);
-
 	background->translate(0, 0, -depth * 0.9);*/
 
 	Texture * curtainTex = new Texture("assets/textures/curtainsTest.png", false, true, false);
@@ -71,6 +70,13 @@ void Room::placeBG(){
 
 void Room::placeGG(){	
 	childTransform->addChild(gameground)->translate(0, 0, 2.75);
+}
+
+void Room::unlock(){
+	if(!unlocked){
+		unlocked = true;
+		// door sound/animation?
+	}
 }
 
 Room::~Room(){

@@ -12,10 +12,15 @@ public:
 	Transform * gameground;
 	Transform * background;
 
+	bool unlocked;
+	float doorPos;
+
 	std::vector<Entity *> demons;
 
 	Room(Shader * _shader);
 	~Room();
+
+	void unlock();
 	
 	void placeFG();
 	void placeBG();
