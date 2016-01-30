@@ -24,7 +24,9 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	ripTarget(nullptr),
 	gripTarget(nullptr),
 	gameOver(false),
-	baseShaderWithDepth(new ComponentShaderBase(true))
+	baseShaderWithDepth(new ComponentShaderBase(true)),
+	currentRoom(nullptr),
+	previousRoom(nullptr)
 {
 	
 	baseShaderWithDepth->addComponent(new ShaderComponentMVP(baseShaderWithDepth));
@@ -46,11 +48,67 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	mainCam->fieldOfView = 70;
 
 	mouseIndicator = uiLayer->addMouseIndicator();
+	
+
+
+	// setup room transition
+	roomTransition = new Timeout(1.f, [this](sweet::Event * _event){
+		if(previousRoom != nullptr){
+			childTransform->removeChild(previousRoom->firstParent());
+			delete previousRoom->firstParent();
+			previousRoom = nullptr;
+		}
+		// TODO: make the current room active
+	});
+	roomTransition->eventManager->addEventListener("progress", [this](sweet::Event * _event){
+		float t = _event->getFloatData("progress");
+		if(previousRoom != nullptr){
+			previousRoom->firstParent()->translate(glm::vec3(t,0,0)*10.f, false);
+		}
+		currentRoom->firstParent()->translate(glm::vec3(1-t,0,0)*10.f, false);
+	});
+	childTransform->addChild(roomTransition, false);
+	
+
 
 	// Setup a room
-	room = goToNewRoom();
+	goToNewRoom();
+}
+
+MY_Scene_Main::~MY_Scene_Main(){
+	// we need to destruct the scene elements before the physics world to avoid memory issues
+	deleteChildTransform();
+}
+
+
+Room * MY_Scene_Main::goToNewRoom(){
+	previousRoom = currentRoom;
+
+	// clear out old stuff
+	if(previousRoom != nullptr){
+		player->eventManager.listeners.clear();
+		player->joystick = nullptr;
+
+		demons.clear();
+	}
+
+	Room * res = currentRoom = new Room(baseShader);
+
+	childTransform->addChild(res);
 	
-	// Setup the player
+	res->placeBG();
+	res->placeGG();
+
+	
+	player = spawnPlayer(res);
+	spawnDemon(res);
+	spawnDemon(res);
+
+	currentRoom->placeFG();
+	roomTransition->restart();
+
+	
+	// Setup the player and game events
 	player->eventManager.addEventListener("invincibilityStart", [this](sweet::Event * _event){
 		mainCam->shakeTimer->restart();
 	});
@@ -64,28 +122,11 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 		game->scenes[ss.str()] = new MY_Scene_Main(dynamic_cast<MY_Game *>(game));
 		game->switchScene(ss.str(), true);
 	});
-}
-
-MY_Scene_Main::~MY_Scene_Main(){
-	// we need to destruct the scene elements before the physics world to avoid memory issues
-	deleteChildTransform();
-}
+	player->eventManager.addEventListener("newroom", [this](sweet::Event * _event){
+		goToNewRoom();
+	});
 
 
-Room * MY_Scene_Main::goToNewRoom(){
-	Room * res = new Room(baseShader);
-
-	childTransform->addChild(res);
-	
-	res->placeBG();
-	res->placeGG();
-
-	
-	player = spawnPlayer(res);
-	spawnDemon(res);
-	spawnDemon(res);
-
-	room->placeFG();
 	return res;
 }
 
@@ -95,6 +136,14 @@ void MY_Scene_Main::update(Step * _step){
 
 	// camera
 	//mainCam->firstParent()->translate(glm::vec3(sin(_step->time), cos(_step->time), 0));
+	
+	if(keyboard->keyJustDown(GLFW_KEY_R)){
+		player->eventManager.triggerEvent("gameOver");
+	}
+	if(keyboard->keyJustDown(GLFW_KEY_N)){
+		player->eventManager.triggerEvent("newroom");
+	}
+
 
 
 	collideEntities();
@@ -102,12 +151,13 @@ void MY_Scene_Main::update(Step * _step){
 	// Check enemy count
 	if(demons.size() == 0){
 		// unlock door
-		room->unlock();
+		currentRoom->unlock();
 	}
 
-	if(room->unlocked && player->firstParent()->getTranslationVector().x >= room->doorPos){
+	if(currentRoom->unlocked && player->firstParent()->getTranslationVector().x >= currentRoom->doorPos){
 		// go to next room
 		Log::info("go to next room");
+		player->eventManager.triggerEvent("newroom");
 	}
 
 	hoverTarget = getHovered();

@@ -71,7 +71,9 @@ void MY_Player::render(sweet::MatrixStack * _matrixStack, RenderOptions * _rende
 void MY_Player::update(Step * _step) {
 	
 	eventManager.update(_step);
-	joystick->update(_step);
+	if(joystick != nullptr){
+		joystick->update(_step);
+	}
 
 	if(!isDead){
 		// Update invincibility timer if needed
@@ -94,13 +96,15 @@ void MY_Player::update(Step * _step) {
 		setCurrentAnimation("idle");
 		idleScaleAnim->update(_step);
 		childTransform->scale(scaleAnim, false);
-
-		if(joystick->getAxis(joystick->axisLeftX) > 0.5f) {
-			firstParent()->translate(speed, 0.f, 0.f);
-			setCurrentAnimation("walk");
-		}else if(joystick->getAxis(joystick->axisLeftX) < -0.5f) {
-			firstParent()->translate(-speed, 0.f, 0.f);
-			setCurrentAnimation("walk");
+		
+		if(joystick != nullptr){
+			if(joystick->getAxis(joystick->axisLeftX) > 0.5f) {
+				firstParent()->translate(speed, 0.f, 0.f);
+				setCurrentAnimation("walk");
+			}else if(joystick->getAxis(joystick->axisLeftX) < -0.5f) {
+				firstParent()->translate(-speed, 0.f, 0.f);
+				setCurrentAnimation("walk");
+			}
 		}
 	}
 	Sprite::update(_step);

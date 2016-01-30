@@ -20,8 +20,9 @@ public:
 	ComponentShaderBase * baseShaderWithDepth;
 
 	MY_Player * player;
-
-	Room * room;
+	
+	Room * currentRoom;
+	Room * previousRoom;
 
 	std::vector<MY_Demon *> demons;
 	MY_Demon * spawnDemon(Room * _room);
@@ -60,4 +61,6 @@ public:
 	MY_DemonSpirit * gripTarget;
 
 	Room * goToNewRoom();
+
+	Timeout * roomTransition;
 };
