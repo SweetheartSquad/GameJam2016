@@ -4,6 +4,7 @@
 #include <Box2DDebugDrawer.h>
 #include <MeshFactory.h>
 #include <MY_Player.h>
+#include <MY_Game.h>
 #include <Room.h>
 
 #include <shader\ComponentShaderBase.h>
@@ -55,6 +56,11 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 		gameOver = true;
 		// gameOver stuff
 		Log::info("GAME OVER");
+
+		std::stringstream ss;
+		ss << "game_" << glfwGetTime();
+		game->scenes[ss.str()] = new MY_Scene_Main(game);
+		game->switchScene(ss.str(), true);
 	});
 
 	childTransform->addChild(room);
@@ -71,6 +77,8 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	player->eventManager.addEventListener("invincibilityStart", [this](sweet::Event * _event){
 		mainCam->shakeTimer->restart();
 	});
+
+	dynamic_cast<MY_Game *>(game)->playBGM();
 }
 
 MY_Scene_Main::~MY_Scene_Main(){

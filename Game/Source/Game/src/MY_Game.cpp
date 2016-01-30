@@ -30,9 +30,6 @@ MY_Game::MY_Game() :
 	scenes["surfaceshaders"] = new MY_Scene_SurfaceShaders(this);
 	scenes["vr"] = new MY_Scene_VR(this);
 
-	std::stringstream ss;
-	ss << "BGM_" << sweet::NumberUtils::randomInt(1,2);
-	MY_ResourceManager::globalAssets->getAudio(ss.str())->sound->play(true);
 }
 
 MY_Game::~MY_Game(){}
@@ -43,4 +40,15 @@ void MY_Game::addSplashes(){
 
 	// add custom splashes
 	//addSplash(new Scene_Splash(this, MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture, MY_ResourceManager::globalAssets->getAudio("DEFAULT")->sound));
+}
+
+void MY_Game::playBGM(){
+	if(bgm != nullptr){
+		bgm->stop();
+	}
+	
+	std::stringstream ss;
+	ss << "BGM_" << sweet::NumberUtils::randomInt(1,2);
+	bgm = MY_ResourceManager::globalAssets->getAudio(ss.str())->sound;
+	bgm->play(true);
 }

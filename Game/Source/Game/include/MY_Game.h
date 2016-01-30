@@ -8,4 +8,8 @@ public:
 	~MY_Game();
 
 	void addSplashes() override;
+
+	OpenAL_Sound * bgm;
+
+	void playBGM();
 };
