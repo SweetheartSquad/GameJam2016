@@ -34,11 +34,11 @@
       "type":"texture",
       "id":"BG",
       "src":"backThing.png"
-    }
+    },
 
 
     // BGM
-    ,{
+    {
       "type":"audio",
       "id":"BGM_1",
       "src":"PleaseGod.ogg",
@@ -61,18 +61,74 @@
       "id":"BGM_4",
       "src":"ExcerciseMyHeart.ogg",
       "category": "music"
-    }
+    },
 
     // sfx
-    ,{
+    {
       "type":"audio",
       "id":"FOOTSTEP",
       "src":"footstep.ogg",
       "category": "sfx"
-    }
+    },
+    {
+		"type":"audio",
+      	"id":"ripitSound1",
+      	"src":"GRS/ripitSound1.ogg",
+      	"category": "sfx"
+    },
+    {
+		"type":"audio",
+      	"id":"ripitSound2",
+      	"src":"GRS/ripitSound2.ogg",
+      	"category": "sfx"
+    },
+    {
+		"type":"audio",
+      	"id":"GRIPIT_SOUND_1",
+      	"src":"GRS/ripitSound2.ogg",
+      	"category": "sfx"
+    },
+        {
+		"type":"audio",
+      	"id":"GRIPIT_SOUND_2",
+      	"src":"GRS/ripitSound2.ogg",
+      	"category": "sfx"
+    },
+        {
+		"type":"audio",
+      	"id":"SIPIT_SOUND_1",
+      	"src":"GRS/ripitSound2.ogg",
+      	"category": "sfx"
+    },
+      {
+		"type":"audio",
+      	"id":"SIPIT_SOUND_1",
+      	"src":"GRS/ripitSound2.ogg",
+      	"category": "sfx"
+    },
+     {
+		"type":"audio",
+      	"id":"HIT_SOUND_1",
+      	"src":"GRS/ripitSound2.ogg",
+      	"category": "sfx"
+    },
+     {
+		"type":"audio",
+      	"id":"HIT_SOUND_2",
+      	"src":"GRS/ripitSound2.ogg",
+      	"category": "sfx"
+    },
+     {
+		"type":"audio",
+      	"id":"HIT_SOUND_3",
+      	"src":"GRS/ripitSound2.ogg",
+      	"category": "sfx"
+    },
+
+
 
     // voice
-    ,{
+    {
       "type":"audio",
       "id":"VOICE_1",
       "src":"Voices/voice1.ogg",

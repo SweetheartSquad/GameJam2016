@@ -7,6 +7,9 @@
 #define NUM_DEMON_TEXTURES 2
 #define TIMEOUT_TIME 1.0
 #define DEMON_SCALE 10
+#define RIPIT_SOUND_COUNT 2
+#define GRIPIT_SOUND_COUNT 2
+#define SIPIT_SOUND_COUNT 2
 
 MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed) : 
 	Sprite(_shader),
@@ -111,12 +114,16 @@ void MY_DemonSpirit::update(Step * _step){
 void MY_DemonSpirit::ripIt(){
 	std::cout << "demon ripped" << std::endl;
 	state = kSTUNNED;
+	int randRipitSound = sweet::NumberUtils::randomInt(1, RIPIT_SOUND_COUNT);
+	MY_ResourceManager::globalAssets->getAudio("ripitSound" + std::to_string(randRipitSound))->sound->play();
 	stunTimer->restart();
 }
 
 void MY_DemonSpirit::gripIt(){
 	std::cout << "demon gripped" << std::endl;
 	state = kSTUNNED;
+	int randGripitSound = sweet::NumberUtils::randomInt(1, GRIPIT_SOUND_COUNT);
+	MY_ResourceManager::globalAssets->getAudio("GRIPIT_SOUND_" + std::to_string(randGripitSound))->sound->play();
 	stunTimer->restart();
 	possessed->state = MY_Demon::kIDLE;
 }
@@ -124,6 +131,8 @@ void MY_DemonSpirit::gripIt(){
 void MY_DemonSpirit::sipIt(){
 	std::cout << "demon sipped" << std::endl;
 	state = kDEAD;
+	int randRipitSound = sweet::NumberUtils::randomInt(1, SIPIT_SOUND_COUNT);
+	MY_ResourceManager::globalAssets->getAudio("SIPIT_SOUND_" + std::to_string(randRipitSound))->sound->play();
 	possessed->stateTimeout->stop();
 	possessed->state = MY_Demon::kDEAD;
 }

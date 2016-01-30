@@ -8,6 +8,8 @@
 
 #include <NumberUtils.h>
 
+#define HIT_SOUND_COUNT 2
+
 int MY_Player::lives = MAX_LIVES;
 
 MY_Player::MY_Player(Shader * _shader) :
@@ -64,6 +66,9 @@ MY_Player::MY_Player(Shader * _shader) :
 				eventManager.triggerEvent("invincibilityStart");
 				eventManager.triggerEvent("tookDamage");
 				invincible = true;
+
+				int randRipitSound = sweet::NumberUtils::randomInt(1, HIT_SOUND_COUNT);
+				MY_ResourceManager::globalAssets->getAudio("HIT_SOUND_" + std::to_string(randRipitSound))->sound->play();
 			}
 		}
 	});
