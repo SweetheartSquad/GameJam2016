@@ -11,7 +11,9 @@ MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed) :
 	Sprite(_shader),
 	possessed(_possessed),
 	speed(0),
-	state(kIN)
+	state(kIN),
+	scaleAnim(3),
+	origin(0, _possessed->childTransform->getScaleVector().y, 0)
 {
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("demon_spirit")->texture);
 
@@ -19,11 +21,23 @@ MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed) :
 		state = kOUT;
 	});
 	childTransform->addChild(stunTimer, false);
+
+	mesh->setScaleMode(GL_NEAREST);
+
+	idleScaleAnim = new Animation<float>(&scaleAnim.y);
+	idleScaleAnim->tweens.push_back(new Tween<float>(0.4f, 2, Easing::kEASE_IN_OUT_CIRC));
+	idleScaleAnim->tweens.push_back(new Tween<float>(0.2f, -2, Easing::kEASE_IN_OUT_CIRC));
+	idleScaleAnim->hasStart = true;
+	idleScaleAnim->startValue = scaleAnim.y;
+	idleScaleAnim->loopType = Animation<float>::kLOOP;
 }
 
 void MY_DemonSpirit::update(Step * _step){
+	idleScaleAnim->update(_step);
+	childTransform->scale(scaleAnim, false);
+
 	// accelerate towards the possession target (which is at 0,0,0)
-	glm::vec3 a = firstParent()->getTranslationVector();
+	glm::vec3 a = origin - firstParent()->getTranslationVector();
 	float ma = glm::length(a);
 
 	float accelMod = 0.f;
@@ -39,9 +53,9 @@ void MY_DemonSpirit::update(Step * _step){
 		break;
 
 	case kSTUNNED:
-		accelMod = 0.005f;
+		accelMod = 0.001f;
 		a += sweet::NumberUtils::randomVec3(glm::vec3(-5), glm::vec3(5));
-		damping = 0.01f;
+		damping = 0.2f;
 		break;
 
 	case kOUT:
@@ -61,10 +75,12 @@ void MY_DemonSpirit::update(Step * _step){
 	default: break;
 	}
 		
-	a *= -accelMod;
+	a *= accelMod;
 	speed += a;
 	speed *= (1-damping); // damping
 	firstParent()->translate(speed);
+
+	childTransform->rotate(glm::length(speed), 0, 0, 1, kOBJECT);
 
 	Sprite::update(_step);
 }
@@ -127,6 +143,9 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 		v.y += 0.5f;
 	}
 	mesh->dirty = true;
+	mesh->setScaleMode(GL_NEAREST);
+
+	meshTransform->scale(glm::vec3(10));
 }
 
 void MY_Demon::render(sweet::MatrixStack* _matrixStack, RenderOptions* _renderOptions) {

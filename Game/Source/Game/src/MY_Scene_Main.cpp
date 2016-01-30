@@ -18,7 +18,7 @@
 MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	MY_Scene_Base(_game),
 	mainCam(new MY_Cam()),
-	hoverRadius(15),
+	hoverRadius(50),
 	hoverRadius2(hoverRadius*hoverRadius),
 	hoverTarget(nullptr),
 	ripTarget(nullptr),
@@ -213,7 +213,7 @@ bool MY_Scene_Main::isHoveredOverSpirit(){
 
 void MY_Scene_Main::ripIt(){
 	// demon pulls the mouse, mouse pulls the demon
-	if(distToHoverTargetMag > 3){
+	if(distToHoverTargetMag > glm::length(ripTarget->scaleAnim)){
 		float mouseResistance = 1.f;
 		float demonResistance = 0.01f;
 		mouse->translate(distToHoverTarget*mouseResistance);
@@ -223,7 +223,7 @@ void MY_Scene_Main::ripIt(){
 
 void MY_Scene_Main::gripIt(){
 	// demon pulls the mouse, mouse pulls the demon
-	if(distToHoverTargetMag > 3){
+	if(distToHoverTargetMag > glm::length(gripTarget->scaleAnim)){
 		float mouseResistance = 1.f;
 		float demonResistance = 0.01f;
 		mouse->translate(distToHoverTarget*mouseResistance);

@@ -8,12 +8,12 @@
   	{
   		"type":"texture",
   		"id":"demon_1",
-  		"src":"demon_1.png"
+  		"src":"enemy1.png"
   	},
     {
       "type":"texture",
       "id":"demon_2",
-      "src":"demon_2.png"
+      "src":"enemy2.png"
     },
     {
       "type":"texture",
