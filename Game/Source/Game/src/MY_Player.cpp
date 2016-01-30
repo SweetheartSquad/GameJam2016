@@ -22,7 +22,7 @@ MY_Player::MY_Player(Shader * _shader) :
 	bounds(0),
 	paused(false)
 {
-	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet")->texture);
+	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet_player")->texture);
 
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("player")->texture);
 	

@@ -282,6 +282,9 @@ MY_Player * MY_Scene_Main::spawnPlayer(Room * _room){
 
 MY_DemonSpirit * MY_Scene_Main::getHovered(){
 	for(auto d : demons){
+		if(d->state == MY_DemonSpirit::kDEAD){
+			continue;
+		}
 		glm::vec3 demonPos = d->spirit->meshTransform->getWorldPos();
 		glm::vec3 demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
 		distToHoverTarget = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
