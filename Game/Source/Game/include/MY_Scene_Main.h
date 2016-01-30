@@ -8,10 +8,14 @@
 #include "MY_Scene_Base.h"
 #include "MY_Player.h"
 
+class Room;
+
 class MY_Scene_Main : public MY_Scene_Base{
 public:
 
 	MY_Player * player;
+
+	Room * room;
 
 	explicit MY_Scene_Main(Game * _game);
 	~MY_Scene_Main();

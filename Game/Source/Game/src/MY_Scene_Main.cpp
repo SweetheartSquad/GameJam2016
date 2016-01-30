@@ -4,6 +4,7 @@
 #include <Box2DDebugDrawer.h>
 #include <MeshFactory.h>
 #include <MY_Player.h>
+#include <Room.h>
 
 MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	MY_Scene_Base(_game)
@@ -11,6 +12,10 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	// Setup the player
 	player = new MY_Player(baseShader);
 	childTransform->addChild(player);
+
+	room = new Room(baseShader, 50.f, 10.f, 10.f);
+
+	childTransform->addChild(room);
 }
 
 MY_Scene_Main::~MY_Scene_Main(){
