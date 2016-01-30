@@ -163,7 +163,12 @@ void MY_Scene_Main::update(Step * _step){
 	// Scene update
 	MY_Scene_Base::update(_step);
 
-	if(!started){
+	if(keyboard->keyJustDown(GLFW_KEY_ESCAPE)){
+		game->switchScene("menu", false);
+		game->scenes["game"] = this;
+	}
+
+	if(!started){ // Because we don't have the UI square thing
 		started = true;
 		livesCounter->setItemCount(5);
 	}
@@ -327,6 +332,7 @@ void MY_Scene_Main::sipIt(){
 
 	if(glm::distance(demPos, playerPos) < player->firstParent()->getScaleVector().x  * 0.5f){
 		gripTarget->sipIt();
+		demonsCounter->increment();
 		gripTarget = nullptr;
 	}
 }
