@@ -30,10 +30,10 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	player = new MY_Player(baseShader);
 	childTransform->addChild(player);
 
-	testDemon = new MY_Demon(baseShader, player->firstParent());
-	childTransform->addChild(testDemon);
-	testDemon->firstParent()->translate(5.0f, 0.f, 0.f);
-	demons.push_back(testDemon);
+	spawnDemon();
+
+	spawnDemon();
+
 }
 
 MY_Scene_Main::~MY_Scene_Main(){
@@ -53,7 +53,7 @@ void MY_Scene_Main::update(Step * _step){
 		if(mouse->leftJustPressed()){
 			if(hoverTarget->state == kIN){
 				ripTarget = hoverTarget;
-			}else if(hoverTarget->state == kSTUNNED){
+			}else if(hoverTarget->state == kSTUNNED || hoverTarget->state == kOUT){
 				gripTarget = hoverTarget;
 			}
 		}
@@ -106,20 +106,29 @@ void MY_Scene_Main::collideEntities() {
 	}
 }
 
+MY_Demon * MY_Scene_Main::spawnDemon(){
+	MY_Demon * d = new MY_Demon(baseShader, player->firstParent());
+	childTransform->addChild(d)->translate(5.0f, 0.f, 0.f);
+	demons.push_back(d);
+	return d;
+}
+
 MY_DemonSpirit * MY_Scene_Main::getHovered(){
-	glm::vec3 demonPos = testDemon->spirit->getWorldPos();
-	glm::vec3 demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
-	distToHoverTarget = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
-	distToHoverTargetMag = glm::length(distToHoverTarget);
+	for(auto d : demons){
+		glm::vec3 demonPos = d->spirit->getWorldPos();
+		glm::vec3 demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
+		distToHoverTarget = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
+		distToHoverTargetMag = glm::length(distToHoverTarget);
 
-	/*std::cout << "Mouse: " << mouse->mouseX() << " " << mouse->mouseY() << std::endl;
-	std::cout << "Demon: " << demonPosInScreen.x << " " << demonPosInScreen.y << " " << demonPosInScreen.z << std::endl;
-	std::cout << "Dist: " << distToHoverTarget.x << " " << distToHoverTarget.y << std::endl;
-	std::cout << "DistMag: " << distToHoverTargetMag << std::endl;*/
+		/*std::cout << "Mouse: " << mouse->mouseX() << " " << mouse->mouseY() << std::endl;
+		std::cout << "Demon: " << demonPosInScreen.x << " " << demonPosInScreen.y << " " << demonPosInScreen.z << std::endl;
+		std::cout << "Dist: " << distToHoverTarget.x << " " << distToHoverTarget.y << std::endl;
+		std::cout << "DistMag: " << distToHoverTargetMag << std::endl;*/
 
-	if(distToHoverTargetMag < hoverRadius){
-		// return the found hoverTarget
-		return testDemon->spirit;
+		if(distToHoverTargetMag < hoverRadius){
+			// return the found hoverTarget
+			return d->spirit;
+		}
 	}
 	// we didn't find a hoverTarget
 	return nullptr;
@@ -137,7 +146,7 @@ bool MY_Scene_Main::isHoveredOverSpirit(){
 void MY_Scene_Main::ripIt(){
 	// demon pulls the mouse, mouse pulls the demon
 	if(distToHoverTargetMag > 3){
-		float mouseResistance = 0.5;
+		float mouseResistance = 0.5f;
 		float demonResistance = 0.01f;
 		mouse->translate(distToHoverTarget*mouseResistance);
 		ripTarget->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
@@ -147,7 +156,7 @@ void MY_Scene_Main::ripIt(){
 void MY_Scene_Main::gripIt(){
 	// demon pulls the mouse, mouse pulls the demon
 	if(distToHoverTargetMag > 3){
-		float mouseResistance = 0.5;
+		float mouseResistance = 0.5f;
 		float demonResistance = 0.001f;
 		mouse->translate(distToHoverTarget*mouseResistance);
 		gripTarget->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
@@ -157,11 +166,10 @@ void MY_Scene_Main::gripIt(){
 
 void MY_Scene_Main::sipIt(){
 	// if the demon gets close enough to the player, they get sipped
-	glm::vec3 bodPos = gripTarget->possessed->firstParent()->getTranslationVector();
-	glm::vec3 demPos = gripTarget->firstParent()->getTranslationVector();
+	glm::vec3 demPos = gripTarget->getGamePos();
 	glm::vec3 playerPos = player->firstParent()->getTranslationVector();
 
-	if(glm::distance(bodPos + demPos, playerPos) < player->firstParent()->getScaleVector().x  * 0.5f){
+	if(glm::distance(demPos, playerPos) < player->firstParent()->getScaleVector().x  * 0.5f){
 		gripTarget->sipIt();
 		gripTarget = nullptr;
 	}

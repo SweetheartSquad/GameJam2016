@@ -19,6 +19,11 @@
       "type":"texture",
       "id":"demon_spirit",
       "src":"demon_spirit.png"
+    },
+    {
+      "type":"texture",
+      "id":"player",
+      "src":"player.png"
     }
 
   ]

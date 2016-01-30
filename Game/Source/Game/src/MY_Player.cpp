@@ -13,13 +13,13 @@ MY_Player::MY_Player(Shader * _shader) :
 {
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet")->texture);
 
-	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture);
+	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("player")->texture);
 
-	auto walkAnim = new SpriteSheetAnimation(0.4f);
-	walkAnim->pushFramesInRange(0, 30, 240, 296, spriteSheet->texture->width, spriteSheet->texture->height);
+	auto idleAnim = new SpriteSheetAnimation(0.4f);
+	idleAnim->pushFramesInRange(0, 3, 2048/4, 2048, spriteSheet->texture->width, spriteSheet->texture->height);
 
-	spriteSheet->addAnimation("walk", walkAnim);
-	setCurrentAnimation("walk");
+	spriteSheet->addAnimation("idle", idleAnim);
+	setCurrentAnimation("idle");
 
 	eventManager.addEventListener("demonCollision", [this](sweet::Event * _event){
 		// Demon collision code

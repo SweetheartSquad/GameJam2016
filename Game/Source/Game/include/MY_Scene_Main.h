@@ -14,9 +14,8 @@ public:
 
 	MY_Player * player;
 
-	MY_Demon * testDemon;
-
 	std::vector<MY_Demon *> demons;
+	MY_Demon * spawnDemon();
 
 	PerspectiveCamera * mainCam;
 

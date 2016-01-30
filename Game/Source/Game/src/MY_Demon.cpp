@@ -24,6 +24,8 @@ MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed) :
 void MY_DemonSpirit::update(Step * _step){
 	// accelerate towards the possession target (which is at 0,0,0)
 	glm::vec3 a = firstParent()->getTranslationVector();
+	float ma = glm::length(a);
+
 	float accelMod = 0.f;
 	float damping = 1.f;
 	switch(state){
@@ -31,22 +33,23 @@ void MY_DemonSpirit::update(Step * _step){
 		accelMod = 0.1f;
 		damping = 0.1f;
 		// if the spirit is far from the origin, they get ripped out
-		if(glm::length(a) > 5){
+		if(ma > 5){
 			ripIt();
 		}
 		break;
 
 	case kSTUNNED:
-		accelMod = 0;
+		accelMod = 0.001;
+		a += sweet::NumberUtils::randomVec3(glm::vec3(-3), glm::vec3(3));
 		damping = 0.5f;
 		break;
 
 	case kOUT:
-		accelMod = 0.01f;
+		accelMod = 0.001f;
 		a += sweet::NumberUtils::randomVec3(glm::vec3(-3), glm::vec3(3));
 		damping = 0.2f;
 		// if the spirit is close to the origin, they can repossess the body
-		if(glm::length(a) < 5){
+		if(ma < 5){
 			getBackInThere();
 		}
 		break;
@@ -85,6 +88,10 @@ void MY_DemonSpirit::sipIt(){
 
 void MY_DemonSpirit::getBackInThere(){
 	state = kIN;
+}
+
+glm::vec3 MY_DemonSpirit::getGamePos(){
+	return firstParent()->getTranslationVector() + possessed->firstParent()->getTranslationVector();
 }
 
 MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :

@@ -42,6 +42,10 @@ public:
 	void sipIt();
 	// put the spirit back in its body
 	void getBackInThere();
+
+
+	// returns the sum of this spirit's translation vector and its body's translation vector
+	glm::vec3 getGamePos();
 };
 
 class MY_Demon : public Sprite {
