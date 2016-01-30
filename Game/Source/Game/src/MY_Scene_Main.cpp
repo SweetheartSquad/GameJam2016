@@ -49,6 +49,7 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	mainCam->yaw = 90.0f;
 	mainCam->pitch = 0;
 	mainCam->fieldOfView = 70;
+	mainCam->interpolation = 0.1f;
 
 	mouseIndicator = uiLayer->addMouseIndicator();
 
@@ -68,6 +69,7 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 			previousRoom->firstParent()->translate(glm::vec3(-t-0.05f,0,0)*previousRoom->roomWidth, false);
 		}
 		currentRoom->firstParent()->translate(glm::vec3(1-t,0,0)*currentRoom->roomWidth, false);
+		mainCam->yaw = t*90;
 	});
 
 	childTransform->addChild(roomTransition, false);
