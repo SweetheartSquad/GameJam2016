@@ -8,17 +8,22 @@
 
 MY_Player::MY_Player(Shader * _shader) :
 	Sprite(_shader),
-	speed(0.5f),
+	speed(0.25f),
 	joystick(new JoystickVirtual(0))
 {
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet")->texture);
 
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("player")->texture);
+	
+	auto anim = new SpriteSheetAnimation(0.4f);
+	anim->pushFramesInRange(0, 3, 256, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	spriteSheet->addAnimation("idle", anim);
 
-	auto idleAnim = new SpriteSheetAnimation(0.4f);
-	idleAnim->pushFramesInRange(0, 3, 2048/4, 2048, spriteSheet->texture->width, spriteSheet->texture->height);
+	anim = new SpriteSheetAnimation(0.4f);
+	anim->pushFramesInRange(8, 11, 256, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	spriteSheet->addAnimation("walk", anim);
 
-	spriteSheet->addAnimation("idle", idleAnim);
+
 	setCurrentAnimation("idle");
 
 	eventManager.addEventListener("demonCollision", [this](sweet::Event * _event){
@@ -35,12 +40,15 @@ void MY_Player::update(Step * _step) {
 	eventManager.update(_step);
 	joystick->update(_step);
 
+	
+	setCurrentAnimation("idle");
+
 	if(joystick->getAxis(joystick->axisLeftX) > 0.5f) {
 		firstParent()->translate(speed, 0.f, 0.f);
-	}
-
-	if(joystick->getAxis(joystick->axisLeftX) < -0.5f) {
+		setCurrentAnimation("walk");
+	}else if(joystick->getAxis(joystick->axisLeftX) < -0.5f) {
 		firstParent()->translate(-speed, 0.f, 0.f);
+		setCurrentAnimation("walk");
 	}
 
 	Sprite::update(_step);
