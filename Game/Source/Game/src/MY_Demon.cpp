@@ -24,8 +24,8 @@ MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed) :
 void MY_DemonSpirit::update(Step * _step){
 	// accelerate towards the possession target (which is at 0,0,0)
 	glm::vec3 a = firstParent()->getTranslationVector();
-	float accelMod = 1.f;
-	float damping = 0.f;
+	float accelMod = 0.f;
+	float damping = 1.f;
 	switch(state){
 	case kIN:
 		accelMod = 0.1f;
@@ -35,18 +35,27 @@ void MY_DemonSpirit::update(Step * _step){
 			ripIt();
 		}
 		break;
+
 	case kSTUNNED:
 		accelMod = 0;
 		damping = 0.5f;
 		break;
+
 	case kOUT:
-		accelMod = 0.05f;
+		accelMod = 0.01f;
+		a += sweet::NumberUtils::randomVec3(glm::vec3(-3), glm::vec3(3));
 		damping = 0.2f;
 		// if the spirit is close to the origin, they can repossess the body
 		if(glm::length(a) < 5){
 			getBackInThere();
 		}
 		break;
+
+	case kDEAD:
+		return;
+		break;
+
+	default: break;
 	}
 		
 	a *= -accelMod;
@@ -67,6 +76,11 @@ void MY_DemonSpirit::gripIt(){
 	std::cout << "demon gripped" << std::endl;
 	state = kSTUNNED;
 	stunTimer->restart();
+}
+
+void MY_DemonSpirit::sipIt(){
+	std::cout << "demon sipped" << std::endl;
+	state = kDEAD;
 }
 
 void MY_DemonSpirit::getBackInThere(){

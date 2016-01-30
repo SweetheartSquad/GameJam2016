@@ -59,6 +59,7 @@ void MY_Scene_Main::update(Step * _step){
 		}
 	}
 
+	// let go of any held demons
 	if(mouse->leftJustReleased()){
 		ripTarget = nullptr;
 		gripTarget = nullptr;
@@ -76,6 +77,7 @@ void MY_Scene_Main::update(Step * _step){
 	// if we're holding a demon outside a body, try to grip it
 	if(gripTarget != nullptr){
 		gripIt();
+		sipIt();
 	}
 }
 
@@ -135,24 +137,32 @@ bool MY_Scene_Main::isHoveredOverSpirit(){
 void MY_Scene_Main::ripIt(){
 	// demon pulls the mouse, mouse pulls the demon
 	if(distToHoverTargetMag > 3){
-		float mouseResistance = 0.8;
+		float mouseResistance = 0.5;
 		float demonResistance = 0.01f;
 		mouse->translate(distToHoverTarget*mouseResistance);
-		testDemon->spirit->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
+		ripTarget->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
 	}
 }
 
 void MY_Scene_Main::gripIt(){
 	// demon pulls the mouse, mouse pulls the demon
 	if(distToHoverTargetMag > 3){
-		float mouseResistance = 0.8;
-		float demonResistance = 0.01f;
+		float mouseResistance = 0.5;
+		float demonResistance = 0.001f;
 		mouse->translate(distToHoverTarget*mouseResistance);
-		testDemon->spirit->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
-		testDemon->spirit->gripIt();
+		gripTarget->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
+		gripTarget->gripIt();
 	}
 }
 
 void MY_Scene_Main::sipIt(){
+	// if the demon gets close enough to the player, they get sipped
+	glm::vec3 bodPos = gripTarget->possessed->firstParent()->getTranslationVector();
+	glm::vec3 demPos = gripTarget->firstParent()->getTranslationVector();
+	glm::vec3 playerPos = player->firstParent()->getTranslationVector();
 
+	if(glm::distance(bodPos + demPos, playerPos) < player->firstParent()->getScaleVector().x  * 0.5f){
+		gripTarget->sipIt();
+		gripTarget = nullptr;
+	}
 }

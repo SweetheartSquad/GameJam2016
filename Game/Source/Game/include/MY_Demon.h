@@ -11,7 +11,8 @@ enum DemonState {
 enum DemonSpiritState {
 	kIN,
 	kSTUNNED,
-	kOUT
+	kOUT,
+	kDEAD
 };
 
 
@@ -37,6 +38,8 @@ public:
 	void ripIt();
 	// grip the spirit away from its body
 	void gripIt();
+	// kill the demon i guess?
+	void sipIt();
 	// put the spirit back in its body
 	void getBackInThere();
 };
