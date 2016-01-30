@@ -137,6 +137,8 @@ void MY_DemonSpirit::ripIt(){
 	int randRipitSound = sweet::NumberUtils::randomInt(1, RIPIT_SOUND_COUNT);
 	MY_ResourceManager::globalAssets->getAudio("ripitSound" + std::to_string(randRipitSound))->sound->play();
 	stunTimer->restart();
+	possessed->state = MY_Demon::kSTUNNED;
+	possessed->setCurrentAnimation("stunned");
 	setVisible(true);
 }
 
@@ -146,7 +148,8 @@ void MY_DemonSpirit::gripIt(){
 	int randGripitSound = sweet::NumberUtils::randomInt(1, GRIPIT_SOUND_COUNT);
 	MY_ResourceManager::globalAssets->getAudio("GRIPIT_SOUND_" + std::to_string(randGripitSound))->sound->play();
 	stunTimer->restart();
-	possessed->state = MY_Demon::kIDLE;
+	possessed->state = MY_Demon::kSTUNNED;
+	possessed->setCurrentAnimation("stunned");
 	setVisible(true);
 }
 
@@ -165,6 +168,8 @@ void MY_DemonSpirit::sipIt(){
 void MY_DemonSpirit::getBackInThere(){
 	state = kIN;
 	setVisible(false);
+	possessed->state = MY_Demon::kIDLE;
+	possessed->setCurrentAnimation("idle");
 }
 
 glm::vec3 MY_DemonSpirit::getGamePos(){
@@ -173,11 +178,11 @@ glm::vec3 MY_DemonSpirit::getGamePos(){
 
 MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	Sprite(_shader), 
+	state(kWALKING),
+	spirit(new MY_DemonSpirit(_shader, this)),
 	speed(0.02f),
 	damage(10.f),
-	state(kWALKING),
-	target(_target),
-	spirit(new MY_DemonSpirit(_shader, this))
+	target(_target)
 {
 	childTransform->addChild(spirit)->translate(spirit->origin);
 
@@ -194,6 +199,12 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	anim->pushFramesInRange(0, 3, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	anim->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
 	spriteSheet->addAnimation("die", anim);
+
+	//UPDATE TEXTURES FOR THIS
+	anim = new SpriteSheetAnimation(0.4f);
+	anim->pushFramesInRange(0, 3, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	anim->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
+	spriteSheet->addAnimation("stunned", anim);
 
 	setSpriteSheet(spriteSheet, "idle");
 
