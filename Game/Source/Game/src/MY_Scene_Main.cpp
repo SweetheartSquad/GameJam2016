@@ -11,6 +11,10 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	// Setup the player
 	player = new MY_Player(baseShader);
 	childTransform->addChild(player);
+
+	testDemon = new MY_Demon(baseShader, player->firstParent());
+	childTransform->addChild(testDemon);
+	testDemon->firstParent()->translate(5.0f, 0.f, 0.f);
 }
 
 MY_Scene_Main::~MY_Scene_Main(){

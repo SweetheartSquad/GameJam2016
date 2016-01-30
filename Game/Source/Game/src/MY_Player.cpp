@@ -23,7 +23,6 @@ MY_Player::MY_Player(Shader * _shader) :
 }
 
 void MY_Player::render(sweet::MatrixStack * _matrixStack, RenderOptions * _renderOptions) {
-	
 	Sprite::render(_matrixStack, _renderOptions);
 }
 
