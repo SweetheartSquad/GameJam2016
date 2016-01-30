@@ -13,6 +13,7 @@ public:
 	Transform * background;
 
 	bool unlocked;
+	float roomWidth;
 	float doorPos;
 
 	std::vector<Entity *> demons;
