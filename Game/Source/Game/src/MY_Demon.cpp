@@ -33,20 +33,20 @@ void MY_DemonSpirit::update(Step * _step){
 		accelMod = 0.1f;
 		damping = 0.1f;
 		// if the spirit is far from the origin, they get ripped out
-		if(ma > (firstParent()->getScaleVector().x + possessed->firstParent()->getScaleVector().x) * 0.5f){
+		if(ma > (firstParent()->getScaleVector().x + possessed->firstParent()->getScaleVector().x) * 2.5f){
 			ripIt();
 		}
 		break;
 
 	case kSTUNNED:
-		accelMod = 0.001;
-		a += sweet::NumberUtils::randomVec3(glm::vec3(-3), glm::vec3(3));
-		damping = 0.5f;
+		accelMod = 0.005f;
+		a += sweet::NumberUtils::randomVec3(glm::vec3(-5), glm::vec3(5));
+		damping = 0.01f;
 		break;
 
 	case kOUT:
 		accelMod = 0.001f;
-		a += sweet::NumberUtils::randomVec3(glm::vec3(-3), glm::vec3(3));
+		a += sweet::NumberUtils::randomVec3(glm::vec3(-5), glm::vec3(5));
 		damping = 0.2f;
 		// if the spirit is close to the origin, they can repossess the body
 		if(ma < (firstParent()->getScaleVector().x + possessed->firstParent()->getScaleVector().x) * 0.5f){
@@ -79,6 +79,7 @@ void MY_DemonSpirit::gripIt(){
 	std::cout << "demon gripped" << std::endl;
 	state = kSTUNNED;
 	stunTimer->restart();
+	possessed->currentState = kIDLE;
 }
 
 void MY_DemonSpirit::sipIt(){
@@ -121,6 +122,11 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	eventManager.addEventListener("playerCollision", [this](sweet::Event * _event){
 		// Player collision code
 	});
+
+	for(auto & v : mesh->vertices){
+		v.y += 0.5f;
+	}
+	mesh->dirty = true;
 }
 
 void MY_Demon::render(sweet::MatrixStack* _matrixStack, RenderOptions* _renderOptions) {

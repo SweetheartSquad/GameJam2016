@@ -3,6 +3,7 @@
 #include <Box2DSprite.h>
 #include <Joystick.h>
 #include <EventManager.h>
+#include <Animation.h>
 
 class MY_Player : public Sprite {
 public:
@@ -10,6 +11,9 @@ public:
 
 	float speed;
 	float health;
+
+	Animation<float> * idleScaleAnim;
+	glm::vec3 scaleAnim;
 
 	float invincibilityTimer; // Counts DOWN
 	float invincibilityTimerLength;

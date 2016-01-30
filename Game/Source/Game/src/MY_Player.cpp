@@ -13,7 +13,8 @@ MY_Player::MY_Player(Shader * _shader) :
 	invincibilityTimer(0.f),
 	invincibilityTimerLength(2.f),
 	joystick(new JoystickVirtual(0)),
-	isDead(false)
+	isDead(false),
+	scaleAnim(1)
 {
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet")->texture);
 
@@ -48,6 +49,17 @@ MY_Player::MY_Player(Shader * _shader) :
 			}
 		}
 	});
+
+	for(auto & v : mesh->vertices){
+		v.y += 0.5f;
+	}
+	mesh->dirty = true;
+
+	idleScaleAnim = new Animation<float>(&scaleAnim.y);
+	idleScaleAnim->tweens.push_back(new Tween<float>(0.4f, 0.1f, Easing::kEASE_OUT_CIRC));
+	idleScaleAnim->tweens.push_back(new Tween<float>(0.2f, -0.1f, Easing::kEASE_IN_CIRC));
+	idleScaleAnim->hasStart = true;
+	idleScaleAnim->loopType = Animation<float>::kLOOP;
 }
 
 void MY_Player::render(sweet::MatrixStack * _matrixStack, RenderOptions * _renderOptions) {
@@ -77,6 +89,8 @@ void MY_Player::update(Step * _step) {
 			eventManager.triggerEvent("gameOver");
 		}
 		setCurrentAnimation("idle");
+		idleScaleAnim->update(_step);
+		childTransform->scale(scaleAnim, false);
 
 		if(joystick->getAxis(joystick->axisLeftX) > 0.5f) {
 			firstParent()->translate(speed, 0.f, 0.f);

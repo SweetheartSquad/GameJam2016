@@ -24,6 +24,22 @@
       "type":"texture",
       "id":"player",
       "src":"player.png"
+    },
+    {
+      "type":"texture",
+      "id":"FG",
+      "src":"frontThing.png"
+    },
+    {
+      "type":"texture",
+      "id":"BG",
+      "src":"backThing.png"
+    },
+    {
+      "type":"audio",
+      "id":"BGM",
+      "src":"PleaseGod.ogg",
+      "category": "music"
     }
 
   ]

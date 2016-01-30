@@ -8,6 +8,7 @@
 #include "MY_Scene_Base.h"
 #include "MY_Player.h"
 #include "MY_Demon.h"
+#include "MY_Cam.h"
 
 class Room;
 
@@ -15,14 +16,17 @@ class MY_Scene_Main : public MY_Scene_Base{
 public:
 	bool gameOver;
 
+	ComponentShaderBase * baseShaderWithDepth;
+
 	MY_Player * player;
 
 	Room * room;
 
 	std::vector<MY_Demon *> demons;
 	MY_Demon * spawnDemon();
+	MY_Player * spawnPlayer();
 
-	PerspectiveCamera * mainCam;
+	MY_Cam * mainCam;
 
 	explicit MY_Scene_Main(Game * _game);
 	~MY_Scene_Main();
