@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BossRoom.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\MY_Cam.cpp" />
     <ClCompile Include="src\MY_Demon.cpp" />
@@ -29,6 +30,7 @@
     <ClCompile Include="src\Room.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BossRoom.h" />
     <ClInclude Include="include\MY_Cam.h" />
     <ClInclude Include="include\MY_Demon.h" />
     <ClInclude Include="include\MY_Game.h" />

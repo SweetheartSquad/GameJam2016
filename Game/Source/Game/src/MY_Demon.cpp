@@ -9,15 +9,34 @@
 #define NUM_DEMON_TEXTURES 2
 #define TIMEOUT_TIME 1.0
 #define DEMON_SCALE 10
+#define RIPIT_SOUND_COUNT 2
+#define GRIPIT_SOUND_COUNT 2
+#define SIPIT_SOUND_COUNT 2
+
+#define DEMON_POS_HEAD 0.9f
+#define DEMON_POS_TORSO 0.7f
+#define DEMON_POS_JOHHNY 0.5f
+
 
 MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed) : 
 	Sprite(_shader),
-	possessed(_possessed),
 	speed(0),
 	state(kIN),
 	scaleAnim(3),
-	origin(0, DEMON_SCALE, 0.2f)
+	origin(0, DEMON_SCALE, 0.2f),
+	possessed(_possessed)
 {
+
+	int locIdx = sweet::NumberUtils::randomInt(1, 3);
+	float loc = DEMON_POS_JOHHNY;
+	if(locIdx == 1) {
+		loc = DEMON_POS_HEAD;
+	}else if(locIdx == 2) {
+		loc = DEMON_POS_TORSO;
+	}
+
+	origin = glm::vec3(0.f, loc * DEMON_SCALE, 0.2f);
+
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("demon_spirit")->texture);
 
 	stunTimer = new Timeout(1.f, [this](sweet::Event * _event){
@@ -33,6 +52,8 @@ MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed) :
 	idleScaleAnim->hasStart = true;
 	idleScaleAnim->startValue = scaleAnim.y;
 	idleScaleAnim->loopType = Animation<float>::kLOOP;
+
+	setVisible(false);
 }
 
 void MY_DemonSpirit::update(Step * _step){
@@ -113,27 +134,42 @@ void MY_DemonSpirit::update(Step * _step){
 void MY_DemonSpirit::ripIt(){
 	std::cout << "demon ripped" << std::endl;
 	state = kSTUNNED;
+	int randRipitSound = sweet::NumberUtils::randomInt(1, RIPIT_SOUND_COUNT);
+	MY_ResourceManager::globalAssets->getAudio("ripitSound" + std::to_string(randRipitSound))->sound->play();
 	stunTimer->restart();
+	possessed->state = MY_Demon::kSTUNNED;
+	possessed->setCurrentAnimation("stunned");
+	setVisible(true);
 }
 
 void MY_DemonSpirit::gripIt(){
 	std::cout << "demon gripped" << std::endl;
 	state = kSTUNNED;
+	int randGripitSound = sweet::NumberUtils::randomInt(1, GRIPIT_SOUND_COUNT);
+	MY_ResourceManager::globalAssets->getAudio("GRIPIT_SOUND_" + std::to_string(randGripitSound))->sound->play();
 	stunTimer->restart();
-	possessed->state = MY_Demon::kIDLE;
+	possessed->state = MY_Demon::kSTUNNED;
+	possessed->setCurrentAnimation("stunned");
+	setVisible(true);
 }
 
 void MY_DemonSpirit::sipIt(){
 	std::cout << "demon sipped" << std::endl;
 	state = kDEAD;
+	int randRipitSound = sweet::NumberUtils::randomInt(1, SIPIT_SOUND_COUNT);
+	MY_ResourceManager::globalAssets->getAudio("SIPIT_SOUND_" + std::to_string(randRipitSound))->sound->play();
 	possessed->stateTimeout->stop();
 	possessed->state = MY_Demon::kDEAD;
 	possessed->setCurrentAnimation("die");
 	possessed->currentAnimation->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
+	setVisible(true);
 }
 
 void MY_DemonSpirit::getBackInThere(){
 	state = kIN;
+	setVisible(false);
+	possessed->state = MY_Demon::kIDLE;
+	possessed->setCurrentAnimation("idle");
 }
 
 glm::vec3 MY_DemonSpirit::getGamePos(){
@@ -142,11 +178,11 @@ glm::vec3 MY_DemonSpirit::getGamePos(){
 
 MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	Sprite(_shader), 
+	state(kWALKING),
+	spirit(new MY_DemonSpirit(_shader, this)),
 	speed(0.02f),
 	damage(10.f),
-	state(kWALKING),
-	target(_target),
-	spirit(new MY_DemonSpirit(_shader, this))
+	target(_target)
 {
 	childTransform->addChild(spirit)->translate(spirit->origin);
 
@@ -163,6 +199,12 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	anim->pushFramesInRange(0, 3, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	anim->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
 	spriteSheet->addAnimation("die", anim);
+
+	//UPDATE TEXTURES FOR THIS
+	anim = new SpriteSheetAnimation(0.4f);
+	anim->pushFramesInRange(0, 3, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	anim->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
+	spriteSheet->addAnimation("stunned", anim);
 
 	setSpriteSheet(spriteSheet, "idle");
 

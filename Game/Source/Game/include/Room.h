@@ -9,11 +9,12 @@ class Texture;
 
 class Room : public MeshEntity {
 private:
-	static sweet::ShuffleVector<unsigned long int> roomTexIdx;
 	static bool staticInit();
 	static bool staticInitialized;
+protected:
+	static sweet::ShuffleVector<unsigned long int> roomTexIdx;
+	static sweet::ShuffleVector<unsigned long int> furnitureSetIdx;
 public:
-	float width, height, depth;
 
 	Transform * foreground;
 	Transform * gameground;
@@ -22,8 +23,6 @@ public:
 	bool unlocked;
 	float roomWidth;
 	float doorPos;
-
-	std::vector<Entity *> demons;
 
 	Room(Shader * _shader);
 	~Room();
@@ -34,5 +33,6 @@ public:
 	void placeBG();
 	void placeGG();
 
-	Texture * getRoomTex();
+	virtual Texture * getRoomTex();
+	virtual MeshEntity * getFurnitureSet();
 };

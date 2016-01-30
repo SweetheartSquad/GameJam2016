@@ -54,7 +54,8 @@ public:
 	enum DemonState {
 		kWALKING,
 		kIDLE,
-		kDEAD
+		kDEAD,
+		kSTUNNED
 	} state;
 
 	// reference to the spirit possessing this character

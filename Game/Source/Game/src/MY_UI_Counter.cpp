@@ -35,6 +35,7 @@ void MY_UI_Counter::increment(){
 	}else{
 		NodeUI * item = new NodeUI(bulletWorld);
 		item->background->mesh->pushTexture2D(itemTexture);
+		item->background->mesh->setScaleMode(GL_NEAREST);
 		item->setWidth(getHeight());
 		item->setHeight(getHeight());
 		items.push_back(item);
