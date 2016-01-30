@@ -35,7 +35,7 @@ MY_Scene_Box2D::MY_Scene_Box2D(Game * _game) :
 	// when dealing with physics nodes, we use translatePhysical instead of editing the Transform nodes directly
 	// this is because we need to inform the physics simulation of the change, not our Transform hierarchy
 	// the physics node will handle the placement of its childTransform automatically later during the update loop
-	player->translatePhysical(glm::vec3(0, 6, 0), false); 
+	player->translatePhysical(glm::vec3(0, 6, 0), false);
 }
 
 MY_Scene_Box2D::~MY_Scene_Box2D(){
