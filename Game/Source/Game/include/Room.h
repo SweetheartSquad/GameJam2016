@@ -1,10 +1,17 @@
 #pragma once
 
 #include <MeshEntity.h>
+#include <NumberUtils.h>
+
 class Entity;
 class Shader;
+class Texture;
 
 class Room : public MeshEntity {
+private:
+	static sweet::ShuffleVector<unsigned long int> roomTexIdx;
+	static bool staticInit();
+	static bool staticInitialized;
 public:
 	float width, height, depth;
 
@@ -26,4 +33,6 @@ public:
 	void placeFG();
 	void placeBG();
 	void placeGG();
+
+	Texture * getRoomTex();
 };

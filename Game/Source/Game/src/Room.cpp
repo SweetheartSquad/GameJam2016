@@ -6,6 +6,16 @@
 #include <MY_ResourceManager.h>
 #include <Resource.h>
 
+sweet::ShuffleVector<unsigned long int> Room::roomTexIdx;
+
+bool Room::staticInit(){
+	for(unsigned long int i = 1; i <= 5; ++i){
+		roomTexIdx.push(i);
+	}
+	return true;
+}
+bool Room::staticInitialized = Room::staticInit();
+
 Room::Room(Shader * _shader) :
 	MeshEntity(Resource::loadMeshFromObj("assets/meshes/room.obj", true).at(0), _shader),
 	roomWidth(mesh->calcBoundingBox().width),
@@ -15,9 +25,7 @@ Room::Room(Shader * _shader) :
 	background(new Transform()),
 	unlocked(true)
 {
-	Texture * roomTex = new Texture("assets/textures/testUVAI.png", false, true, false);
-	roomTex->load();
-	mesh->pushTexture2D(roomTex);
+	mesh->pushTexture2D(getRoomTex());
 	mesh->setScaleMode(GL_NEAREST);
 	
 	Texture * doorTex = new Texture("assets/textures/testDoorUV.png", false, true, false);
@@ -82,4 +90,13 @@ void Room::unlock(){
 
 Room::~Room(){
 
+}
+
+Texture * Room::getRoomTex(){
+	// grab a random floor texture
+	std::stringstream ss;
+	ss << "assets/textures/rooms/" << roomTexIdx.pop() << ".png";
+	Texture * res = new Texture(ss.str(), false, true, true);
+	res->load();
+	return res;
 }
