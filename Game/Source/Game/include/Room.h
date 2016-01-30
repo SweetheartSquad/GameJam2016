@@ -6,14 +6,18 @@ class Shader;
 
 class Room : public MeshEntity {
 public:
+	float width, height, depth;
+
 	Transform * foreground;
 	Transform * gameground;
 	Transform * background;
 
 	std::vector<Entity *> demons;
 
-	Room(Shader * _shader, float _width, float _height, float _depth = 10.f);
+	Room(Shader * _shader);
 	~Room();
-
-	static MeshInterface * getRoomMesh(float _width, float _height, float _depth);
+	
+	void placeFG();
+	void placeBG();
+	void placeGG();
 };

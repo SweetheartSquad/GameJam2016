@@ -6,38 +6,58 @@
 #include <MY_Player.h>
 #include <Room.h>
 
+#include <shader\ComponentShaderBase.h>
+#include <shader\ComponentShaderText.h>
+#include <shader\ShaderComponentText.h>
+#include <shader\ShaderComponentTexture.h>
+#include <shader\ShaderComponentDepthOffset.h>
+#include <shader\ShaderComponentDiffuse.h>
+#include <shader\ShaderComponentMVP.h>
+
 MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	MY_Scene_Base(_game),
-	mainCam(new PerspectiveCamera()),
+	mainCam(new MY_Cam()),
 	hoverRadius(15),
 	hoverRadius2(hoverRadius*hoverRadius),
 	hoverTarget(nullptr),
 	ripTarget(nullptr),
-	gripTarget(nullptr)
+	gripTarget(nullptr),
+	baseShaderWithDepth(new ComponentShaderBase(true))
 {
+	
+	baseShaderWithDepth->addComponent(new ShaderComponentMVP(baseShaderWithDepth));
+	//baseShader->addComponent(new ShaderComponentDiffuse(baseShader));
+	baseShaderWithDepth->addComponent(new ShaderComponentTexture(baseShaderWithDepth));
+	baseShaderWithDepth->addComponent(new ShaderComponentDepthOffset(baseShaderWithDepth));
+	baseShaderWithDepth->compileShader();
+
+
 	// setup main camera
 	cameras.push_back(mainCam);
 	childTransform->addChild(mainCam);
 	activeCamera = mainCam;
 	//mainCam->childTransform->addChild(new CameraController(mainCam));
 	mainCam->farClip = 1000.f;
-	mainCam->firstParent()->translate(0.0f, 0.5f, 5.f);
+	mainCam->firstParent()->translate(0.f, 5, 25);
 	mainCam->yaw = 90.0f;
-	mainCam->pitch = 0.0f;
+	mainCam->pitch = 0;
+	mainCam->fieldOfView = 70;
 
 	mouseIndicator = uiLayer->addMouseIndicator();
 
-	// Setup the player
-	player = new MY_Player(baseShader);
-	childTransform->addChild(player);
 
-	room = new Room(baseShader, 50.f, 10.f, 10.f);
+	room = new Room(baseShader);
 
 	childTransform->addChild(room);
+	
+	room->placeBG();
+	room->placeGG();
 
+	player = spawnPlayer();
+	spawnDemon();
 	spawnDemon();
 
-	spawnDemon();
+	room->placeFG();
 }
 
 MY_Scene_Main::~MY_Scene_Main(){
@@ -49,6 +69,10 @@ MY_Scene_Main::~MY_Scene_Main(){
 void MY_Scene_Main::update(Step * _step){
 	// Scene update
 	MY_Scene_Base::update(_step);
+
+	// camera
+	//mainCam->firstParent()->translate(glm::vec3(sin(_step->time), cos(_step->time), 0));
+
 
 	collideEntities();
 
@@ -111,15 +135,22 @@ void MY_Scene_Main::collideEntities() {
 }
 
 MY_Demon * MY_Scene_Main::spawnDemon(){
-	MY_Demon * d = new MY_Demon(baseShader, player->firstParent());
-	childTransform->addChild(d)->translate(5.0f, 0.f, 0.f);
+	MY_Demon * d = new MY_Demon(baseShaderWithDepth, player->firstParent());
+	room->gameground->addChild(d)->translate(5.0f, 0.f, 0.f);
 	demons.push_back(d);
 	return d;
 }
 
+MY_Player * MY_Scene_Main::spawnPlayer(){
+	// Setup the player
+	MY_Player * p = new MY_Player(baseShaderWithDepth);
+	room->gameground->addChild(p)->scale(5);
+	return p;
+}
+
 MY_DemonSpirit * MY_Scene_Main::getHovered(){
 	for(auto d : demons){
-		glm::vec3 demonPos = d->spirit->getWorldPos();
+		glm::vec3 demonPos = d->spirit->meshTransform->getWorldPos();
 		glm::vec3 demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
 		distToHoverTarget = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
 		distToHoverTargetMag = glm::length(distToHoverTarget);

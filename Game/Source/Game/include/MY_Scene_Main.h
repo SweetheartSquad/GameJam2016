@@ -8,11 +8,14 @@
 #include "MY_Scene_Base.h"
 #include "MY_Player.h"
 #include "MY_Demon.h"
+#include "MY_Cam.h"
 
 class Room;
 
 class MY_Scene_Main : public MY_Scene_Base{
 public:
+
+	ComponentShaderBase * baseShaderWithDepth;
 
 	MY_Player * player;
 
@@ -20,8 +23,9 @@ public:
 
 	std::vector<MY_Demon *> demons;
 	MY_Demon * spawnDemon();
+	MY_Player * spawnPlayer();
 
-	PerspectiveCamera * mainCam;
+	MY_Cam * mainCam;
 
 	explicit MY_Scene_Main(Game * _game);
 	~MY_Scene_Main();

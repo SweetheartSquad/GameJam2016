@@ -24,6 +24,16 @@
       "type":"texture",
       "id":"player",
       "src":"player.png"
+    },
+    {
+      "type":"texture",
+      "id":"FG",
+      "src":"frontThing.png"
+    },
+    {
+      "type":"texture",
+      "id":"BG",
+      "src":"backThing.png"
     }
 
   ]

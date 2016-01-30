@@ -120,6 +120,11 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	eventManager.addEventListener("playerCollision", [this](sweet::Event * _event){
 		// Player collision code
 	});
+
+	for(auto & v : mesh->vertices){
+		v.y += 0.5f;
+	}
+	mesh->dirty = true;
 }
 
 void MY_Demon::render(sweet::MatrixStack* _matrixStack, RenderOptions* _renderOptions) {
