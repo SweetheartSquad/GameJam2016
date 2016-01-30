@@ -56,5 +56,8 @@ private :
 
 	// state set when the stateChange timer runs out
 	PlayerState delayedState;
+
+	//Invicibility timers
+	float flashTimer;
 };
 

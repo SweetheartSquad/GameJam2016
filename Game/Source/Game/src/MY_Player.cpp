@@ -9,11 +9,13 @@
 #include <NumberUtils.h>
 
 #define HIT_SOUND_COUNT 2
+#define FLASH_DURATION 0.05f
 
 int MY_Player::lives = MAX_LIVES;
 
 MY_Player::MY_Player(Shader * _shader) :
 	Sprite(_shader),
+	state(kIDLE),
 	isDead(false),
 	speed(0.1f),
 	bounds(0),
@@ -25,7 +27,7 @@ MY_Player::MY_Player(Shader * _shader) :
 	footsetpSound(MY_ResourceManager::globalAssets->getAudio("FOOTSTEP")->sound),
 	stepTimer(0.f),
 	highStep(false),
-	state(kIDLE)
+	flashTimer(0.f)
 {
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet_player")->texture);
 
@@ -69,7 +71,7 @@ MY_Player::MY_Player(Shader * _shader) :
 				// Reset invincibility timer
 				invincibilityTimer = invincibilityTimerLength;
 				// Invincibility starts
-				eventManager.triggerEvent("invincibilityStart");
+				eventManager.triggerEvent("");
 				eventManager.triggerEvent("tookDamage");
 				invincible = true;
 
@@ -107,6 +109,14 @@ MY_Player::MY_Player(Shader * _shader) :
 		state = delayedState;
 	});
 	childTransform->addChild(stateChangeTimer, false);
+
+	eventManager.addEventListener("invincibilityStart", [this](sweet::Event * _event){
+		//setVisible(false);
+	});
+
+	eventManager.addEventListener("invincibilityEnd", [this](sweet::Event * _event){
+		setVisible(true);
+	});
 }
 
 void MY_Player::render(sweet::MatrixStack * _matrixStack, RenderOptions * _renderOptions) {
@@ -129,6 +139,16 @@ void MY_Player::update(Step * _step) {
 				eventManager.triggerEvent("invincibilityEnd");
 			invincible = false;
 			}
+		}
+
+		if(invincible) {
+			flashTimer += _step->deltaTime;
+			if(flashTimer >= FLASH_DURATION) {
+				setVisible(!isVisible());
+				flashTimer = 0.f;
+			}
+		}else {
+			flashTimer = 0.f;
 		}
 
 		// Check health
