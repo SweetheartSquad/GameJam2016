@@ -55,6 +55,12 @@
       "id":"BGM_3",
       "src":"DevilIsADickweed.ogg",
       "category": "music"
+    },
+    {
+      "type":"audio",
+      "id":"BGM_4",
+      "src":"ExcerciseMyHeart.ogg",
+      "category": "music"
     }
 
     // sfx

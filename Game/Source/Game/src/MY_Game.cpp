@@ -40,7 +40,7 @@ void MY_Game::playBGM(){
 	}
 	
 	std::stringstream ss;
-	ss << "BGM_" << sweet::NumberUtils::randomInt(1,3);
+	ss << "BGM_" << sweet::NumberUtils::randomInt(1,4);
 	bgm = MY_ResourceManager::globalAssets->getAudio(ss.str())->sound;
 	bgm->play(true);
 }
