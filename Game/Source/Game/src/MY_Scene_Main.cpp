@@ -57,6 +57,10 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	spawnDemon();
 
 	room->placeFG();
+
+	player->eventManager.addEventListener("invincibilityStart", [this](sweet::Event * _event){
+		mainCam->shakeTimer->restart();
+	});
 }
 
 MY_Scene_Main::~MY_Scene_Main(){

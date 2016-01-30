@@ -12,6 +12,8 @@
 #include <MY_Scene_VR.h>
 #include <MY_Scene_Main.h>
 
+#include <NumberUtils.h>
+
 
 MY_Game::MY_Game() :
 	Game("main", new MY_Scene_Main(this), true) // initialize our game with a menu scene
@@ -28,7 +30,9 @@ MY_Game::MY_Game() :
 	scenes["surfaceshaders"] = new MY_Scene_SurfaceShaders(this);
 	scenes["vr"] = new MY_Scene_VR(this);
 
-	MY_ResourceManager::globalAssets->getAudio("BGM")->sound->play(true);
+	std::stringstream ss;
+	ss << "BGM_" << sweet::NumberUtils::randomInt(1,2);
+	MY_ResourceManager::globalAssets->getAudio(ss.str())->sound->play(true);
 }
 
 MY_Game::~MY_Game(){}

@@ -35,10 +35,19 @@
       "id":"BG",
       "src":"backThing.png"
     },
+
+
+    // BGM
     {
       "type":"audio",
-      "id":"BGM",
+      "id":"BGM_1",
       "src":"PleaseGod.ogg",
+      "category": "music"
+    },
+    {
+      "type":"audio",
+      "id":"BGM_2",
+      "src":"MyGirlfriendsADemon.ogg",
       "category": "music"
     }
 

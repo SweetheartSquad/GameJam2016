@@ -15,6 +15,7 @@ public:
 	Animation<float> * idleScaleAnim;
 	glm::vec3 scaleAnim;
 
+	bool invincible;
 	float invincibilityTimer; // Counts DOWN
 	float invincibilityTimerLength;
 
