@@ -28,6 +28,9 @@ public:
 	// This object will be a static body
 	Box2DMeshEntity * ground;
 
+
+	PerspectiveCamera * mainCam;
+
 	explicit MY_Scene_Main(Game * _game);
 	~MY_Scene_Main();
 
@@ -37,4 +40,25 @@ public:
 	virtual void enableDebug() override;
 	// overriden to remove physics debug drawing
 	virtual void disableDebug() override;
+
+
+	Sprite * demonTest;
+	Sprite * mouseIndicator;
+
+
+	Sprite * getHovered();
+	bool isHoveredOverPossessed();
+	bool isHoveredOverSpirit();
+
+	void gripIt();
+	void ripIt();
+	void sipIt();
+
+	float hoverRadius;
+	float hoverRadius2;
+
+	glm::vec2 distToHoverTarget;
+	float distToHoverTargetMag;
+	Sprite * hoverTarget;
+	Sprite * gripTarget;
 };
