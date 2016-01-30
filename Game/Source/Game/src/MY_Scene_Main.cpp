@@ -27,11 +27,12 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 
 	mouseIndicator = uiLayer->addMouseIndicator();
 
+	// Setup a room
+	room = new Room(baseShader, 50.f, 10.f, 10.f);
+
 	// Setup the player
 	player = new MY_Player(baseShader);
-	childTransform->addChild(player);
-
-	room = new Room(baseShader, 50.f, 10.f, 10.f);
+	room->gameground->addChild(player);
 
 	childTransform->addChild(room);
 
@@ -115,7 +116,7 @@ void MY_Scene_Main::collideEntities() {
 
 MY_Demon * MY_Scene_Main::spawnDemon(){
 	MY_Demon * d = new MY_Demon(baseShader, player->firstParent());
-	childTransform->addChild(d)->translate(5.0f, 0.f, 0.f);
+	room->gameground->addChild(d)->translate(5.0f, 0.f, 0.f);
 	demons.push_back(d);
 	return d;
 }
