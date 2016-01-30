@@ -6,7 +6,7 @@
 #include <Box2DDebugDrawer.h>
 #include <Box2DMeshEntity.h>
 #include <Box2DSprite.h>
-#include "MY_Player.h"
+
 #include <MeshFactory.h>
 
 MY_Scene_Box2D::MY_Scene_Box2D(Game * _game) :
@@ -28,7 +28,7 @@ MY_Scene_Box2D::MY_Scene_Box2D(Game * _game) :
 	childTransform->addChild(ground);
 
 	// Setup the player
-	player = new MY_Player(box2dWorld);
+	player = new Box2DSprite(box2dWorld, b2_dynamicBody, baseShader, MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture, 1, 1);
 	player->createFixture(); // when we're using a Box2DSprite, createFixture will make a collider which matches the provided width and height of the sprite (note that this is different from the actual texture size)
 	childTransform->addChild(player);
 
