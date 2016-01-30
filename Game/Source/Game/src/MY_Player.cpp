@@ -20,6 +20,10 @@ MY_Player::MY_Player(Shader * _shader) :
 
 	spriteSheet->addAnimation("walk", walkAnim);
 	setCurrentAnimation("walk");
+
+	eventManager.addEventListener("demonCollision", [this](sweet::Event * _event){
+		// Demon collision code
+	});
 }
 
 void MY_Player::render(sweet::MatrixStack * _matrixStack, RenderOptions * _renderOptions) {
@@ -28,6 +32,7 @@ void MY_Player::render(sweet::MatrixStack * _matrixStack, RenderOptions * _rende
 
 void MY_Player::update(Step * _step) {
 	
+	eventManager.update(_step);
 	joystick->update(_step);
 
 	if(joystick->getAxis(joystick->axisLeftX) > 0.5f) {

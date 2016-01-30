@@ -16,6 +16,8 @@ public:
 
 	MY_Demon * testDemon;
 
+	std::vector<MY_Demon *> demons;
+
 	PerspectiveCamera * mainCam;
 
 	explicit MY_Scene_Main(Game * _game);
@@ -30,6 +32,8 @@ public:
 
 	Sprite * demonTest;
 	Sprite * mouseIndicator;
+
+	void collideEntities();
 
 	Sprite * getHovered();
 	bool isHoveredOverPossessed();
