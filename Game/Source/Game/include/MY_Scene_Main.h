@@ -11,6 +11,7 @@
 #include "MY_Cam.h"
 
 class Room;
+class MY_Game;
 
 class MY_Scene_Main : public MY_Scene_Base{
 public:
@@ -28,7 +29,7 @@ public:
 
 	MY_Cam * mainCam;
 
-	explicit MY_Scene_Main(Game * _game);
+	explicit MY_Scene_Main(MY_Game * _game);
 	~MY_Scene_Main();
 
 	virtual void update(Step * _step) override;

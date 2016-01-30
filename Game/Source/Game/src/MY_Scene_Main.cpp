@@ -15,7 +15,7 @@
 #include <shader\ShaderComponentDiffuse.h>
 #include <shader\ShaderComponentMVP.h>
 
-MY_Scene_Main::MY_Scene_Main(Game * _game) :
+MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	MY_Scene_Base(_game),
 	mainCam(new MY_Cam()),
 	hoverRadius(15),
@@ -59,7 +59,7 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 
 		std::stringstream ss;
 		ss << "game_" << glfwGetTime();
-		game->scenes[ss.str()] = new MY_Scene_Main(game);
+		game->scenes[ss.str()] = new MY_Scene_Main(dynamic_cast<MY_Game *>(game));
 		game->switchScene(ss.str(), true);
 	});
 
@@ -77,8 +77,6 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	player->eventManager.addEventListener("invincibilityStart", [this](sweet::Event * _event){
 		mainCam->shakeTimer->restart();
 	});
-
-	dynamic_cast<MY_Game *>(game)->playBGM();
 }
 
 MY_Scene_Main::~MY_Scene_Main(){
