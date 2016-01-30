@@ -13,14 +13,30 @@
 #define GRIPIT_SOUND_COUNT 2
 #define SIPIT_SOUND_COUNT 2
 
+#define DEMON_POS_HEAD 0.9f
+#define DEMON_POS_TORSO 0.7f
+#define DEMON_POS_JOHHNY 0.5f
+
+
 MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed) : 
 	Sprite(_shader),
-	possessed(_possessed),
 	speed(0),
 	state(kIN),
 	scaleAnim(3),
-	origin(0, DEMON_SCALE, 0.2f)
+	origin(0, DEMON_SCALE, 0.2f),
+	possessed(_possessed)
 {
+
+	int locIdx = sweet::NumberUtils::randomInt(1, 3);
+	float loc = DEMON_POS_JOHHNY;
+	if(locIdx == 1) {
+		loc = DEMON_POS_HEAD;
+	}else if(locIdx == 2) {
+		loc = DEMON_POS_TORSO;
+	}
+
+	origin = glm::vec3(0.f, loc * DEMON_SCALE, 0.2f);
+
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("demon_spirit")->texture);
 
 	stunTimer = new Timeout(1.f, [this](sweet::Event * _event){
@@ -36,6 +52,8 @@ MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed) :
 	idleScaleAnim->hasStart = true;
 	idleScaleAnim->startValue = scaleAnim.y;
 	idleScaleAnim->loopType = Animation<float>::kLOOP;
+
+	setVisible(false);
 }
 
 void MY_DemonSpirit::update(Step * _step){
@@ -119,6 +137,7 @@ void MY_DemonSpirit::ripIt(){
 	int randRipitSound = sweet::NumberUtils::randomInt(1, RIPIT_SOUND_COUNT);
 	MY_ResourceManager::globalAssets->getAudio("ripitSound" + std::to_string(randRipitSound))->sound->play();
 	stunTimer->restart();
+	setVisible(true);
 }
 
 void MY_DemonSpirit::gripIt(){
@@ -128,6 +147,7 @@ void MY_DemonSpirit::gripIt(){
 	MY_ResourceManager::globalAssets->getAudio("GRIPIT_SOUND_" + std::to_string(randGripitSound))->sound->play();
 	stunTimer->restart();
 	possessed->state = MY_Demon::kIDLE;
+	setVisible(true);
 }
 
 void MY_DemonSpirit::sipIt(){
@@ -139,10 +159,12 @@ void MY_DemonSpirit::sipIt(){
 	possessed->state = MY_Demon::kDEAD;
 	possessed->setCurrentAnimation("die");
 	possessed->currentAnimation->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
+	setVisible(true);
 }
 
 void MY_DemonSpirit::getBackInThere(){
 	state = kIN;
+	setVisible(false);
 }
 
 glm::vec3 MY_DemonSpirit::getGamePos(){
