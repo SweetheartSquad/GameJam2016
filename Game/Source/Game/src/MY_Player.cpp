@@ -9,7 +9,11 @@
 MY_Player::MY_Player(Shader * _shader) :
 	Sprite(_shader),
 	speed(0.25f),
-	joystick(new JoystickVirtual(0))
+	health(100.f),
+	invincibilityTimer(0.f),
+	invincibilityTimerLength(2.f),
+	joystick(new JoystickVirtual(0)),
+	isDead(false)
 {
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet")->texture);
 
@@ -29,6 +33,19 @@ MY_Player::MY_Player(Shader * _shader) :
 
 	eventManager.addEventListener("demonCollision", [this](sweet::Event * _event){
 		// Demon collision code
+		
+		if(invincibilityTimer <= 0){
+			// Take damage
+			health -= _event->getFloatData("damage");
+			std::stringstream s;
+			s << "HEALTH: " << health;
+			Log::info(s.str());
+
+			// Reset invincibility timer
+			invincibilityTimer = invincibilityTimerLength;
+			// Invincibility starts
+			eventManager.triggerEvent("invincibilityStart");
+		}
 	});
 }
 
@@ -41,6 +58,22 @@ void MY_Player::update(Step * _step) {
 	eventManager.update(_step);
 	joystick->update(_step);
 
+	// Update invincibility timer if needed
+	if(invincibilityTimer > 0){
+		invincibilityTimer -= _step->getDeltaTime();
+		if(invincibilityTimer <= 0){
+			// Invincibililty ends
+			eventManager.triggerEvent("invincibilityEnd");
+		}
+	}
+
+	// Check health
+	if(health <= 0.f){
+		// lives?
+		// game over
+		isDead = true;
+		eventManager.triggerEvent("dead");
+	}
 	
 	setCurrentAnimation("idle");
 

@@ -54,6 +54,7 @@ public:
 	MY_DemonSpirit * spirit;
 
 	float speed;
+	float damage;
 	DemonState currentState;
 	Transform * target;
 
