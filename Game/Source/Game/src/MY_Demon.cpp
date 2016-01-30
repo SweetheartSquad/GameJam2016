@@ -70,7 +70,9 @@ void MY_DemonSpirit::update(Step * _step){
 		break;
 
 	case kDEAD:
-		return;
+		accelMod = 0;
+		damping = 1.f;
+		stunTimer->stop();
 		break;
 
 	default: break;
@@ -82,9 +84,24 @@ void MY_DemonSpirit::update(Step * _step){
 	firstParent()->translate(speed);
 
 	float angle = glm::angle(childTransform->getOrientationQuat());
-	angle *= -0.2f;
-	angle += glm::length(speed)*36;
-
+	
+	if(state != kDEAD){
+		angle *= -0.2f;
+		angle += glm::length(speed)*36;
+	}else{
+		for(auto t : idleScaleAnim->tweens){
+			t->deltaValue *= 0.9f;
+		}
+		idleScaleAnim->startValue *= 0.9f;
+		angle -= idleScaleAnim->startValue*360;
+		/*if(s > 0){
+			if(s < 0.01f){
+				s = 0;
+			}
+			std::cout << s << std::endl;
+			childTransform->scale(s*0.8f);
+		}*/
+	}
 	childTransform->rotate(angle, 0, 0, 1, kOBJECT);
 
 
