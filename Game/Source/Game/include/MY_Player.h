@@ -11,8 +11,14 @@
 
 class MY_Player : public Sprite {
 public:
-	bool paused;
-	Timeout * pauseTimer;
+	enum PlayerState {
+		kIDLE,
+		kWALK,
+		kSIP,
+		kRIP_AND_GRIP,
+		kHURT
+	} state;
+	Timeout * stateChangeTimer;
 
 	bool isDead;
 
@@ -41,11 +47,14 @@ public:
 	Timeout * voiceTimer;
 
 	// prevents player input for _seconds
-	void pause(float _seconds);
+	void delayChange(float _seconds, PlayerState _state);
 
 private :
 	OpenAL_Sound * footsetpSound;
 	float stepTimer;
 	bool highStep;
+
+	// state set when the stateChange timer runs out
+	PlayerState delayedState;
 };
 

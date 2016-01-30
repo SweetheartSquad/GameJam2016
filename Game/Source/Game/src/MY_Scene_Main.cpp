@@ -138,6 +138,10 @@ Room * MY_Scene_Main::goToNewRoom(){
 	player->eventManager.addEventListener("tookDamage", [this](sweet::Event * _event){
 		mainCam->shakeTimer->restart();
 		livesCounter->decrement();
+		player->state = MY_Player::kHURT;
+		gripTarget = nullptr;
+		ripTarget = nullptr;
+		player->delayChange(0.5f, MY_Player::kIDLE);
 	});
 	player->eventManager.addEventListener("invincibilityStart", [this](sweet::Event * _event){
 		mainCam->shakeTimer->restart();
@@ -207,8 +211,9 @@ void MY_Scene_Main::update(Step * _step){
 	}else{
 		calcHover(hoverTarget);
 	}
-	if(hoverTarget != nullptr){
-		if(mouse->leftJustPressed()){
+	if(mouse->leftJustPressed()){
+		player->state = MY_Player::kRIP_AND_GRIP;
+		if(hoverTarget != nullptr){
 			if(hoverTarget->state == MY_DemonSpirit::kIN){
 				ripTarget = hoverTarget;
 			}else if(hoverTarget->state == MY_DemonSpirit::kSTUNNED || hoverTarget->state == MY_DemonSpirit::kOUT){
@@ -221,6 +226,9 @@ void MY_Scene_Main::update(Step * _step){
 	if(mouse->leftJustReleased()){
 		ripTarget = nullptr;
 		gripTarget = nullptr;
+		if(player->state == MY_Player::kRIP_AND_GRIP){
+			player->state = MY_Player::kIDLE;
+		}
 	}
 	
 	// if we're holding a demon inside a body, try to rip it
@@ -252,7 +260,7 @@ void MY_Scene_Main::collideEntities() {
 	float pMax = ptrans.x + (player->firstParent()->getScaleVector().x  * 0.5f);
 	
 	for(auto demon : demons) {
-		if(demon->state != MY_Demon::kDEAD){
+		if(demon->state != MY_Demon::kDEAD && demon->spirit->state == MY_DemonSpirit::kIN){
 			auto dtrans = demon->firstParent()->getTranslationVector();
 			float dMin = dtrans.x - (demon->firstParent()->getScaleVector().x  * 0.5f);
 			float dMax = dtrans.x + (demon->firstParent()->getScaleVector().x  * 0.5f);
@@ -354,7 +362,8 @@ void MY_Scene_Main::sipIt(){
 
 		// TODO: trigger sip animation on player, pass out animation on enemy, remove spirit
 		player->setCurrentAnimation("sip");
-		player->pause(1.f);
+		player->state = MY_Player::kSIP;
+		player->delayChange(1.f, MY_Player::kIDLE);
 
 		gripTarget = nullptr;
 	}

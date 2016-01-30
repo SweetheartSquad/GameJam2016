@@ -12,7 +12,6 @@ int MY_Player::lives = MAX_LIVES;
 
 MY_Player::MY_Player(Shader * _shader) :
 	Sprite(_shader),
-	paused(false),
 	isDead(false),
 	speed(0.1f),
 	bounds(0),
@@ -23,23 +22,33 @@ MY_Player::MY_Player(Shader * _shader) :
 	joystick(new JoystickVirtual(0)),
 	footsetpSound(MY_ResourceManager::globalAssets->getAudio("FOOTSTEP")->sound),
 	stepTimer(0.f),
-	highStep(false)
+	highStep(false),
+	state(kIDLE)
 {
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet_player")->texture);
 
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("player")->texture);
 	
-	auto anim = new SpriteSheetAnimation(0.4f);
-	anim->pushFramesInRange(4, 5, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
-	spriteSheet->addAnimation("idle", anim);
 
-	anim = new SpriteSheetAnimation(0.16f);
+	auto anim = new SpriteSheetAnimation(0.16f);
 	anim->pushFramesInRange(0, 3, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	spriteSheet->addAnimation("walk", anim);
 
 	anim = new SpriteSheetAnimation(0.4f);
+	anim->pushFramesInRange(4, 5, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	spriteSheet->addAnimation("idle", anim);
+
+	anim = new SpriteSheetAnimation(0.4f);
+	anim->pushFramesInRange(6, 7, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	spriteSheet->addAnimation("hurt", anim);
+
+	anim = new SpriteSheetAnimation(0.4f);
 	anim->pushFramesInRange(8, 9, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	spriteSheet->addAnimation("sip", anim);
+
+	anim = new SpriteSheetAnimation(0.4f);
+	anim->pushFramesInRange(10, 11, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	spriteSheet->addAnimation("rip&grip", anim);
 
 	mesh->setScaleMode(GL_NEAREST);
 
@@ -89,10 +98,10 @@ MY_Player::MY_Player(Shader * _shader) :
 	childTransform->addChild(voiceTimer, false);
 
 	// setup pause timer
-	pauseTimer = new Timeout(1.f, [this](sweet::Event * _event){
-		paused = false;
+	stateChangeTimer = new Timeout(1.f, [this](sweet::Event * _event){
+		state = delayedState;
 	});
-	childTransform->addChild(pauseTimer, false);
+	childTransform->addChild(stateChangeTimer, false);
 }
 
 void MY_Player::render(sweet::MatrixStack * _matrixStack, RenderOptions * _renderOptions) {
@@ -127,16 +136,17 @@ void MY_Player::update(Step * _step) {
 		idleScaleAnim->update(_step);
 		childTransform->scale(scaleAnim, false);
 		
-		if(joystick != nullptr && !paused){
-			setCurrentAnimation("idle");
+		if(joystick != nullptr && state != kSIP && state != kRIP_AND_GRIP && state != kHURT){
 			if(joystick->getAxis(joystick->axisLeftX) > 0.5f) {
 				firstParent()->translate(speed, 0.f, 0.f);
-				setCurrentAnimation("walk");
+				state = kWALK;
 				meshTransform->scale(1,1,1, false);
 			}else if(joystick->getAxis(joystick->axisLeftX) < -0.5f) {
 				firstParent()->translate(-speed, 0.f, 0.f);
-				setCurrentAnimation("walk");
+				state = kWALK;
 				meshTransform->scale(-1,1,1, false);
+			}else{
+				state = kIDLE;
 			}
 
 			if(joystick->getAxis(joystick->axisLeftX) > 0.5f || 
@@ -164,6 +174,18 @@ void MY_Player::update(Step * _step) {
 			}
 		}
 	}
+
+	// animation handling
+	switch(state){
+		case kWALK: setCurrentAnimation("walk"); break;
+		case kSIP: setCurrentAnimation("sip"); break;
+		case kRIP_AND_GRIP: setCurrentAnimation("rip&grip"); break;
+		case kHURT: setCurrentAnimation("hurt"); break;
+		case kIDLE:
+		default:
+			setCurrentAnimation("idle"); break;
+	}
+
 	Sprite::update(_step);
 }
 
@@ -177,8 +199,8 @@ void MY_Player::load() {
 	Sprite::load();
 }
 
-void MY_Player::pause(float _seconds){
-	pauseTimer->targetSeconds = _seconds;
-	pauseTimer->restart();
-	paused = true;
+void MY_Player::delayChange(float _seconds, PlayerState _state){
+	stateChangeTimer->targetSeconds = _seconds;
+	stateChangeTimer->restart();
+	delayedState = _state;
 }
