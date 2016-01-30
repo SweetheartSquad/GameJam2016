@@ -34,11 +34,11 @@
       "type":"texture",
       "id":"BG",
       "src":"backThing.png"
-    },
+    }
 
 
     // BGM
-    {
+    ,{
       "type":"audio",
       "id":"BGM_1",
       "src":"PleaseGod.ogg",
@@ -57,5 +57,98 @@
       "category": "music"
     }
 
+    // sfx
+    ,{
+      "type":"audio",
+      "id":"FOOTSTEP",
+      "src":"Footstep.ogg",
+      "category": "sfx"
+    }
+
+    // voice
+    ,{
+      "type":"audio",
+      "id":"VOICE_1",
+      "src":"Voices/voice1.ogg",
+      "category": "voice"
+    },
+    {
+      "type":"audio",
+      "id":"VOICE_2",
+      "src":"Voices/voice2.ogg",
+      "category": "voice"
+    },
+    {
+      "type":"audio",
+      "id":"VOICE_3",
+      "src":"Voices/voice3.ogg",
+      "category": "voice"
+    },
+    {
+      "type":"audio",
+      "id":"VOICE_4",
+      "src":"Voices/voice4.ogg",
+      "category": "voice"
+    },
+    {
+      "type":"audio",
+      "id":"VOICE_5",
+      "src":"Voices/voice5.ogg",
+      "category": "voice"
+    },
+    {
+      "type":"audio",
+      "id":"VOICE_6",
+      "src":"Voices/voice6.ogg",
+      "category": "voice"
+    },
+    {
+      "type":"audio",
+      "id":"VOICE_7",
+      "src":"Voices/voice7.ogg",
+      "category": "voice"
+    },
+    {
+      "type":"audio",
+      "id":"VOICE_8",
+      "src":"Voices/voice8.ogg",
+      "category": "voice"
+    },
+    {
+      "type":"audio",
+      "id":"VOICE_9",
+      "src":"Voices/voice9.ogg",
+      "category": "voice"
+    },
+    {
+      "type":"audio",
+      "id":"VOICE_10",
+      "src":"Voices/voice10.ogg",
+      "category": "voice"
+    },
+    {
+      "type":"audio",
+      "id":"VOICE_11",
+      "src":"Voices/voice11.ogg",
+      "category": "voice"
+    },
+    {
+      "type":"audio",
+      "id":"VOICE_12",
+      "src":"Voices/voice12.ogg",
+      "category": "voice"
+    },
+    {
+      "type":"audio",
+      "id":"VOICE_13",
+      "src":"Voices/voice13.ogg",
+      "category": "voice"
+    },
+    {
+      "type":"audio",
+      "id":"VOICE_14",
+      "src":"Voices/voice14.ogg",
+      "category": "voice"
+    }
   ]
 }

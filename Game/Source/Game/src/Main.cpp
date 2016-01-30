@@ -8,6 +8,7 @@
 #include <MY_ResourceManager.h>
 #include <Log.h>
 #include <ctime>
+#include <NumberUtils.h>
 
 #include <MY_Game.h>
 
@@ -27,9 +28,11 @@ int WinMain(HINSTANCE inst, HINSTANCE prev, LPSTR cmd, int show){
 #endif
 
 	Log::THROW_ON_ERROR = true;
-
+	
 	//OpenAL_Sound::masterGain = 0; // mute
-	//sweet::NumberUtils::seed(time(nullptr)); // seed RNG
+	OpenAL_Sound::categoricalGain["music"] = 0.2f;
+	OpenAL_Sound::categoricalGain["voice"] = 1.2f;
+	sweet::NumberUtils::seed(time(nullptr)); // seed RNG
 
 	sweet::initialize("Game");
 	MY_ResourceManager::init();

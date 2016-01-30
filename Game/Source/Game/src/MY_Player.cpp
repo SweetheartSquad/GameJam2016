@@ -6,6 +6,8 @@
 #include <SpriteSheet.h>
 #include <SpriteSheetAnimation.h>
 
+#include <NumberUtils.h>
+
 int MY_Player::lives = MAX_LIVES;
 
 MY_Player::MY_Player(Shader * _shader) :
@@ -16,7 +18,8 @@ MY_Player::MY_Player(Shader * _shader) :
 	joystick(new JoystickVirtual(0)),
 	isDead(false),
 	scaleAnim(1),
-	invincible(false)
+	invincible(false),
+	bounds(0)
 {
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet")->texture);
 
@@ -64,6 +67,18 @@ MY_Player::MY_Player(Shader * _shader) :
 	idleScaleAnim->tweens.push_back(new Tween<float>(0.2f, -0.1f, Easing::kEASE_IN_CIRC));
 	idleScaleAnim->hasStart = true;
 	idleScaleAnim->loopType = Animation<float>::kLOOP;
+
+
+	// setup voice timer
+	voiceTimer = new Timeout(3.f, [this](sweet::Event * _event){
+		std::stringstream ss;
+		ss << "VOICE_" << sweet::NumberUtils::randomInt(1,14);
+		MY_ResourceManager::globalAssets->getAudio(ss.str())->sound->play();
+		voiceTimer->targetSeconds = sweet::NumberUtils::randomFloat(3.f, 6.f);
+		voiceTimer->restart();
+	});
+	voiceTimer->start();
+	childTransform->addChild(voiceTimer, false);
 }
 
 void MY_Player::render(sweet::MatrixStack * _matrixStack, RenderOptions * _renderOptions) {
@@ -108,6 +123,12 @@ void MY_Player::update(Step * _step) {
 				firstParent()->translate(-speed, 0.f, 0.f);
 				setCurrentAnimation("walk");
 				meshTransform->scale(-1,1,1, false);
+			}
+			float x = firstParent()->getTranslationVector().x;
+			if(x < -bounds){
+				firstParent()->translate(glm::vec3((-bounds - x),0,0));
+			}else if(x > bounds){
+				firstParent()->translate(glm::vec3((bounds - x),0,0));
 			}
 		}
 	}

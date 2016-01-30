@@ -111,6 +111,7 @@ Room * MY_Scene_Main::goToNewRoom(){
 	if(previousRoom != nullptr){
 		player->eventManager.listeners.clear();
 		player->joystick = nullptr;
+		player->voiceTimer->stop();
 
 		demons.clear();
 	}
@@ -271,6 +272,7 @@ MY_Player * MY_Scene_Main::spawnPlayer(Room * _room){
 	// Setup the player
 	MY_Player * p = new MY_Player(baseShaderWithDepth);
 	_room->gameground->addChild(p)->scale(10)->translate(glm::vec3(-_room->doorPos*0.9f, 0, 0), false);
+	p->bounds = _room->doorPos;
 	return p;
 }
 
@@ -329,10 +331,14 @@ void MY_Scene_Main::sipIt(){
 	// if the demon gets close enough to the player, they get sipped
 	glm::vec3 demPos = gripTarget->getGamePos();
 	glm::vec3 playerPos = player->firstParent()->getTranslationVector();
+	playerPos.y += player->firstParent()->getScaleVector().y*0.9;
 
-	if(glm::distance(demPos, playerPos) < player->firstParent()->getScaleVector().x  * 0.5f){
+	if(glm::distance(demPos, playerPos) < gripTarget->scaleAnim.y * 0.5f){
 		gripTarget->sipIt();
 		demonsCounter->increment();
+
+		// TODO: trigger sip animation on player, pass out animation on enemy, remove spirit
+
 		gripTarget = nullptr;
 	}
 }

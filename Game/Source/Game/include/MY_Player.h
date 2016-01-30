@@ -4,6 +4,7 @@
 #include <Joystick.h>
 #include <EventManager.h>
 #include <Animation.h>
+#include <Timeout.h>
 
 #define MAX_LIVES 5
 
@@ -12,6 +13,7 @@ public:
 	bool isDead;
 
 	float speed;
+	float bounds;
 	static int lives;
 
 	Animation<float> * idleScaleAnim;
@@ -31,5 +33,7 @@ public:
 	void update(Step * _step) override;
 	void unload() override;
 	void load() override;
+
+	Timeout * voiceTimer;
 };
 
