@@ -107,7 +107,7 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("demon_" + std::to_string(demonTexId))->texture);
 
 	stateTimeout = new Timeout(TIMEOUT_TIME, [this](sweet::Event * _event){
-		bool randState = sweet::NumberUtils::randomBool();
+		bool randState = spirit->state == kIN && sweet::NumberUtils::randomBool();
 		if(randState) {
 			currentState = kWALKING;
 		}else {
