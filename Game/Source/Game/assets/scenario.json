@@ -70,7 +70,7 @@
     ,{
       "type":"audio",
       "id":"FOOTSTEP",
-      "src":"Footstep.ogg",
+      "src":"footstep.ogg",
       "category": "sfx"
     }
 

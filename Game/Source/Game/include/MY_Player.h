@@ -5,6 +5,7 @@
 #include <EventManager.h>
 #include <Animation.h>
 #include <Timeout.h>
+#include <OpenALSound.h>
 
 #define MAX_LIVES 5
 
@@ -41,5 +42,10 @@ public:
 
 	// prevents player input for _seconds
 	void pause(float _seconds);
+
+private :
+	OpenAL_Sound * footsetpSound;
+	float stepTimer;
+	bool highStep;
 };
 

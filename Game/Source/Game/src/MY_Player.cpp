@@ -12,15 +12,18 @@ int MY_Player::lives = MAX_LIVES;
 
 MY_Player::MY_Player(Shader * _shader) :
 	Sprite(_shader),
+	paused(false),
+	isDead(false),
 	speed(0.1f),
+	bounds(0),
+	scaleAnim(1),
+	invincible(false),
 	invincibilityTimer(0.f),
 	invincibilityTimerLength(2.f),
 	joystick(new JoystickVirtual(0)),
-	isDead(false),
-	scaleAnim(1),
-	invincible(false),
-	bounds(0),
-	paused(false)
+	footsetpSound(MY_ResourceManager::globalAssets->getAudio("FOOTSTEP")->sound),
+	stepTimer(0.f),
+	highStep(false)
 {
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet_player")->texture);
 
@@ -135,6 +138,24 @@ void MY_Player::update(Step * _step) {
 				setCurrentAnimation("walk");
 				meshTransform->scale(-1,1,1, false);
 			}
+
+			if(joystick->getAxis(joystick->axisLeftX) > 0.5f || 
+				joystick->getAxis(joystick->axisLeftX) < -0.5f) {
+				stepTimer += _step->deltaTime;
+				if(stepTimer >= 0.35f) {
+					stepTimer = 0.f;
+					if(highStep) {
+						footsetpSound->setPitch(0.7f);
+					}else {
+						footsetpSound->setPitch(0.6f);	
+					}
+					highStep = !highStep;
+					footsetpSound->play();
+				}
+			}else {
+				stepTimer = 0.f;
+			}
+
 			float x = firstParent()->getTranslationVector().x;
 			if(x < -bounds){
 				firstParent()->translate(glm::vec3((-bounds - x),0,0));
