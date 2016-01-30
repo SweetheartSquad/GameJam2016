@@ -9,6 +9,7 @@
 #include "MY_Player.h"
 #include "MY_Demon.h"
 #include "MY_Cam.h"
+#include <MY_UI_Counter.h>
 
 class Room;
 class MY_Game;
@@ -16,7 +17,7 @@ class MY_Game;
 class MY_Scene_Main : public MY_Scene_Base{
 public:
 	bool gameOver;
-
+	bool started;
 	ComponentShaderBase * baseShaderWithDepth;
 
 	MY_Player * player;
@@ -29,6 +30,9 @@ public:
 	MY_Player * spawnPlayer(Room * _room);
 
 	MY_Cam * mainCam;
+
+	MY_UI_Counter * livesCounter;
+	MY_UI_Counter * demonsCounter;
 
 	explicit MY_Scene_Main(MY_Game * _game);
 	~MY_Scene_Main();

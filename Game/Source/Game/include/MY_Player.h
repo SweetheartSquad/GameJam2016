@@ -10,7 +10,7 @@ public:
 	bool isDead;
 
 	float speed;
-	float health;
+	int lives;
 
 	Animation<float> * idleScaleAnim;
 	glm::vec3 scaleAnim;

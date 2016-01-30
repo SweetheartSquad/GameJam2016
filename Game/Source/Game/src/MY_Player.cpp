@@ -9,7 +9,7 @@
 MY_Player::MY_Player(Shader * _shader) :
 	Sprite(_shader),
 	speed(0.25f),
-	health(100.f),
+	lives(5),
 	invincibilityTimer(0.f),
 	invincibilityTimerLength(2.f),
 	joystick(new JoystickVirtual(0)),
@@ -38,15 +38,16 @@ MY_Player::MY_Player(Shader * _shader) :
 		if(!isDead){
 			if(invincibilityTimer <= FLT_EPSILON){
 				// Take damage
-				health -= _event->getFloatData("damage");
+				--lives;//_event->getFloatData("damage");
 				std::stringstream s;
-				s << "HEALTH: " << health;
+				s << "LIVES: " << lives;
 				Log::info(s.str());
 
 				// Reset invincibility timer
 				invincibilityTimer = invincibilityTimerLength;
 				// Invincibility starts
 				eventManager.triggerEvent("invincibilityStart");
+				eventManager.triggerEvent("tookDamage");
 				invincible = true;
 			}
 		}
@@ -87,7 +88,7 @@ void MY_Player::update(Step * _step) {
 		}
 
 		// Check health
-		if(health <= 0.f){
+		if(lives <= 0){
 			// lives?
 			// game over
 			isDead = true;
