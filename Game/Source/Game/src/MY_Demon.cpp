@@ -95,6 +95,10 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 		stateTimeout->restart();
 	});
 	stateTimeout->start();
+
+	eventManager.addEventListener("playerCollision", [this](sweet::Event * _event){
+		// Player collision code
+	});
 }
 
 void MY_Demon::render(sweet::MatrixStack* _matrixStack, RenderOptions* _renderOptions) {
@@ -103,6 +107,7 @@ void MY_Demon::render(sweet::MatrixStack* _matrixStack, RenderOptions* _renderOp
 }
 
 void MY_Demon::update(Step * _step) {
+	eventManager.update(_step);
 	stateTimeout->update(_step);
 	if(target != nullptr && currentState == kWALKING){
 		float targDir = target->getTranslationVector().x < firstParent()->getTranslationVector().x ? -1.f : 1.f;

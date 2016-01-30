@@ -33,6 +33,7 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	testDemon = new MY_Demon(baseShader, player->firstParent());
 	childTransform->addChild(testDemon);
 	testDemon->firstParent()->translate(5.0f, 0.f, 0.f);
+	demons.push_back(testDemon);
 }
 
 MY_Scene_Main::~MY_Scene_Main(){
@@ -44,6 +45,8 @@ MY_Scene_Main::~MY_Scene_Main(){
 void MY_Scene_Main::update(Step * _step){
 	// Scene update
 	MY_Scene_Base::update(_step);
+
+	collideEntities();
 
 	hoverTarget = getHovered();
 	if(hoverTarget != nullptr){
@@ -81,6 +84,24 @@ void MY_Scene_Main::enableDebug(){
 }
 void MY_Scene_Main::disableDebug(){
 	MY_Scene_Base::disableDebug();
+}
+
+void MY_Scene_Main::collideEntities() {
+	auto  ptrans = player->firstParent()->getTranslationVector();
+	float pMin = ptrans.x - (player->firstParent()->getScaleVector().x  * 0.5f);
+	float pMax = ptrans.x + (player->firstParent()->getScaleVector().x  * 0.5f);
+	
+	for(auto demon : demons) {
+		auto dtrans = demon->firstParent()->getTranslationVector();
+		float dMin = dtrans.x - (demon->firstParent()->getScaleVector().x  * 0.5f);
+		float dMax = dtrans.x + (demon->firstParent()->getScaleVector().x  * 0.5f);
+
+		if((pMax >= dMin && pMin <= dMax) ||
+			pMin <= dMax && pMax >= dMin) {
+				player->eventManager.triggerEvent("demonCollision");
+				demon->eventManager.triggerEvent("playerCollision");
+		}
+	}
 }
 
 MY_DemonSpirit * MY_Scene_Main::getHovered(){

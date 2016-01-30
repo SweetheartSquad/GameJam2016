@@ -52,6 +52,8 @@ public:
 
 	Timeout * stateTimeout;
 
+	sweet::EventManager eventManager;
+
 	explicit MY_Demon(Shader * _shader, Transform * _target);
 
 	void render(sweet::MatrixStack* _matrixStack, RenderOptions* _renderOptions) override;
