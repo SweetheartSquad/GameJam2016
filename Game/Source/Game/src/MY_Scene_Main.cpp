@@ -45,7 +45,6 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 
 	mouseIndicator = uiLayer->addMouseIndicator();
 
-
 	room = new Room(baseShader);
 
 	childTransform->addChild(room);
@@ -128,8 +127,11 @@ void MY_Scene_Main::collideEntities() {
 
 		if((pMax >= dMin && pMin <= dMax) ||
 			pMin <= dMax && pMax >= dMin) {
-				player->eventManager.triggerEvent("demonCollision");
-				demon->eventManager.triggerEvent("playerCollision");
+				sweet::Event * e = new sweet::Event("demonCollision");
+				e->setFloatData("damage", demon->damage);
+				player->eventManager.triggerEvent(e);
+
+				demon->eventManager.triggerEvent("playerCollisoin");
 		}
 	}
 }

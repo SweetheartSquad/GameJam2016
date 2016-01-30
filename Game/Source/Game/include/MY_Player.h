@@ -6,8 +6,13 @@
 
 class MY_Player : public Sprite {
 public:
+	bool isDead;
 
 	float speed;
+	float health;
+
+	float invincibilityTimer; // Counts DOWN
+	float invincibilityTimerLength;
 
 	Joystick * joystick;
 
