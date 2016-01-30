@@ -1,21 +1,20 @@
 #pragma once
 
-#include <MY_Scene_Base.h>
+#include <Scene.h>
 
-class Box2DWorld;
-class Box2DDebugDrawer;
-class Box2DSprite;
-class Box2DMeshEntity;
+#include <Box2DWorld.h>
+#include <Box2DSprite.h>
+#include <Box2DMeshEntity.h>
+#include "MY_Scene_Base.h"
 
-// A sample scene showing some of the basics of integrating a Box2D physics simulation into a game scene
-class MY_Scene_Box2D : public MY_Scene_Base{
+class MY_Scene_Main : public MY_Scene_Base{
 public:
+
 	// The scene's physics world
 	Box2DWorld * box2dWorld;
 	// used to draw wireframes showing physics colliders, transforms, etc
 	Box2DDebugDrawer * box2dDebugDrawer;
 
-	
 	// A Box2DMeshSprite is a class which combines a Box2D physics node and a standard Sprite.
 	// The physics node alters the position/orientation of the Sprite's childTransform
 	// during the update loop to match the physics body's position/orientation within the Box2D world
@@ -29,8 +28,8 @@ public:
 	// This object will be a static body
 	Box2DMeshEntity * ground;
 
-	explicit MY_Scene_Box2D(Game * _game);
-	~MY_Scene_Box2D();
+	explicit MY_Scene_Main(Game * _game);
+	~MY_Scene_Main();
 
 	virtual void update(Step * _step) override;
 	

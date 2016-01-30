@@ -10,10 +10,11 @@
 #include <MY_Scene_SurfaceShaders.h>
 #include <MY_Scene_ScreenShaders.h>
 #include <MY_Scene_VR.h>
+#include <MY_Scene_Main.h>
 
 
 MY_Game::MY_Game() :
-	Game("menu", new MY_Scene_Menu(this), true) // initialize our game with a menu scene
+	Game("main", new MY_Scene_Main(this), true) // initialize our game with a menu scene
 {
 	// initialize all of our scenes in the game's scene map for later use
 	// only the current scene is updated/rendered by default, so these shouldn't affect performance
@@ -32,8 +33,8 @@ MY_Game::~MY_Game(){}
 
 void MY_Game::addSplashes(){
 	// add default splashes
-	Game::addSplashes();
+	//Game::addSplashes();
 
 	// add custom splashes
-	addSplash(new Scene_Splash(this, MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture, MY_ResourceManager::globalAssets->getAudio("DEFAULT")->sound));
+	//addSplash(new Scene_Splash(this, MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture, MY_ResourceManager::globalAssets->getAudio("DEFAULT")->sound));
 }

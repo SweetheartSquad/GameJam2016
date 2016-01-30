@@ -22,8 +22,8 @@ MY_Scene_Base::MY_Scene_Base(Game * _game) :
 	baseShader(new ComponentShaderBase(true)),
 	textShader(new ComponentShaderText(true)),
 	font(MY_ResourceManager::globalAssets->getFont("DEFAULT")->font),
-	uiLayer(new UILayer(0,0,0,0)),
 	debugCam(new MousePerspectiveCamera()),
+	uiLayer(new UILayer(0,0,0,0)),
 	controller(new JoystickVirtual(0))
 {
 	baseShader->addComponent(new ShaderComponentMVP(baseShader));
