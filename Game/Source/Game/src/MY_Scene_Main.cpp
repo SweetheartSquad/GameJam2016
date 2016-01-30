@@ -159,6 +159,11 @@ void MY_Scene_Main::update(Step * _step){
 	// Scene update
 	MY_Scene_Base::update(_step);
 
+	if(keyboard->keyJustDown(GLFW_KEY_ESCAPE)){
+		game->switchScene("menu", false);
+		game->scenes["game"] = this;
+	}
+
 	if(!started){ // Because we don't have the UI square thing
 		started = true;
 		livesCounter->setItemCount(5);
