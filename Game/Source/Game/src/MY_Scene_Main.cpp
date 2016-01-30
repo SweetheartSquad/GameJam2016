@@ -146,7 +146,7 @@ MY_Demon * MY_Scene_Main::spawnDemon(){
 MY_Player * MY_Scene_Main::spawnPlayer(){
 	// Setup the player
 	MY_Player * p = new MY_Player(baseShaderWithDepth);
-	room->gameground->addChild(p)->scale(5);
+	room->gameground->addChild(p)->scale(10);
 	return p;
 }
 
