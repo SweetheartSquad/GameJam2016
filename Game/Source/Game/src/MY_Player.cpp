@@ -2,29 +2,52 @@
 
 #include <MY_Player.h>
 #include <MY_ResourceManager.h>
+#include <JoystickVirtual.h>
+#include <SpriteSheet.h>
+#include <SpriteSheetAnimation.h>
 
-MY_Player::MY_Player(Box2DWorld* _world) :
-	Box2DSprite(_world)
+MY_Player::MY_Player(Shader * _shader) :
+	Sprite(_shader),
+	speed(0.5f),
+	joystick(new JoystickVirtual(0))
 {
+	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet")->texture);
+
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture);
+
+	auto walkAnim = new SpriteSheetAnimation(0.4f);
+	walkAnim->pushFramesInRange(0, 30, 240, 296, spriteSheet->texture->width, spriteSheet->texture->height);
+
+	spriteSheet->addAnimation("walk", walkAnim);
+	setCurrentAnimation("walk");
 }
 
 void MY_Player::render(sweet::MatrixStack * _matrixStack, RenderOptions * _renderOptions) {
 	
-	Box2DSprite::render(_matrixStack, _renderOptions);
+	Sprite::render(_matrixStack, _renderOptions);
 }
 
 void MY_Player::update(Step * _step) {
+	
+	joystick->update(_step);
 
-	Box2DSprite::update(_step);
+	if(joystick->getAxis(joystick->axisLeftX) > 0.5f) {
+		firstParent()->translate(speed, 0.f, 0.f);
+	}
+
+	if(joystick->getAxis(joystick->axisLeftX) < -0.5f) {
+		firstParent()->translate(-speed, 0.f, 0.f);
+	}
+
+	Sprite::update(_step);
 }
 
 void MY_Player::unload() {
 
-	Box2DSprite::unload();
+	Sprite::unload();
 }
 
 void MY_Player::load() {
 
-	Box2DSprite::load();
+	Sprite::load();
 }

@@ -1,3 +1,10 @@
 {
-  "assets": []
+  "assets": [
+  	{
+  		"type":"texture",
+  		"id":"spritesheet",
+  		"src":"spritesheet.png"
+  	}
+
+  ]
 }
