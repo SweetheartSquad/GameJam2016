@@ -125,7 +125,7 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	target(_target),
 	spirit(new MY_DemonSpirit(_shader, this))
 {
-	childTransform->addChild(spirit);
+	childTransform->addChild(spirit)->translate(spirit->origin);
 
 	int demonTexId = sweet::NumberUtils::randomInt(1, NUM_DEMON_TEXTURES);
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("demon_" + std::to_string(demonTexId))->texture);

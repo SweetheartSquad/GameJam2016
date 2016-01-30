@@ -8,7 +8,8 @@
 
 Room::Room(Shader * _shader) :
 	MeshEntity(Resource::loadMeshFromObj("assets/meshes/room.obj", true).at(0), _shader),
-	doorPos(mesh->calcBoundingBox().width),
+	roomWidth(mesh->calcBoundingBox().width),
+	doorPos(roomWidth * 0.475f),
 	foreground(new Transform()),
 	gameground(new Transform()),
 	background(new Transform()),

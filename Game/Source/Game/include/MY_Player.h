@@ -5,12 +5,14 @@
 #include <EventManager.h>
 #include <Animation.h>
 
+#define MAX_LIVES 5
+
 class MY_Player : public Sprite {
 public:
 	bool isDead;
 
 	float speed;
-	int lives;
+	static int lives;
 
 	Animation<float> * idleScaleAnim;
 	glm::vec3 scaleAnim;

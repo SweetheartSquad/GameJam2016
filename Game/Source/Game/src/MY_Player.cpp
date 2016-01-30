@@ -6,10 +6,11 @@
 #include <SpriteSheet.h>
 #include <SpriteSheetAnimation.h>
 
+int MY_Player::lives = MAX_LIVES;
+
 MY_Player::MY_Player(Shader * _shader) :
 	Sprite(_shader),
 	speed(0.1f),
-	lives(5),
 	invincibilityTimer(0.f),
 	invincibilityTimerLength(2.f),
 	joystick(new JoystickVirtual(0)),

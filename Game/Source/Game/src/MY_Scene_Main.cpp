@@ -15,6 +15,8 @@
 #include <shader\ShaderComponentDiffuse.h>
 #include <shader\ShaderComponentMVP.h>
 
+#include <NumberUtils.h>
+
 MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	MY_Scene_Base(_game),
 	mainCam(new MY_Cam()),
@@ -43,7 +45,7 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	activeCamera = mainCam;
 	//mainCam->childTransform->addChild(new CameraController(mainCam));
 	mainCam->farClip = 1000.f;
-	mainCam->firstParent()->translate(0.f, 5, 25);
+	mainCam->firstParent()->translate(0.f, 5, 20);
 	mainCam->yaw = 90.0f;
 	mainCam->pitch = 0;
 	mainCam->fieldOfView = 70;
@@ -61,11 +63,11 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 		// TODO: make the current room active
 	});
 	roomTransition->eventManager->addEventListener("progress", [this](sweet::Event * _event){
-		float t = _event->getFloatData("progress");
+		float t = Easing::easeOutCirc(_event->getFloatData("progress"), 0, 1, 1.f);
 		if(previousRoom != nullptr){
-			previousRoom->firstParent()->translate(glm::vec3(t,0,0)*10.f, false);
+			previousRoom->firstParent()->translate(glm::vec3(-t-0.05f,0,0)*previousRoom->roomWidth, false);
 		}
-		currentRoom->firstParent()->translate(glm::vec3(1-t,0,0)*10.f, false);
+		currentRoom->firstParent()->translate(glm::vec3(1-t,0,0)*currentRoom->roomWidth, false);
 	});
 
 	childTransform->addChild(roomTransition, false);
@@ -146,6 +148,8 @@ Room * MY_Scene_Main::goToNewRoom(){
 		ss << "game_" << glfwGetTime();
 		game->scenes[ss.str()] = new MY_Scene_Main(dynamic_cast<MY_Game *>(game));
 		game->switchScene(ss.str(), true);
+
+		MY_Player::lives = MAX_LIVES;
 	});
 	player->eventManager.addEventListener("newroom", [this](sweet::Event * _event){
 		goToNewRoom();
@@ -170,7 +174,9 @@ void MY_Scene_Main::update(Step * _step){
 		player->eventManager.triggerEvent("gameOver");
 	}
 	if(keyboard->keyJustDown(GLFW_KEY_N)){
-		player->eventManager.triggerEvent("newroom");
+		if(roomTransition->complete){
+			player->eventManager.triggerEvent("newroom");
+		}
 	}
 
 
@@ -251,7 +257,7 @@ void MY_Scene_Main::collideEntities() {
 
 MY_Demon * MY_Scene_Main::spawnDemon(Room * _room){
 	MY_Demon * d = new MY_Demon(baseShaderWithDepth, player->firstParent());
-	_room->gameground->addChild(d)->translate(5.0f, 0.f, 0.f);
+	_room->gameground->addChild(d)->translate(glm::vec3(sweet::NumberUtils::randomFloat(0, _room->doorPos*0.9f), 0, 0), false);
 	demons.push_back(d);
 	return d;
 }
@@ -259,7 +265,7 @@ MY_Demon * MY_Scene_Main::spawnDemon(Room * _room){
 MY_Player * MY_Scene_Main::spawnPlayer(Room * _room){
 	// Setup the player
 	MY_Player * p = new MY_Player(baseShaderWithDepth);
-	_room->gameground->addChild(p)->scale(10);
+	_room->gameground->addChild(p)->scale(10)->translate(glm::vec3(-_room->doorPos*0.9f, 0, 0), false);
 	return p;
 }
 
