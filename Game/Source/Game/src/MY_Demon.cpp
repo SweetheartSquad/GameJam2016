@@ -3,6 +3,8 @@
 #include <MY_Demon.h>
 #include <NumberUtils.h>
 #include <MY_ResourceManager.h>
+#include <SpriteSheet.h>
+#include <SpriteSheetAnimation.h>
 
 #define NUM_DEMON_TEXTURES 2
 #define TIMEOUT_TIME 1.0
@@ -126,6 +128,8 @@ void MY_DemonSpirit::sipIt(){
 	state = kDEAD;
 	possessed->stateTimeout->stop();
 	possessed->state = MY_Demon::kDEAD;
+	possessed->setCurrentAnimation("die");
+	possessed->currentAnimation->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
 }
 
 void MY_DemonSpirit::getBackInThere(){
@@ -147,7 +151,20 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	childTransform->addChild(spirit)->translate(spirit->origin);
 
 	int demonTexId = sweet::NumberUtils::randomInt(1, NUM_DEMON_TEXTURES);
-	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("demon_" + std::to_string(demonTexId))->texture);
+	
+	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet_enemy_" + std::to_string(demonTexId))->texture);
+	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("enemy_" + std::to_string(demonTexId))->texture);
+	
+	auto anim = new SpriteSheetAnimation(0.4f);
+	anim->pushFramesInRange(0, 0, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	spriteSheet->addAnimation("idle", anim);
+
+	anim = new SpriteSheetAnimation(0.4f);
+	anim->pushFramesInRange(0, 3, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	anim->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
+	spriteSheet->addAnimation("die", anim);
+
+	setSpriteSheet(spriteSheet, "idle");
 
 	stateTimeout = new Timeout(TIMEOUT_TIME, [this](sweet::Event * _event){
 		bool randState = spirit->state == MY_DemonSpirit::kIN && sweet::NumberUtils::randomBool();

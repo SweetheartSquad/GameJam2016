@@ -138,6 +138,10 @@ Room * MY_Scene_Main::goToNewRoom(){
 	player->eventManager.addEventListener("tookDamage", [this](sweet::Event * _event){
 		mainCam->shakeTimer->restart();
 		livesCounter->decrement();
+		player->state = MY_Player::kHURT;
+		gripTarget = nullptr;
+		ripTarget = nullptr;
+		player->delayChange(0.5f, MY_Player::kIDLE);
 	});
 	player->eventManager.addEventListener("invincibilityStart", [this](sweet::Event * _event){
 		mainCam->shakeTimer->restart();
@@ -202,9 +206,14 @@ void MY_Scene_Main::update(Step * _step){
 		player->eventManager.triggerEvent("newroom");
 	}
 
-	hoverTarget = getHovered();
-	if(hoverTarget != nullptr){
-		if(mouse->leftJustPressed()){
+	if(gripTarget == nullptr && ripTarget == nullptr){
+		hoverTarget = getHovered();
+	}else{
+		calcHover(hoverTarget);
+	}
+	if(mouse->leftJustPressed()){
+		player->state = MY_Player::kRIP_AND_GRIP;
+		if(hoverTarget != nullptr){
 			if(hoverTarget->state == MY_DemonSpirit::kIN){
 				ripTarget = hoverTarget;
 			}else if(hoverTarget->state == MY_DemonSpirit::kSTUNNED || hoverTarget->state == MY_DemonSpirit::kOUT){
@@ -217,6 +226,9 @@ void MY_Scene_Main::update(Step * _step){
 	if(mouse->leftJustReleased()){
 		ripTarget = nullptr;
 		gripTarget = nullptr;
+		if(player->state == MY_Player::kRIP_AND_GRIP){
+			player->state = MY_Player::kIDLE;
+		}
 	}
 	
 	// if we're holding a demon inside a body, try to rip it
@@ -248,7 +260,7 @@ void MY_Scene_Main::collideEntities() {
 	float pMax = ptrans.x + (player->firstParent()->getScaleVector().x  * 0.5f);
 	
 	for(auto demon : demons) {
-		if(demon->state != MY_Demon::kDEAD){
+		if(demon->state != MY_Demon::kDEAD && demon->spirit->state == MY_DemonSpirit::kIN){
 			auto dtrans = demon->firstParent()->getTranslationVector();
 			float dMin = dtrans.x - (demon->firstParent()->getScaleVector().x  * 0.5f);
 			float dMax = dtrans.x + (demon->firstParent()->getScaleVector().x  * 0.5f);
@@ -282,11 +294,11 @@ MY_Player * MY_Scene_Main::spawnPlayer(Room * _room){
 
 MY_DemonSpirit * MY_Scene_Main::getHovered(){
 	for(auto d : demons){
-		glm::vec3 demonPos = d->spirit->meshTransform->getWorldPos();
-		glm::vec3 demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
-		distToHoverTarget = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
-		distToHoverTargetMag = glm::length(distToHoverTarget);
+		if(d->state == MY_DemonSpirit::kDEAD){
+			continue;
+		}
 
+		calcHover(d->spirit);
 		/*std::cout << "Mouse: " << mouse->mouseX() << " " << mouse->mouseY() << std::endl;
 		std::cout << "Demon: " << demonPosInScreen.x << " " << demonPosInScreen.y << " " << demonPosInScreen.z << std::endl;
 		std::cout << "Dist: " << distToHoverTarget.x << " " << distToHoverTarget.y << std::endl;
@@ -301,6 +313,13 @@ MY_DemonSpirit * MY_Scene_Main::getHovered(){
 	return nullptr;
 }
 
+void MY_Scene_Main::calcHover(MY_DemonSpirit * _demon){
+	glm::vec3 demonPos = _demon->meshTransform->getWorldPos();
+	glm::vec3 demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
+	distToHoverTarget = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
+	distToHoverTargetMag = glm::length(distToHoverTarget);
+}
+
 bool MY_Scene_Main::isHoveredOverPossessed(){
 	return false;
 }
@@ -313,7 +332,7 @@ bool MY_Scene_Main::isHoveredOverSpirit(){
 void MY_Scene_Main::ripIt(){
 	// demon pulls the mouse, mouse pulls the demon
 	if(distToHoverTargetMag > glm::length(ripTarget->scaleAnim)){
-		float mouseResistance = 1.f;
+		float mouseResistance = 0.8f;
 		float demonResistance = 0.01f;
 		mouse->translate(distToHoverTarget*mouseResistance);
 		ripTarget->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
@@ -323,7 +342,7 @@ void MY_Scene_Main::ripIt(){
 void MY_Scene_Main::gripIt(){
 	// demon pulls the mouse, mouse pulls the demon
 	if(distToHoverTargetMag > glm::length(gripTarget->scaleAnim)){
-		float mouseResistance = 1.f;
+		float mouseResistance = 0.8f;
 		float demonResistance = 0.01f;
 		mouse->translate(distToHoverTarget*mouseResistance);
 		gripTarget->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
@@ -343,7 +362,8 @@ void MY_Scene_Main::sipIt(){
 
 		// TODO: trigger sip animation on player, pass out animation on enemy, remove spirit
 		player->setCurrentAnimation("sip");
-		player->pause(1.f);
+		player->state = MY_Player::kSIP;
+		player->delayChange(1.f, MY_Player::kIDLE);
 
 		gripTarget = nullptr;
 	}
