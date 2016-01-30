@@ -7,12 +7,81 @@
 #define NUM_DEMON_TEXTURES 2
 #define TIMEOUT_TIME 1.0
 
+MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed) : 
+	Sprite(_shader),
+	possessed(_possessed),
+	speed(0),
+	state(kIN)
+{
+	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("demon_spirit")->texture);
+
+	stunTimer = new Timeout(1.f, [this](sweet::Event * _event){
+		state = kOUT;
+	});
+	childTransform->addChild(stunTimer, false);
+}
+
+void MY_DemonSpirit::update(Step * _step){
+	// accelerate towards the possession target (which is at 0,0,0)
+	glm::vec3 a = firstParent()->getTranslationVector();
+	float accelMod = 1.f;
+	float damping = 0.f;
+	switch(state){
+	case kIN:
+		accelMod = 0.1f;
+		damping = 0.1f;
+		// if the spirit is far from the origin, they get ripped out
+		if(glm::length(a) > 5){
+			ripIt();
+		}
+		break;
+	case kSTUNNED:
+		accelMod = 0;
+		damping = 0.5f;
+		break;
+	case kOUT:
+		accelMod = 0.05f;
+		damping = 0.2f;
+		// if the spirit is close to the origin, they can repossess the body
+		if(glm::length(a) < 5){
+			getBackInThere();
+		}
+		break;
+	}
+		
+	a *= -accelMod;
+	speed += a;
+	speed *= (1-damping); // damping
+	firstParent()->translate(speed);
+
+	Sprite::update(_step);
+}
+
+void MY_DemonSpirit::ripIt(){
+	std::cout << "demon ripped" << std::endl;
+	state = kSTUNNED;
+	stunTimer->restart();
+}
+
+void MY_DemonSpirit::gripIt(){
+	std::cout << "demon gripped" << std::endl;
+	state = kSTUNNED;
+	stunTimer->restart();
+}
+
+void MY_DemonSpirit::getBackInThere(){
+	state = kIN;
+}
+
 MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	Sprite(_shader), 
 	speed(0.1f),
 	currentState(kWALKING),
-	target(_target)
+	target(_target),
+	spirit(new MY_DemonSpirit(_shader, this))
 {
+	childTransform->addChild(spirit);
+
 	int demonTexId = sweet::NumberUtils::randomInt(1, NUM_DEMON_TEXTURES);
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("demon_" + std::to_string(demonTexId))->texture);
 

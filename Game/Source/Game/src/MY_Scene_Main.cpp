@@ -8,10 +8,10 @@
 MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	MY_Scene_Base(_game),
 	mainCam(new PerspectiveCamera()),
-	demonTest(new Sprite(MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture, baseShader)),
 	hoverRadius(15),
 	hoverRadius2(hoverRadius*hoverRadius),
 	hoverTarget(nullptr),
+	ripTarget(nullptr),
 	gripTarget(nullptr)
 {
 	// setup main camera
@@ -23,10 +23,6 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	mainCam->firstParent()->translate(0.0f, 0.5f, 20.f);
 	mainCam->yaw = 90.0f;
 	mainCam->pitch = 0.0f;
-
-
-	// setup demon test
-	childTransform->addChild(demonTest);
 
 	mouseIndicator = uiLayer->addMouseIndicator();
 
@@ -52,15 +48,29 @@ void MY_Scene_Main::update(Step * _step){
 	hoverTarget = getHovered();
 	if(hoverTarget != nullptr){
 		if(mouse->leftJustPressed()){
-			gripTarget = hoverTarget;
+			if(hoverTarget->state == kIN){
+				ripTarget = hoverTarget;
+			}else if(hoverTarget->state == kSTUNNED){
+				gripTarget = hoverTarget;
+			}
 		}
 	}
 
 	if(mouse->leftJustReleased()){
+		ripTarget = nullptr;
 		gripTarget = nullptr;
 	}
-
-	// if we're holding a demon
+	
+	// if we're holding a demon inside a body, try to rip it
+	if(ripTarget != nullptr){
+		if(ripTarget->state == kIN){
+			ripIt();
+		}else{
+			// we've ripped it, so let go
+			ripTarget = nullptr;
+		}
+	}
+	// if we're holding a demon outside a body, try to grip it
 	if(gripTarget != nullptr){
 		gripIt();
 	}
@@ -73,19 +83,20 @@ void MY_Scene_Main::disableDebug(){
 	MY_Scene_Base::disableDebug();
 }
 
-Sprite * MY_Scene_Main::getHovered(){
-	std::cout << "Mouse: " << mouse->mouseX() << " " << mouse->mouseY() << std::endl;
-	glm::vec3 demonPos = demonTest->getWorldPos();
+MY_DemonSpirit * MY_Scene_Main::getHovered(){
+	glm::vec3 demonPos = testDemon->spirit->getWorldPos();
 	glm::vec3 demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
-	std::cout << "Mouse: " << mouse->mouseX() << " " << mouse->mouseY() << std::endl;
-	std::cout << "Demon: " << demonPosInScreen.x << " " << demonPosInScreen.y << " " << demonPosInScreen.z << std::endl;
 	distToHoverTarget = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
-	std::cout << "Dist: " << distToHoverTarget.x << " " << distToHoverTarget.y << std::endl;
 	distToHoverTargetMag = glm::length(distToHoverTarget);
-	std::cout << "DistMag: " << distToHoverTargetMag << std::endl;
+
+	/*std::cout << "Mouse: " << mouse->mouseX() << " " << mouse->mouseY() << std::endl;
+	std::cout << "Demon: " << demonPosInScreen.x << " " << demonPosInScreen.y << " " << demonPosInScreen.z << std::endl;
+	std::cout << "Dist: " << distToHoverTarget.x << " " << distToHoverTarget.y << std::endl;
+	std::cout << "DistMag: " << distToHoverTargetMag << std::endl;*/
+
 	if(distToHoverTargetMag < hoverRadius){
 		// return the found hoverTarget
-		return demonTest;
+		return testDemon->spirit;
 	}
 	// we didn't find a hoverTarget
 	return nullptr;
@@ -101,16 +112,23 @@ bool MY_Scene_Main::isHoveredOverSpirit(){
 
 
 void MY_Scene_Main::ripIt(){
-
+	// demon pulls the mouse, mouse pulls the demon
+	if(distToHoverTargetMag > 3){
+		float mouseResistance = 0.8;
+		float demonResistance = 0.01f;
+		mouse->translate(distToHoverTarget*mouseResistance);
+		testDemon->spirit->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
+	}
 }
 
 void MY_Scene_Main::gripIt(){
 	// demon pulls the mouse, mouse pulls the demon
 	if(distToHoverTargetMag > 3){
 		float mouseResistance = 0.8;
-		float demonResistance = 0.001f;
+		float demonResistance = 0.01f;
 		mouse->translate(distToHoverTarget*mouseResistance);
-		demonTest->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
+		testDemon->spirit->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
+		testDemon->spirit->gripIt();
 	}
 }
 

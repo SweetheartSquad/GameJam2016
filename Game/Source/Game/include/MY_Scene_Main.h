@@ -28,10 +28,9 @@ public:
 	// overriden to remove physics debug drawing
 	virtual void disableDebug() override;
 
-	Sprite * demonTest;
 	Sprite * mouseIndicator;
 
-	Sprite * getHovered();
+	MY_DemonSpirit * getHovered();
 	bool isHoveredOverPossessed();
 	bool isHoveredOverSpirit();
 
@@ -44,6 +43,7 @@ public:
 
 	glm::vec2 distToHoverTarget;
 	float distToHoverTargetMag;
-	Sprite * hoverTarget;
-	Sprite * gripTarget;
+	MY_DemonSpirit * hoverTarget;
+	MY_DemonSpirit * ripTarget;
+	MY_DemonSpirit * gripTarget;
 };

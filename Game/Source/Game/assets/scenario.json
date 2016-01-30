@@ -10,11 +10,16 @@
   		"id":"demon_1",
   		"src":"demon_1.png"
   	},
-  	{
-  		"type":"texture",
-  		"id":"demon_2",
-  		"src":"demon_2.png"
-  	}
+    {
+      "type":"texture",
+      "id":"demon_2",
+      "src":"demon_2.png"
+    },
+    {
+      "type":"texture",
+      "id":"demon_spirit",
+      "src":"demon_spirit.png"
+    }
 
   ]
 }
