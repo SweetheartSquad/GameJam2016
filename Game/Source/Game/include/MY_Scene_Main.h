@@ -47,6 +47,7 @@ public:
 	Sprite * mouseIndicator;
 
 	MY_DemonSpirit * getHovered();
+	void calcHover(MY_DemonSpirit * _demon);
 	void collideEntities();
 	bool isHoveredOverPossessed();
 	bool isHoveredOverSpirit();

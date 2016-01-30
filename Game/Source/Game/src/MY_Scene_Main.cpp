@@ -202,7 +202,11 @@ void MY_Scene_Main::update(Step * _step){
 		player->eventManager.triggerEvent("newroom");
 	}
 
-	hoverTarget = getHovered();
+	if(gripTarget == nullptr && ripTarget == nullptr){
+		hoverTarget = getHovered();
+	}else{
+		calcHover(hoverTarget);
+	}
 	if(hoverTarget != nullptr){
 		if(mouse->leftJustPressed()){
 			if(hoverTarget->state == MY_DemonSpirit::kIN){
@@ -285,11 +289,8 @@ MY_DemonSpirit * MY_Scene_Main::getHovered(){
 		if(d->state == MY_DemonSpirit::kDEAD){
 			continue;
 		}
-		glm::vec3 demonPos = d->spirit->meshTransform->getWorldPos();
-		glm::vec3 demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
-		distToHoverTarget = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
-		distToHoverTargetMag = glm::length(distToHoverTarget);
 
+		calcHover(d->spirit);
 		/*std::cout << "Mouse: " << mouse->mouseX() << " " << mouse->mouseY() << std::endl;
 		std::cout << "Demon: " << demonPosInScreen.x << " " << demonPosInScreen.y << " " << demonPosInScreen.z << std::endl;
 		std::cout << "Dist: " << distToHoverTarget.x << " " << distToHoverTarget.y << std::endl;
@@ -304,6 +305,13 @@ MY_DemonSpirit * MY_Scene_Main::getHovered(){
 	return nullptr;
 }
 
+void MY_Scene_Main::calcHover(MY_DemonSpirit * _demon){
+	glm::vec3 demonPos = _demon->meshTransform->getWorldPos();
+	glm::vec3 demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
+	distToHoverTarget = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
+	distToHoverTargetMag = glm::length(distToHoverTarget);
+}
+
 bool MY_Scene_Main::isHoveredOverPossessed(){
 	return false;
 }
@@ -316,7 +324,7 @@ bool MY_Scene_Main::isHoveredOverSpirit(){
 void MY_Scene_Main::ripIt(){
 	// demon pulls the mouse, mouse pulls the demon
 	if(distToHoverTargetMag > glm::length(ripTarget->scaleAnim)){
-		float mouseResistance = 1.f;
+		float mouseResistance = 0.8f;
 		float demonResistance = 0.01f;
 		mouse->translate(distToHoverTarget*mouseResistance);
 		ripTarget->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
@@ -326,7 +334,7 @@ void MY_Scene_Main::ripIt(){
 void MY_Scene_Main::gripIt(){
 	// demon pulls the mouse, mouse pulls the demon
 	if(distToHoverTargetMag > glm::length(gripTarget->scaleAnim)){
-		float mouseResistance = 1.f;
+		float mouseResistance = 0.8f;
 		float demonResistance = 0.01f;
 		mouse->translate(distToHoverTarget*mouseResistance);
 		gripTarget->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
