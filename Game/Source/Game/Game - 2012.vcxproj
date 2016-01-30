@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\MY_Game.cpp" />
+    <ClCompile Include="src\MY_Player.cpp" />
     <ClCompile Include="src\MY_ResourceManager.cpp" />
     <ClCompile Include="src\MY_Scene_Base.cpp" />
     <ClCompile Include="src\MY_Scene_Box2D.cpp" />
@@ -25,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MY_Game.h" />
+    <ClInclude Include="include\MY_Player.h" />
     <ClInclude Include="include\MY_ResourceManager.h" />
     <ClInclude Include="include\MY_Scene_Base.h" />
     <ClInclude Include="include\MY_Scene_Box2D.h" />
