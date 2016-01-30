@@ -27,10 +27,7 @@ MY_Player::MY_Player(Shader * _shader) :
 	stepTimer(0.f),
 	highStep(false)
 {
-
-	footsetpSound->setGain(0.4f);
-
-	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet")->texture);
+	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet_player")->texture);
 
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("player")->texture);
 	
