@@ -237,6 +237,18 @@ void MY_Scene_Main::update(Step * _step){
 		}
 	}
 
+	if(mouse->leftDown()) {
+		if(player->state == MY_Player::kRIP_AND_GRIP) {
+			glm::vec3 playerPos = player->meshTransform->getWorldPos();
+			glm::vec3 playerPosInScreen = mainCam->worldToScreen(playerPos, sweet::getWindowDimensions());
+			if(mouse->mouseX() - playerPosInScreen.x > 0) {
+				player->meshTransform->scale(1,1,1, false);
+			}else {
+				player->meshTransform->scale(-1,1,1, false);	
+			}
+		}
+	}
+
 	// let go of any held demons
 	if(mouse->leftJustReleased()){
 		ripTarget = nullptr;
