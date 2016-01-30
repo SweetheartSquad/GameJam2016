@@ -7,10 +7,14 @@
 #include <Resource.h>
 
 sweet::ShuffleVector<unsigned long int> Room::roomTexIdx;
+sweet::ShuffleVector<unsigned long int> Room::furnitureSetIdx;
 
 bool Room::staticInit(){
 	for(unsigned long int i = 1; i <= 5; ++i){
 		roomTexIdx.push(i);
+	}
+	for(unsigned long int i = 1; i <= 1; ++i){
+		furnitureSetIdx.push(i);
 	}
 	return true;
 }
@@ -55,35 +59,10 @@ void Room::placeFG(){
 	foreground->addChild(testForeground);*/
 }
 
-void Room::placeBG(){	
-	/*childTransform->addChild(background);
-	MeshEntity * testBackground = new MeshEntity(MeshFactory::getPlaneMesh(), getShader());
-	testBackground->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("BG")->texture);
-	testBackground->childTransform->scale(width, height * 0.8, 1.f);
-	for (unsigned long int i = 0; i < testBackground->mesh->vertices.size(); ++i){
-		testBackground->mesh->vertices.at(i).x += 0.5f;
-		testBackground->mesh->vertices.at(i).y += 0.5f;
-	}
-	background->addChild(testBackground);
-	background->translate(0, 0, -depth * 0.9);*/
-	/*
-	Texture * curtainTex = new Texture("assets/textures/curtainsTest.png", false, true, false);
-	curtainTex->load();
-
-	childTransform->addChild(background)->translate(0, 0, -0.9);
-	MeshEntity * curtains = new MeshEntity(Resource::loadMeshFromObj("assets/meshes/curtains.obj", true).at(0), getShader());
-	curtains->mesh->pushTexture2D(curtainTex);
-	curtains->mesh->setScaleMode(GL_NEAREST);
-	*/
+void Room::placeBG(){
 	childTransform->addChild(background)->translate(0, 0, -mesh->calcBoundingBox().depth * 0.5 * 0.9);
 
-	Texture * furnitureTex = new Texture("assets/textures/furnitureSets/testFurnitureSetUVs.png", false, true, false);
-	furnitureTex->load();
-	
-	MeshEntity * furnitureSet = new MeshEntity(Resource::loadMeshFromObj("assets/meshes/furnitureSets/testFurnitureSet.obj", true).at(0), getShader());
-	furnitureSet->mesh->pushTexture2D(furnitureTex);
-	furnitureSet->mesh->setScaleMode(GL_NEAREST);
-	background->addChild(furnitureSet);
+	background->addChild(getFurnitureSet());
 }
 
 void Room::placeGG(){	
@@ -107,5 +86,23 @@ Texture * Room::getRoomTex(){
 	ss << "assets/textures/rooms/" << roomTexIdx.pop() << ".png";
 	Texture * res = new Texture(ss.str(), false, true, true);
 	res->load();
+	return res;
+}
+
+MeshEntity * Room::getFurnitureSet(){
+	// grab a random furniture set
+	int idx = furnitureSetIdx.pop();
+
+	std::stringstream ssTex;
+	ssTex << "assets/textures/furnitureSets/" << idx << ".png";
+	Texture * tex = new Texture(ssTex.str(), false, true, false);
+	tex->load();
+	
+	std::stringstream ssObj;
+	ssObj << "assets/meshes/furnitureSets/" << idx << ".obj";
+	MeshEntity * res = new MeshEntity(Resource::loadMeshFromObj(ssObj.str(), true).at(0), getShader());
+	res->mesh->pushTexture2D(tex);
+	res->mesh->setScaleMode(GL_NEAREST);
+
 	return res;
 }

@@ -6,6 +6,7 @@
 #include <MY_Player.h>
 #include <MY_Game.h>
 #include <Room.h>
+#include <BossRoom.h>
 
 #include <shader\ComponentShaderBase.h>
 #include <shader\ComponentShaderText.h>
@@ -16,6 +17,9 @@
 #include <shader\ShaderComponentMVP.h>
 
 #include <NumberUtils.h>
+
+#define MAX_DEMON_COUNT 10
+#define MAX_SPAWNED_DEMON_COUNT 3
 
 MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	MY_Scene_Base(_game),
@@ -74,11 +78,6 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 
 	childTransform->addChild(roomTransition, false);
 	
-
-
-	// Setup a room
-	goToNewRoom();
-
 	// setup UI
 	livesCounter = new MY_UI_Counter(uiLayer->world, MY_ResourceManager::globalAssets->getTexture("LIFE")->texture, MY_ResourceManager::globalAssets->getTexture("EMPTY_LIFE")->texture);
 	livesCounter->setBackgroundColour(1.f, 0.f, 0.f, 0.5f);
@@ -92,12 +91,19 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	demonsCounter->setBackgroundColour(0.f, 0.f, 1.f, 0.5f);
 	demonsCounter->setRationalWidth(1.f);
 	demonsCounter->setRationalHeight(1.f);
-	demonsCounter->setMarginLeft(0.5f);
-	demonsCounter->setMarginBottom(0.9f);
+	demonsCounter->setMarginLeft(0.1f);
+	demonsCounter->setMarginRight(0.1f);
+	
+	float marginTop = 1 - (sweet::getWindowWidth() * 1.f/MAX_DEMON_COUNT * 0.8f) / sweet::getWindowHeight();
+	demonsCounter->setMarginTop(marginTop);
 	demonsCounter->horizontalAlignment = kRIGHT;
 
 	uiLayer->addChild(livesCounter);
 	uiLayer->addChild(demonsCounter);
+
+	// Setup a room
+	goToNewRoom();
+
 }
 
 MY_Scene_Main::~MY_Scene_Main(){
@@ -118,7 +124,11 @@ Room * MY_Scene_Main::goToNewRoom(){
 		demons.clear();
 	}
 
-	Room * res = currentRoom = new Room(baseShader);
+	if(demonsCounter->getItemCount() == MAX_DEMON_COUNT){
+
+	}
+
+	Room * res = currentRoom = demonsCounter->getItemCount() < MAX_DEMON_COUNT ? new Room(baseShader) : new BossRoom(baseShader);
 
 	childTransform->addChild(res);
 	
@@ -127,8 +137,13 @@ Room * MY_Scene_Main::goToNewRoom(){
 
 	
 	player = spawnPlayer(res);
-	spawnDemon(res);
-	spawnDemon(res);
+
+	if(demonsCounter->getItemCount() < MAX_DEMON_COUNT){
+		float numSpawnedDemons = sweet::NumberUtils::randomInt(1, MAX_DEMON_COUNT - demonsCounter->getItemCount() < MAX_SPAWNED_DEMON_COUNT ? MAX_DEMON_COUNT - demonsCounter->getItemCount() : MAX_SPAWNED_DEMON_COUNT);
+		for(int i = 0; i < numSpawnedDemons; ++i){
+			spawnDemon(res);
+		}
+	}
 
 	currentRoom->placeFG();
 	roomTransition->restart();
@@ -177,7 +192,7 @@ void MY_Scene_Main::update(Step * _step){
 
 	if(!started){ // Because we don't have the UI square thing
 		started = true;
-		livesCounter->setItemCount(5);
+		livesCounter->setItemCount(MY_Player::lives);
 	}
 	// camera
 	//mainCam->firstParent()->translate(glm::vec3(sin(_step->time), cos(_step->time), 0));
