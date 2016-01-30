@@ -7,9 +7,11 @@
 
 Room::Room(Shader * _shader, float _width, float _height, float _depth) :
 	MeshEntity(Room::getRoomMesh(_width, _height, _depth), _shader),
+	doorPos(mesh->calcBoundingBox().width),
 	foreground(new Transform()),
 	gameground(new Transform()),
-	background(new Transform())
+	background(new Transform()),
+	unlocked(true)
 {
 	mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture);
 	
@@ -41,10 +43,15 @@ Room::Room(Shader * _shader, float _width, float _height, float _depth) :
 	
 }
 
-
-
 Room::~Room(){
 
+}
+
+void Room::unlock(){
+	if(!unlocked){
+		unlocked = true;
+		// door sound/animation?
+	}
 }
 
 MeshInterface * Room::getRoomMesh(float _width, float _height, float _depth){

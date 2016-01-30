@@ -13,7 +13,8 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 	hoverRadius2(hoverRadius*hoverRadius),
 	hoverTarget(nullptr),
 	ripTarget(nullptr),
-	gripTarget(nullptr)
+	gripTarget(nullptr),
+	gameOver(false)
 {
 	// setup main camera
 	cameras.push_back(mainCam);
@@ -32,6 +33,11 @@ MY_Scene_Main::MY_Scene_Main(Game * _game) :
 
 	// Setup the player
 	player = new MY_Player(baseShader);
+	player->eventManager.addEventListener("gameOver", [this](sweet::Event * _event){
+		gameOver = true;
+		// gameOver stuff
+		Log::info("GAME OVER");
+	});
 	room->gameground->addChild(player);
 
 	childTransform->addChild(room);
@@ -52,6 +58,17 @@ void MY_Scene_Main::update(Step * _step){
 	MY_Scene_Base::update(_step);
 
 	collideEntities();
+
+	// Check enemy count
+	if(demons.size() == 0){
+		// unlock door
+		room->unlock();
+	}
+
+	if(room->unlocked && player->firstParent()->getTranslationVector().x >= room->doorPos){
+		// go to next room
+		Log::info("go to next room");
+	}
 
 	hoverTarget = getHovered();
 	if(hoverTarget != nullptr){
