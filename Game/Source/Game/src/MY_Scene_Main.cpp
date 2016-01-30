@@ -29,7 +29,7 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	
 	baseShaderWithDepth->addComponent(new ShaderComponentMVP(baseShaderWithDepth));
 	//baseShader->addComponent(new ShaderComponentDiffuse(baseShader));
-	baseShaderWithDepth->addComponent(new ShaderComponentTexture(baseShaderWithDepth));
+	baseShaderWithDepth->addComponent(new ShaderComponentTexture(baseShaderWithDepth, 0.01f));
 	baseShaderWithDepth->addComponent(new ShaderComponentDepthOffset(baseShaderWithDepth));
 	baseShaderWithDepth->compileShader();
 

@@ -6,6 +6,7 @@
 
 #define NUM_DEMON_TEXTURES 2
 #define TIMEOUT_TIME 1.0
+#define DEMON_SCALE 10
 
 MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed) : 
 	Sprite(_shader),
@@ -13,7 +14,7 @@ MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed) :
 	speed(0),
 	state(kIN),
 	scaleAnim(3),
-	origin(0, _possessed->childTransform->getScaleVector().y, 0)
+	origin(0, DEMON_SCALE, 0.2f)
 {
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("demon_spirit")->texture);
 
@@ -145,7 +146,7 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	mesh->dirty = true;
 	mesh->setScaleMode(GL_NEAREST);
 
-	meshTransform->scale(glm::vec3(10));
+	meshTransform->scale(glm::vec3(DEMON_SCALE));
 }
 
 void MY_Demon::render(sweet::MatrixStack* _matrixStack, RenderOptions* _renderOptions) {
