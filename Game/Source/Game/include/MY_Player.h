@@ -1,9 +1,14 @@
 #pragma once
 
 #include <Box2DSprite.h>
+#include <Joystick.h>
 
 class MY_Player : public Sprite {
 public:
+
+	float speed;
+
+	Joystick * joystick;
 
 	explicit MY_Player(Shader * _shader);
 
