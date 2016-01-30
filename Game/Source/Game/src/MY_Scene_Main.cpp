@@ -48,10 +48,12 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	mouseIndicator = uiLayer->addMouseIndicator();
 
 	// Setup a room
-	room = new Room(baseShader);
-
+	room = goToNewRoom();
+	
 	// Setup the player
-	player = spawnPlayer();
+	player->eventManager.addEventListener("invincibilityStart", [this](sweet::Event * _event){
+		mainCam->shakeTimer->restart();
+	});
 	player->eventManager.addEventListener("gameOver", [this](sweet::Event * _event){
 		gameOver = true;
 		// gameOver stuff
@@ -62,21 +64,6 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 		game->scenes[ss.str()] = new MY_Scene_Main(dynamic_cast<MY_Game *>(game));
 		game->switchScene(ss.str(), true);
 	});
-
-	childTransform->addChild(room);
-	
-	room->placeBG();
-	room->placeGG();
-
-	
-	spawnDemon();
-	spawnDemon();
-
-	room->placeFG();
-
-	player->eventManager.addEventListener("invincibilityStart", [this](sweet::Event * _event){
-		mainCam->shakeTimer->restart();
-	});
 }
 
 MY_Scene_Main::~MY_Scene_Main(){
@@ -84,6 +71,23 @@ MY_Scene_Main::~MY_Scene_Main(){
 	deleteChildTransform();
 }
 
+
+Room * MY_Scene_Main::goToNewRoom(){
+	Room * res = new Room(baseShader);
+
+	childTransform->addChild(res);
+	
+	res->placeBG();
+	res->placeGG();
+
+	
+	player = spawnPlayer(res);
+	spawnDemon(res);
+	spawnDemon(res);
+
+	room->placeFG();
+	return res;
+}
 
 void MY_Scene_Main::update(Step * _step){
 	// Scene update
@@ -167,17 +171,17 @@ void MY_Scene_Main::collideEntities() {
 	}
 }
 
-MY_Demon * MY_Scene_Main::spawnDemon(){
+MY_Demon * MY_Scene_Main::spawnDemon(Room * _room){
 	MY_Demon * d = new MY_Demon(baseShaderWithDepth, player->firstParent());
-	room->gameground->addChild(d)->translate(5.0f, 0.f, 0.f);
+	_room->gameground->addChild(d)->translate(5.0f, 0.f, 0.f);
 	demons.push_back(d);
 	return d;
 }
 
-MY_Player * MY_Scene_Main::spawnPlayer(){
+MY_Player * MY_Scene_Main::spawnPlayer(Room * _room){
 	// Setup the player
 	MY_Player * p = new MY_Player(baseShaderWithDepth);
-	room->gameground->addChild(p)->scale(10);
+	_room->gameground->addChild(p)->scale(10);
 	return p;
 }
 

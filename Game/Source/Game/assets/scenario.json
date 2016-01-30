@@ -49,6 +49,12 @@
       "id":"BGM_2",
       "src":"MyGirlfriendsADemon.ogg",
       "category": "music"
+    },
+    {
+      "type":"audio",
+      "id":"BGM_3",
+      "src":"DevilIsADickweed.ogg",
+      "category": "music"
     }
 
   ]

@@ -24,8 +24,8 @@ public:
 	Room * room;
 
 	std::vector<MY_Demon *> demons;
-	MY_Demon * spawnDemon();
-	MY_Player * spawnPlayer();
+	MY_Demon * spawnDemon(Room * _room);
+	MY_Player * spawnPlayer(Room * _room);
 
 	MY_Cam * mainCam;
 
@@ -58,4 +58,6 @@ public:
 	MY_DemonSpirit * hoverTarget;
 	MY_DemonSpirit * ripTarget;
 	MY_DemonSpirit * gripTarget;
+
+	Room * goToNewRoom();
 };

@@ -81,7 +81,12 @@ void MY_DemonSpirit::update(Step * _step){
 	speed *= (1-damping); // damping
 	firstParent()->translate(speed);
 
-	childTransform->rotate(glm::length(speed), 0, 0, 1, kOBJECT);
+	float angle = glm::angle(childTransform->getOrientationQuat());
+	angle *= -0.2f;
+	angle += glm::length(speed)*36;
+
+	childTransform->rotate(angle, 0, 0, 1, kOBJECT);
+
 
 	Sprite::update(_step);
 }
