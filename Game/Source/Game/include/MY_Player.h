@@ -1,9 +1,17 @@
 #pragma once
 
 #include <Box2DSprite.h>
+#include <Joystick.h>
+#include <EventManager.h>
 
 class MY_Player : public Sprite {
 public:
+
+	float speed;
+
+	Joystick * joystick;
+
+	sweet::EventManager eventManager;
 
 	explicit MY_Player(Shader * _shader);
 

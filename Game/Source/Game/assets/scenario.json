@@ -1,3 +1,30 @@
 {
-  "assets": []
+  "assets": [
+  	{
+  		"type":"texture",
+  		"id":"spritesheet",
+  		"src":"spritesheet.png"
+  	},
+  	{
+  		"type":"texture",
+  		"id":"demon_1",
+  		"src":"demon_1.png"
+  	},
+    {
+      "type":"texture",
+      "id":"demon_2",
+      "src":"demon_2.png"
+    },
+    {
+      "type":"texture",
+      "id":"demon_spirit",
+      "src":"demon_spirit.png"
+    },
+    {
+      "type":"texture",
+      "id":"player",
+      "src":"player.png"
+    }
+
+  ]
 }
