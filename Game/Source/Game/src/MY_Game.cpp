@@ -27,6 +27,8 @@ MY_Game::MY_Game() :
 	scenes["screenshaders"] = new MY_Scene_ScreenShaders(this);
 	scenes["surfaceshaders"] = new MY_Scene_SurfaceShaders(this);
 	scenes["vr"] = new MY_Scene_VR(this);
+
+	MY_ResourceManager::globalAssets->getAudio("BGM")->sound->play(true);
 }
 
 MY_Game::~MY_Game(){}

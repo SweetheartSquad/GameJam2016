@@ -183,7 +183,7 @@ bool MY_Scene_Main::isHoveredOverSpirit(){
 void MY_Scene_Main::ripIt(){
 	// demon pulls the mouse, mouse pulls the demon
 	if(distToHoverTargetMag > 3){
-		float mouseResistance = 0.5f;
+		float mouseResistance = 1.f;
 		float demonResistance = 0.01f;
 		mouse->translate(distToHoverTarget*mouseResistance);
 		ripTarget->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
@@ -193,8 +193,8 @@ void MY_Scene_Main::ripIt(){
 void MY_Scene_Main::gripIt(){
 	// demon pulls the mouse, mouse pulls the demon
 	if(distToHoverTargetMag > 3){
-		float mouseResistance = 0.5f;
-		float demonResistance = 0.001f;
+		float mouseResistance = 1.f;
+		float demonResistance = 0.01f;
 		mouse->translate(distToHoverTarget*mouseResistance);
 		gripTarget->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
 		gripTarget->gripIt();

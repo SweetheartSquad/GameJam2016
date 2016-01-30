@@ -34,6 +34,12 @@
       "type":"texture",
       "id":"BG",
       "src":"backThing.png"
+    },
+    {
+      "type":"audio",
+      "id":"BGM",
+      "src":"PleaseGod.ogg",
+      "category": "music"
     }
 
   ]
