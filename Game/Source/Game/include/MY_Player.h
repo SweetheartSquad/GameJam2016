@@ -10,6 +10,9 @@
 
 class MY_Player : public Sprite {
 public:
+	bool paused;
+	Timeout * pauseTimer;
+
 	bool isDead;
 
 	float speed;
@@ -35,5 +38,8 @@ public:
 	void load() override;
 
 	Timeout * voiceTimer;
+
+	// prevents player input for _seconds
+	void pause(float _seconds);
 };
 

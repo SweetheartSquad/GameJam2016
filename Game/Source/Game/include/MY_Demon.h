@@ -4,17 +4,7 @@
 #include <Timeout.h>
 #include <Animation.h>
 
-enum DemonState {
-	kWALKING,
-	kIDLE
-};
 
-enum DemonSpiritState {
-	kIN,
-	kSTUNNED,
-	kOUT,
-	kDEAD
-};
 
 
 
@@ -30,9 +20,15 @@ private:
 
 	Animation<float> * idleScaleAnim;
 public:
+	enum DemonSpiritState {
+		kIN,
+		kSTUNNED,
+		kOUT,
+		kDEAD
+	} state;
+
 	glm::vec3 scaleAnim;
 	glm::vec3 origin;
-	DemonSpiritState state;
 	// reference to the character this spirit is possessing
 	MY_Demon * possessed;
 	MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed);
@@ -55,12 +51,17 @@ public:
 
 class MY_Demon : public Sprite {
 public:
+	enum DemonState {
+		kWALKING,
+		kIDLE,
+		kDEAD
+	} state;
+
 	// reference to the spirit possessing this character
 	MY_DemonSpirit * spirit;
 
 	float speed;
 	float damage;
-	DemonState currentState;
 	Transform * target;
 
 	Timeout * stateTimeout;

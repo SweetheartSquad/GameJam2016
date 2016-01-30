@@ -203,9 +203,9 @@ void MY_Scene_Main::update(Step * _step){
 	hoverTarget = getHovered();
 	if(hoverTarget != nullptr){
 		if(mouse->leftJustPressed()){
-			if(hoverTarget->state == kIN){
+			if(hoverTarget->state == MY_DemonSpirit::kIN){
 				ripTarget = hoverTarget;
-			}else if(hoverTarget->state == kSTUNNED || hoverTarget->state == kOUT){
+			}else if(hoverTarget->state == MY_DemonSpirit::kSTUNNED || hoverTarget->state == MY_DemonSpirit::kOUT){
 				gripTarget = hoverTarget;
 			}
 		}
@@ -219,7 +219,7 @@ void MY_Scene_Main::update(Step * _step){
 	
 	// if we're holding a demon inside a body, try to rip it
 	if(ripTarget != nullptr){
-		if(ripTarget->state == kIN){
+		if(ripTarget->state == MY_DemonSpirit::kIN){
 			ripIt();
 		}else{
 			// we've ripped it, so let go
@@ -246,17 +246,19 @@ void MY_Scene_Main::collideEntities() {
 	float pMax = ptrans.x + (player->firstParent()->getScaleVector().x  * 0.5f);
 	
 	for(auto demon : demons) {
-		auto dtrans = demon->firstParent()->getTranslationVector();
-		float dMin = dtrans.x - (demon->firstParent()->getScaleVector().x  * 0.5f);
-		float dMax = dtrans.x + (demon->firstParent()->getScaleVector().x  * 0.5f);
+		if(demon->state != MY_Demon::kDEAD){
+			auto dtrans = demon->firstParent()->getTranslationVector();
+			float dMin = dtrans.x - (demon->firstParent()->getScaleVector().x  * 0.5f);
+			float dMax = dtrans.x + (demon->firstParent()->getScaleVector().x  * 0.5f);
 
-		if((pMax >= dMin && pMin <= dMax) ||
-			pMin <= dMax && pMax >= dMin) {
-				sweet::Event * e = new sweet::Event("demonCollision");
-				e->setFloatData("damage", demon->damage);
-				player->eventManager.triggerEvent(e);
+			if((pMax >= dMin && pMin <= dMax) ||
+				pMin <= dMax && pMax >= dMin) {
+					sweet::Event * e = new sweet::Event("demonCollision");
+					e->setFloatData("damage", demon->damage);
+					player->eventManager.triggerEvent(e);
 
-				demon->eventManager.triggerEvent("playerCollisoin");
+					demon->eventManager.triggerEvent("playerCollisoin");
+			}
 		}
 	}
 }
@@ -338,6 +340,8 @@ void MY_Scene_Main::sipIt(){
 		demonsCounter->increment();
 
 		// TODO: trigger sip animation on player, pass out animation on enemy, remove spirit
+		player->setCurrentAnimation("sip");
+		player->pause(1.f);
 
 		gripTarget = nullptr;
 	}

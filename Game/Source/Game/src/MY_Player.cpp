@@ -19,7 +19,8 @@ MY_Player::MY_Player(Shader * _shader) :
 	isDead(false),
 	scaleAnim(1),
 	invincible(false),
-	bounds(0)
+	bounds(0),
+	paused(false)
 {
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet")->texture);
 
@@ -32,6 +33,10 @@ MY_Player::MY_Player(Shader * _shader) :
 	anim = new SpriteSheetAnimation(0.16f);
 	anim->pushFramesInRange(0, 3, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	spriteSheet->addAnimation("walk", anim);
+
+	anim = new SpriteSheetAnimation(0.4f);
+	anim->pushFramesInRange(8, 9, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	spriteSheet->addAnimation("sip", anim);
 
 	mesh->setScaleMode(GL_NEAREST);
 
@@ -79,6 +84,12 @@ MY_Player::MY_Player(Shader * _shader) :
 	});
 	voiceTimer->start();
 	childTransform->addChild(voiceTimer, false);
+
+	// setup pause timer
+	pauseTimer = new Timeout(1.f, [this](sweet::Event * _event){
+		paused = false;
+	});
+	childTransform->addChild(pauseTimer, false);
 }
 
 void MY_Player::render(sweet::MatrixStack * _matrixStack, RenderOptions * _renderOptions) {
@@ -110,11 +121,11 @@ void MY_Player::update(Step * _step) {
 			isDead = true;
 			eventManager.triggerEvent("gameOver");
 		}
-		setCurrentAnimation("idle");
 		idleScaleAnim->update(_step);
 		childTransform->scale(scaleAnim, false);
 		
-		if(joystick != nullptr){
+		if(joystick != nullptr && !paused){
+			setCurrentAnimation("idle");
 			if(joystick->getAxis(joystick->axisLeftX) > 0.5f) {
 				firstParent()->translate(speed, 0.f, 0.f);
 				setCurrentAnimation("walk");
@@ -143,4 +154,10 @@ void MY_Player::unload() {
 void MY_Player::load() {
 
 	Sprite::load();
+}
+
+void MY_Player::pause(float _seconds){
+	pauseTimer->targetSeconds = _seconds;
+	pauseTimer->restart();
+	paused = true;
 }

@@ -101,12 +101,14 @@ void MY_DemonSpirit::gripIt(){
 	std::cout << "demon gripped" << std::endl;
 	state = kSTUNNED;
 	stunTimer->restart();
-	possessed->currentState = kIDLE;
+	possessed->state = MY_Demon::kIDLE;
 }
 
 void MY_DemonSpirit::sipIt(){
 	std::cout << "demon sipped" << std::endl;
 	state = kDEAD;
+	possessed->stateTimeout->stop();
+	possessed->state = MY_Demon::kDEAD;
 }
 
 void MY_DemonSpirit::getBackInThere(){
@@ -121,7 +123,7 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	Sprite(_shader), 
 	speed(0.02f),
 	damage(10.f),
-	currentState(kWALKING),
+	state(kWALKING),
 	target(_target),
 	spirit(new MY_DemonSpirit(_shader, this))
 {
@@ -131,11 +133,11 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("demon_" + std::to_string(demonTexId))->texture);
 
 	stateTimeout = new Timeout(TIMEOUT_TIME, [this](sweet::Event * _event){
-		bool randState = spirit->state == kIN && sweet::NumberUtils::randomBool();
+		bool randState = spirit->state == MY_DemonSpirit::kIN && sweet::NumberUtils::randomBool();
 		if(randState) {
-			currentState = kWALKING;
+			state = kWALKING;
 		}else {
-			currentState = kIDLE;
+			state = kIDLE;
 		}
 		stateTimeout->restart();
 	});
@@ -162,7 +164,7 @@ void MY_Demon::render(sweet::MatrixStack* _matrixStack, RenderOptions* _renderOp
 void MY_Demon::update(Step * _step) {
 	eventManager.update(_step);
 	stateTimeout->update(_step);
-	if(target != nullptr && currentState == kWALKING){
+	if(target != nullptr && state == kWALKING){
 		float targDir = target->getTranslationVector().x < firstParent()->getTranslationVector().x ? -1.f : 1.f;
 		firstParent()->translate(speed * targDir, 0.f, 0.f);
 	}
