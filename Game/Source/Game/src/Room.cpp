@@ -66,7 +66,7 @@ void Room::placeBG(){
 	}
 	background->addChild(testBackground);
 	background->translate(0, 0, -depth * 0.9);*/
-
+	/*
 	Texture * curtainTex = new Texture("assets/textures/curtainsTest.png", false, true, false);
 	curtainTex->load();
 
@@ -74,7 +74,16 @@ void Room::placeBG(){
 	MeshEntity * curtains = new MeshEntity(Resource::loadMeshFromObj("assets/meshes/curtains.obj", true).at(0), getShader());
 	curtains->mesh->pushTexture2D(curtainTex);
 	curtains->mesh->setScaleMode(GL_NEAREST);
-	background->addChild(curtains);
+	*/
+	childTransform->addChild(background)->translate(0, 0, -mesh->calcBoundingBox().depth * 0.5 * 0.9);
+
+	Texture * furnitureTex = new Texture("assets/textures/furnitureSets/testFurnitureSetUVs.png", false, true, false);
+	furnitureTex->load();
+	
+	MeshEntity * furnitureSet = new MeshEntity(Resource::loadMeshFromObj("assets/meshes/furnitureSets/testFurnitureSet.obj", true).at(0), getShader());
+	furnitureSet->mesh->pushTexture2D(furnitureTex);
+	furnitureSet->mesh->setScaleMode(GL_NEAREST);
+	background->addChild(furnitureSet);
 }
 
 void Room::placeGG(){	
