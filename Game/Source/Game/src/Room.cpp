@@ -13,7 +13,7 @@ bool Room::staticInit(){
 	for(unsigned long int i = 1; i <= 5; ++i){
 		roomTexIdx.push(i);
 	}
-	for(unsigned long int i = 1; i <= 1; ++i){
+	for(unsigned long int i = 1; i <= 2; ++i){
 		furnitureSetIdx.push(i);
 	}
 	return true;
@@ -60,7 +60,7 @@ void Room::placeFG(){
 }
 
 void Room::placeBG(){
-	childTransform->addChild(background)->translate(0, 0, -mesh->calcBoundingBox().depth * 0.5 * 0.9);
+	childTransform->addChild(background)/*->translate(0, 0, -mesh->calcBoundingBox().depth * 0.5 * 0.9)*/;
 
 	background->addChild(getFurnitureSet());
 }
