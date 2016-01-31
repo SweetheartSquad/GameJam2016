@@ -7,7 +7,7 @@
 #include <SpriteSheetAnimation.h>
 #include <MY_Player.h>
 
-#define NUM_DEMON_TEXTURES 2
+#define NUM_DEMON_TEXTURES 3
 #define TIMEOUT_TIME 1.0
 #define DEMON_SCALE 10
 #define RIPIT_SOUND_COUNT 2
@@ -56,7 +56,7 @@ MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed, unsigned
 
 	indicator = new Sprite(_shader);
 	indicator->setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("INDICATOR")->texture);
-	childTransform->addChild(indicator)->scale(0.5f);
+	childTransform->addChild(indicator)->scale(0.5f)->translate(0,0,0.1f);
 }
 
 MY_DemonSpirit::MY_DemonSpirit(Shader* _shader, MY_Player * _player) :
@@ -358,7 +358,7 @@ void MY_Demon::kill(bool _saved){
 	state = _saved ? MY_Demon::kSAVED : MY_Demon::kDEAD;
 	currentAnimation->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
 
-	Timeout * t = new Timeout(0.75f, [this](sweet::Event * _event){
+	Timeout * t = new Timeout(1.1f, [this](sweet::Event * _event){
 		setVisible(false);
 	});
 

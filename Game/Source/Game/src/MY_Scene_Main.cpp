@@ -39,8 +39,8 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	screenSurfaceShader(new Shader("assets/RenderSurface_1", false, true)),
 	screenSurface(new RenderSurface(screenSurfaceShader)),
 	screenFBO(new StandardFrameBuffer(true)),
-	screenMagnitude(0)
-
+	screenMagnitude(0),
+	screenMagnitude2(0)
 {
 	
 	baseShaderWithDepth->addComponent(new ShaderComponentMVP(baseShaderWithDepth));
@@ -153,7 +153,7 @@ Room * MY_Scene_Main::goToNewRoom(){
 		demons.clear();
 	}
 
-	isBossRoom = !demonsCounter->getItemCount() < MAX_DEMON_COUNT || true;
+	isBossRoom = demonsCounter->getItemCount() >= MAX_DEMON_COUNT;// || true;
 
 	Room * res = currentRoom = !isBossRoom ? new Room(baseShader) : new BossRoom(baseShader);
 
@@ -206,9 +206,6 @@ Room * MY_Scene_Main::goToNewRoom(){
 
 		MY_Player::lives = MAX_LIVES;
 	});
-	player->eventManager.addEventListener("newroom", [this](sweet::Event * _event){
-		goToNewRoom();
-	});
 
 	if(isBossRoom){
 		player->eventManager.addEventListener("hitBoss", [this](sweet::Event * _event){
@@ -254,6 +251,15 @@ void MY_Scene_Main::update(Step * _step){
 		if(screenMagnitude < 0){
 			screenMagnitude = 0;
 		}
+		if(isBossRoom && screenMagnitude < 0.3f){
+			screenMagnitude = 0.3f;
+		}
+	}
+
+	if(isBossRoom){
+		screenMagnitude2 = sin(_step->time)*0.75f + 0.25f;
+	}else{
+		screenMagnitude2 = 0;
 	}
 	
 	screenSurfaceShader->bindShader(); // remember that we have to bind the shader before it can be updated
@@ -267,6 +273,12 @@ void MY_Scene_Main::update(Step * _step){
 	checkForGlError(0,__FILE__,__LINE__);
 	if(test != -1){
 		glUniform1f(test, screenMagnitude);
+		checkForGlError(0,__FILE__,__LINE__);
+	}
+	test = glGetUniformLocation(screenSurfaceShader->getProgramId(), "magnitude2");
+	checkForGlError(0,__FILE__,__LINE__);
+	if(test != -1){
+		glUniform1f(test, screenMagnitude2);
 		checkForGlError(0,__FILE__,__LINE__);
 	}
 

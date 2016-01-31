@@ -18,7 +18,7 @@ MY_Player::MY_Player(Shader * _shader) :
 	Sprite(_shader),
 	state(kIDLE),
 	isDead(false),
-	speed(0.1f),
+	speed(0.15f),
 	bounds(0),
 	scaleAnim(1),
 	spirit(nullptr),
