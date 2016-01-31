@@ -30,7 +30,9 @@ MY_Player::MY_Player(Shader * _shader) :
 	stepTimer(0.f),
 	highStep(false),
 	flashTimer(0.f),
-	mouseWalk(0)
+	mouseWalk(0),
+	voice(nullptr),
+	quipPlayed(false)
 {
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet_player")->texture);
 
@@ -98,14 +100,15 @@ MY_Player::MY_Player(Shader * _shader) :
 
 
 	// setup voice timer
-	voiceTimer = new Timeout(3.f, [this](sweet::Event * _event){
+	voiceTimer = new Timeout(1.f, [this](sweet::Event * _event){
 		std::stringstream ss;
-		ss << "VOICE_" << sweet::NumberUtils::randomInt(1,14);
-		MY_ResourceManager::globalAssets->getAudio(ss.str())->sound->play();
-		voiceTimer->targetSeconds = sweet::NumberUtils::randomFloat(3.f, 6.f);
-		voiceTimer->restart();
+		ss << "VOICE_" << sweet::NumberUtils::randomInt(1, 14);
+		voice = MY_ResourceManager::globalAssets->getAudio(ss.str())->sound;
+		eventManager.triggerEvent("decreaseMusic");
+		voice->play();
+		quipPlayed = true;
 	});
-	voiceTimer->start();
+
 	childTransform->addChild(voiceTimer, false);
 
 	// setup pause timer
@@ -132,6 +135,14 @@ void MY_Player::update(Step * _step) {
 	eventManager.update(_step);
 	if(joystick != nullptr){
 		joystick->update(_step);
+	}
+
+	if(voice != nullptr) {
+		voice->update(_step);
+	}
+
+	if(voice != nullptr && voice->source->state != AL_PLAYING) {
+		eventManager.triggerEvent("increaseMusic");
 	}
 
 	if(!isDead){

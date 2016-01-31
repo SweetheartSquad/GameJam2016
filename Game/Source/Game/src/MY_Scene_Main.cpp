@@ -385,6 +385,19 @@ void MY_Scene_Main::update(Step * _step){
 		gripIt();
 		sipIt();
 	}
+
+	if(!player->quipPlayed) {
+		bool allDead = true;
+		for(auto d : demons) {
+			if(d->state != MY_Demon::kSAVED && d->state != MY_Demon::kDEAD) {
+				allDead = false; 
+				break;
+			}
+		}
+		if(allDead) {
+			player->voiceTimer->start();
+		}
+	}
 }
 
 
@@ -524,6 +537,15 @@ MY_Player * MY_Scene_Main::spawnPlayer(Room * _room){
 	MY_Player * p = new MY_Player(baseShaderWithDepth);
 	_room->gameground->addChild(p)->scale(10)->translate(glm::vec3(-_room->doorPos*0.9f, 0, 0), false);
 	p->bounds = _room->doorPos;
+
+	p->eventManager.addEventListener("increaseMusic", [this](sweet::Event * _event){
+		((MY_Game *)game)->bgm->setGain(1.0);
+	});
+	
+	p->eventManager.addEventListener("decreaseMusic", [this](sweet::Event * _event){
+		((MY_Game *)game)->bgm->setGain(0.7);
+	});
+
 	return p;
 }
 
@@ -607,7 +629,7 @@ void MY_Scene_Main::ripIt(){
 		float demonResistance = 0.01f;
 		mouse->translate(distToHoverTarget*mouseResistance);
 		ripTarget->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
-	}
+	} 
 }
 
 void MY_Scene_Main::gripIt(){
