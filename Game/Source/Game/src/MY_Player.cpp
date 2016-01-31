@@ -230,6 +230,7 @@ void MY_Player::load() {
 void MY_Player::spawnDemon() {
 	spirit = new MY_DemonSpirit(shader, this);
 	childTransform->addChild(spirit)->translate(spirit->origin);
+	spirit->firstParent()->scale(0.1f);
 }
 
 void MY_Player::delayChange(float _seconds, PlayerState _state){
