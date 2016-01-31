@@ -29,7 +29,8 @@ MY_Player::MY_Player(Shader * _shader) :
 	footsetpSound(MY_ResourceManager::globalAssets->getAudio("FOOTSTEP")->sound),
 	stepTimer(0.f),
 	highStep(false),
-	flashTimer(0.f)
+	flashTimer(0.f),
+	mouseWalk(0)
 {
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet_player")->texture);
 
@@ -164,21 +165,25 @@ void MY_Player::update(Step * _step) {
 		idleScaleAnim->update(_step);
 		childTransform->scale(scaleAnim, false);
 		
-		if(joystick != nullptr && state != kSIP && state != kRIP_AND_GRIP && state != kHURT){
-			if(joystick->getAxis(joystick->axisLeftX) > 0.5f) {
-				firstParent()->translate(speed, 0.f, 0.f);
-				state = kWALK;
-				meshTransform->scale(1,1,1, false);
-			}else if(joystick->getAxis(joystick->axisLeftX) < -0.5f) {
-				firstParent()->translate(-speed, 0.f, 0.f);
-				state = kWALK;
-				meshTransform->scale(-1,1,1, false);
-			}else{
-				state = kIDLE;
+		if(state != kSIP && state != kRIP_AND_GRIP && state != kHURT){
+			float s = 0;
+			if(glm::abs(mouseWalk) > 0.5f){
+				s = glm::sign(mouseWalk);
+			}else if(joystick != nullptr){
+				if(joystick->getAxis(joystick->axisLeftX) > 0.5f) {
+					s = 1;
+				}else if(joystick->getAxis(joystick->axisLeftX) < -0.5f) {
+					s = -1;
+				}else{
+					s = 0;
+				}
 			}
 
-			if(joystick->getAxis(joystick->axisLeftX) > 0.5f || 
-				joystick->getAxis(joystick->axisLeftX) < -0.5f) {
+			if(glm::abs(s) > 0.5f){	
+				firstParent()->translate(s*speed, 0.f, 0.f);
+				state = kWALK;
+				meshTransform->scale(s,1,1, false);
+
 				stepTimer += _step->deltaTime;
 				if(stepTimer >= 0.35f) {
 					stepTimer = 0.f;
@@ -190,7 +195,8 @@ void MY_Player::update(Step * _step) {
 					highStep = !highStep;
 					footsetpSound->play();
 				}
-			}else {
+			}else{
+				state = kIDLE;
 				stepTimer = 0.f;
 			}
 

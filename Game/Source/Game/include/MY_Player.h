@@ -38,6 +38,7 @@ public:
 	float invincibilityTimerLength;
 
 	Joystick * joystick;
+	float mouseWalk;
 
 	sweet::EventManager eventManager;
 

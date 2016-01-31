@@ -247,6 +247,10 @@ void MY_Scene_Main::update(Step * _step){
 	// we need to use the OpenGL API calls
 	if(player->state == MY_Player::kRIP_AND_GRIP){
 		screenMagnitude += 0.1f;
+		screenMagnitude *= 1.1f;
+		if(screenMagnitude > 75){
+			screenMagnitude = 75;
+		}
 	}else{
 		screenMagnitude *= 0.8f;
 		screenMagnitude -= 0.1f;
@@ -345,13 +349,17 @@ void MY_Scene_Main::update(Step * _step){
 		}
 	}
 
+	glm::vec3 playerPos = player->meshTransform->getWorldPos();
+	glm::vec3 playerPosInScreen = mainCam->worldToScreen(playerPos, sweet::getWindowDimensions());
 	// if the player is gripping, make sure they face towards the cursor
 	if(mouse->leftDown()) {
 		if(player->state == MY_Player::kRIP_AND_GRIP) {
-			glm::vec3 playerPos = player->meshTransform->getWorldPos();
-			glm::vec3 playerPosInScreen = mainCam->worldToScreen(playerPos, sweet::getWindowDimensions());
 			player->meshTransform->scale(glm::sign(mouse->mouseX() - playerPosInScreen.x),1,1, false);
 		}
+	}else if(mouse->rightDown() && (player->state == MY_Player::kIDLE || player->state == MY_Player::kWALK)){
+		player->mouseWalk = mouse->mouseX() - playerPosInScreen.x;
+	}else{
+		player->mouseWalk = 0;
 	}
 
 	// let go of any held demons
