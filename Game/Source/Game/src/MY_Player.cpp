@@ -178,7 +178,7 @@ void MY_Player::update(Step * _step) {
 		
 		if(state != kSIP && state != kRIP_AND_GRIP && state != kHURT){
 			float s = 0;
-			if(glm::abs(mouseWalk) > 0.5f){
+			if(glm::abs(mouseWalk) > 25.f){
 				s = glm::sign(mouseWalk);
 			}else if(joystick != nullptr){
 				if(joystick->getAxis(joystick->axisLeftX) > 0.5f) {
