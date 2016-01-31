@@ -28,14 +28,14 @@ MY_Scene_Finale::MY_Scene_Finale(Game * _game) :
 	layout->addChild(hl);
 	hl->setRationalHeight(1.f);
 	hl->setRationalWidth(1.f);
-	hl->setMarginBottom(0.2f);
+	hl->setMarginBottom(0.7f);
 	hl->horizontalAlignment = kCENTER;
 	hl->verticalAlignment = kMIDDLE;
 
 	pressDisplay = new NodeUI(uiLayer->world);
 	pressDisplay->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("press_right")->texture);
-	pressDisplay->setWidth(512);
-	pressDisplay->setHeight(512);
+	pressDisplay->setRationalHeight(1.f, hl);
+	pressDisplay->background->mesh->setScaleMode(GL_NEAREST);
 
 	hl->addChild(pressDisplay);
 
@@ -62,6 +62,7 @@ MY_Scene_Finale::MY_Scene_Finale(Game * _game) :
 	eventManager->addEventListener("sipit", [this, layout](sweet::Event * _event){
 		layout->background->mesh->replaceTextures(MY_ResourceManager::globalAssets->getTexture("win_bg")->texture);
 		timer->stop();
+		pressDisplay->setVisible(false);
 	});
 
 
@@ -85,18 +86,26 @@ MY_Scene_Finale::~MY_Scene_Finale(){
 void MY_Scene_Finale::update(Step * _step){
 	eventManager->update(_step);
 
-	if(nextIsRight){
-		// make sure to check incorrect first; that way they can't just hit both
-		if(keyboard->keyJustDown(GLFW_KEY_A) || keyboard->keyJustDown(GLFW_KEY_LEFT) || mouse->leftJustPressed()){
-			incorrectPress();
-		}else if(keyboard->keyJustDown(GLFW_KEY_D) || keyboard->keyJustDown(GLFW_KEY_RIGHT) || mouse->rightJustPressed()){
-			correctPress();
-		}
-	}else{
-		if(keyboard->keyJustDown(GLFW_KEY_D) || keyboard->keyJustDown(GLFW_KEY_RIGHT) || mouse->rightJustPressed()){
-			incorrectPress();
-		}else if(keyboard->keyJustDown(GLFW_KEY_A) || keyboard->keyJustDown(GLFW_KEY_LEFT) || mouse->leftJustPressed()){
-			correctPress();
+	if(pressDisplay->isVisible()){
+		pressDisplay->invalidateLayout();
+		pressDisplay->setWidth(pressDisplay->getHeight(true,true));
+		if(nextIsRight){
+			// make sure to check incorrect first; that way they can't just hit both
+			if(keyboard->keyJustDown(GLFW_KEY_A) || keyboard->keyJustDown(GLFW_KEY_LEFT) || mouse->leftJustPressed()){
+				incorrectPress();
+				MY_ResourceManager::globalAssets->getAudio("BUTTON")->sound->play(false);
+			}else if(keyboard->keyJustDown(GLFW_KEY_D) || keyboard->keyJustDown(GLFW_KEY_RIGHT) || mouse->rightJustPressed()){
+				correctPress();
+				MY_ResourceManager::globalAssets->getAudio("BUTTON")->sound->play(false);
+			}
+		}else{
+			if(keyboard->keyJustDown(GLFW_KEY_D) || keyboard->keyJustDown(GLFW_KEY_RIGHT) || mouse->rightJustPressed()){
+				incorrectPress();
+				MY_ResourceManager::globalAssets->getAudio("BUTTON")->sound->play(false);
+			}else if(keyboard->keyJustDown(GLFW_KEY_A) || keyboard->keyJustDown(GLFW_KEY_LEFT) || mouse->leftJustPressed()){
+				correctPress();
+				MY_ResourceManager::globalAssets->getAudio("BUTTON")->sound->play(false);
+			}
 		}
 	}
 

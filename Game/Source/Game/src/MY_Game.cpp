@@ -24,18 +24,16 @@ MY_Game::MY_Game() :
 	scenes["game"] = nullptr;
 	scenes["intro"] = nullptr;
 	scenes["instructions"] = nullptr;
-
-	playBGM();
 }
 
 MY_Game::~MY_Game(){}
 
 void MY_Game::addSplashes(){
 	// add default splashes
-	//Game::addSplashes();
+	Game::addSplashes();
 
 	// add custom splashes
-	//addSplash(new Scene_Splash(this, MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture, MY_ResourceManager::globalAssets->getAudio("DEFAULT")->sound));
+	addSplash(new Scene_Splash(this, new Texture("assets/textures/GGJ-splash.png", false, true), MY_ResourceManager::globalAssets->getAudio("DEFAULT")->sound));
 }
 
 void MY_Game::playBGM(){
@@ -55,8 +53,12 @@ void MY_Game::playBGM(){
 void MY_Game::update(Step * _step){
 	Game::update(_step);
 
-	bgm->update(_step);
-	if(bgm->source->state != AL_PLAYING){
+	if(bgm != nullptr){
+		bgm->update(_step);
+		if(bgm->source->state != AL_PLAYING){
+			playBGM();
+		}
+	}else if(currentSceneKey == "menu"){
 		playBGM();
 	}
 }
