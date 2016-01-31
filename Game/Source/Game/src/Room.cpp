@@ -13,7 +13,7 @@ bool Room::staticInit(){
 	for(unsigned long int i = 1; i <= 5; ++i){
 		roomTexIdx.push(i);
 	}
-	for(unsigned long int i = 1; i <= 2; ++i){
+	for(unsigned long int i = 1; i <= 3; ++i){
 		furnitureSetIdx.push(i);
 	}
 	return true;
