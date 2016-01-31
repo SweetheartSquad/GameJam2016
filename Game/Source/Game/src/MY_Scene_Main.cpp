@@ -494,10 +494,11 @@ MY_DemonBoss * MY_Scene_Main::spawnBoss(Room* _room) {
 }
 
 MY_Spewer * MY_Scene_Main::spawnSpewer(Room * _room, MY_DemonBoss * _boss, int _column){
+	float w = _room->doorPos * 2 * 1/4;
 	float x = _room->doorPos * 2 * _column / 4 - _room->doorPos;
 	glm::vec3 targetPos = glm::vec3(x, _room->mesh->calcBoundingBox().height, 0);
 
-	MY_Spewer * spewer = new MY_Spewer(baseShaderWithDepth, _boss->firstParent()->getTranslationVector(), targetPos, _column);
+	MY_Spewer * spewer = new MY_Spewer(baseShaderWithDepth, _boss->firstParent()->getTranslationVector(), targetPos, _column, w);
 	_boss->addSpewer(spewer);
 	_room->gameground->addChild(spewer);
 

@@ -5,15 +5,17 @@
 
 #define SPEWER_SIZE 5
 
-MY_Spewer::MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos, int _column) :
+MY_Spewer::MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos, int _column, float _columnWidth) :
 	Sprite(_shader),
 	column(_column),
+	columnWidth(_columnWidth),
 	startPos(_startPos),
 	deltaX(_targetPos.x - _startPos.x),
 	deltaY(_targetPos.y - _startPos.y),
-	speed(20.f),
+	speed(25.f),
 	moveTimer(0),
 	moveTimerDuration(std::abs(deltaX)/speed),
+	slideX(-(columnWidth - SPEWER_SIZE)),
 	spewTimer(0),
 	spewTimerDuration(2.f),
 	vOffset(0),
@@ -21,6 +23,8 @@ MY_Spewer::MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos
 	isComplete(false)
 {
 	deltaY -= SPEWER_SIZE * 0.5;
+	deltaX += columnWidth - SPEWER_SIZE * 0.5;
+
 	meshTransform->scale(SPEWER_SIZE, SPEWER_SIZE, 1.f);
 
 	mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("SPEWER")->texture);
@@ -71,6 +75,9 @@ void MY_Spewer::update(Step * _step){
 			if(spew->isVisible()){
 				// Spew!!!!!
 				if(spewTimer <= spewTimerDuration){
+					// Slide
+					float x = startPos.x + deltaX + slideX * spewTimer/spewTimerDuration;
+					childTransform->translate(x, startPos.y + deltaY, 0, false);
 
 					if(spewTimer <= spewTimerDuration * 0.5){
 						// Falling

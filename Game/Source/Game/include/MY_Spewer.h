@@ -6,17 +6,19 @@
 class MY_Spewer : public Sprite  {
 public:
 	int column;
+	float columnWidth;
 
+	// trajectory
 	glm::vec3 startPos;
-
 	float deltaX;
 	float deltaY;
-
 	float speed;
 	
 	float moveTimer;
 	float moveTimerDuration;
 
+	// spew
+	float slideX;
 	float spewTimer;
 	float spewTimerDuration;
 
@@ -29,7 +31,7 @@ public:
 
 	sweet::EventManager eventManager;
 
-	MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos, int _column);
+	MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos, int _column, float _columnWidth);
 	~MY_Spewer();
 
 	void start();
