@@ -30,8 +30,9 @@ public:
 	Shader * screenSurfaceShader;
 	RenderSurface * screenSurface;
 	StandardFrameBuffer * screenFBO;
-
+	
 	float screenMagnitude;
+	float screenMagnitude2;
 
 
 	bool gameOver;
