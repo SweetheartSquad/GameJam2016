@@ -18,6 +18,8 @@ public:
 	float spewTimer;
 	float spewTimerDuration;
 
+	bool isComplete;
+
 	Sprite * spew;
 
 	sweet::EventManager eventManager;

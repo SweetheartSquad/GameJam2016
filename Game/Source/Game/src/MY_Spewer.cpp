@@ -15,7 +15,8 @@ MY_Spewer::MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos
 	moveTimerDuration(std::abs(deltaX)/speed),
 	spewTimer(0),
 	spewTimerDuration(2.f),
-	spew(new Sprite(_shader))
+	spew(new Sprite(_shader)),
+	isComplete(false)
 {
 	deltaY -= SPEWER_SIZE * 0.5;
 	meshTransform->scale(SPEWER_SIZE, SPEWER_SIZE, 1.f);
@@ -27,6 +28,7 @@ MY_Spewer::MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos
 	for(int i = 0; i < spew->mesh->vertices.size(); ++i){
 		spew->mesh->vertices.at(i).y += 0.5;
 	}
+	spew->setVisible(false);
 	childTransform->addChild(spew);
 }
 
@@ -37,21 +39,26 @@ void MY_Spewer::update(Step * _step){
 	Sprite::update(_step);
 	eventManager.update(_step);
 
-	if(moveTimer <= moveTimerDuration){
-		float x = deltaX * moveTimer/moveTimerDuration + startPos.x;
-		float y = Easing::easeOutCubic(moveTimer, startPos.y, deltaY, moveTimerDuration);
-		childTransform->translate(x, y, 0.f, false);
+	if(!isComplete){
+		if(moveTimer <= moveTimerDuration){
+			float x = deltaX * moveTimer/moveTimerDuration + startPos.x;
+			float y = Easing::easeOutCubic(moveTimer, startPos.y, deltaY, moveTimerDuration);
+			childTransform->translate(x, y, 0.f, false);
 
-		moveTimer += _step->getDeltaTime();
-	}else{
-		// Spew!!!!!
-
-		if(spewTimer <= spewTimerDuration){
-			spew->firstParent()->translate(0, -spewTimer/spewTimerDuration * deltaY, 0, false);
-			spewTimer += _step->getDeltaTime();
+			moveTimer += _step->getDeltaTime();
 		}else{
-			eventManager.triggerEvent("spewComplete");
+			spew->setVisible(true);
+		}
+
+		if(spew->isVisible()){
+			// Spew!!!!!
+			if(spewTimer <= spewTimerDuration){
+				spew->firstParent()->translate(0, -spewTimer/spewTimerDuration * deltaY, 0, false);
+				spewTimer += _step->getDeltaTime();
+			}else{
+				isComplete = true;
+				eventManager.triggerEvent("spewComplete");
+			}
 		}
 	}
-	
 }
