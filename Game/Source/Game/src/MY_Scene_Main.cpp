@@ -37,7 +37,7 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	hoverTarget(nullptr),
 	ripTarget(nullptr),
 	gripTarget(nullptr),
-	playerSpirit(nullptr),
+	boss(nullptr),
 	dummyDemon(nullptr),
 	screenSurfaceShader(new Shader("assets/RenderSurface_1", false, true)),
 	screenSurface(new RenderSurface(screenSurfaceShader)),
@@ -137,7 +137,9 @@ void MY_Scene_Main::addDummyDemon(Room * _room) {
 	_room->gameground->addChild(dummyDemon)->translate(glm::vec3(sweet::NumberUtils::randomFloat(0, _room->doorPos*0.9f), 0, 0), false);
 	demons.push_back(dummyDemon);
 	dummyDemon->spirit->state = MY_DemonSpirit::kOUT;
+	dummyDemon->spirit->setVisible(true);
 	dummyDemon->isDummy = true;
+	dummyDemon->mesh->setVisible(false);
 }
 
 Room * MY_Scene_Main::goToNewRoom(){
@@ -164,7 +166,7 @@ Room * MY_Scene_Main::goToNewRoom(){
 	player = spawnPlayer(res);
 
 	if(isBossRoom) {
-		spawnBoss(res);
+		boss = spawnBoss(res);
 		addDummyDemon(res);
 	} else{
 		if(demonsCounter->getItemCount() < MAX_DEMON_COUNT){
@@ -373,23 +375,39 @@ void MY_Scene_Main::disableDebug(){
 }
 
 void MY_Scene_Main::collideEntities() {
-	auto  ptrans = player->firstParent()->getTranslationVector();
-	float pMin = ptrans.x - (player->firstParent()->getScaleVector().x  * 0.25f);
-	float pMax = ptrans.x + (player->firstParent()->getScaleVector().x  * 0.25f);
+
+	if(isBossRoom){
+		auto  ptrans = boss->firstParent()->getTranslationVector();
+		float pMin = ptrans.x - (boss->firstParent()->getScaleVector().x  * 0.25f);
+		float pMax = ptrans.x + (boss->firstParent()->getScaleVector().x  * 0.25f);
 	
-	for(auto demon : demons) {
-		if(demon->state != MY_Demon::kDEAD && demon->spirit->state == MY_DemonSpirit::kIN){
-			auto dtrans = demon->firstParent()->getTranslationVector();
-			float dMin = dtrans.x - (demon->firstParent()->getScaleVector().x  * 0.25f);
-			float dMax = dtrans.x + (demon->firstParent()->getScaleVector().x  * 0.25f);
+		auto dtrans = dummyDemon->spirit->firstParent()->getTranslationVector();
+		float dMin = dtrans.x - dummyDemon->spirit->meshTransform->getWorldPos().x;
+		float dMax = dtrans.x + dummyDemon->spirit->meshTransform->getWorldPos().x;
 
-			if((pMax >= dMin && pMin <= dMax) ||
-				pMin <= dMax && pMax >= dMin) {
-					sweet::Event * e = new sweet::Event("demonCollision");
-					e->setFloatData("damage", demon->damage);
-					player->eventManager.triggerEvent(e);
+		if((pMax >= dMin && pMin <= dMax) ||
+			pMin <= dMax && pMax >= dMin) {
+				boss->eventManager.triggerEvent("spiritCollisoin");
+		}
+	}else {
+		auto  ptrans = player->firstParent()->getTranslationVector();
+		float pMin = ptrans.x - (player->firstParent()->getScaleVector().x  * 0.25f);
+		float pMax = ptrans.x + (player->firstParent()->getScaleVector().x  * 0.25f);
+	
+		for(auto demon : demons) {
+			if(demon->state != MY_Demon::kDEAD && demon->spirit->state == MY_DemonSpirit::kIN){
+				auto dtrans = demon->firstParent()->getTranslationVector();
+				float dMin = dtrans.x - (demon->firstParent()->getScaleVector().x  * 0.25f);
+				float dMax = dtrans.x + (demon->firstParent()->getScaleVector().x  * 0.25f);
 
-					demon->eventManager.triggerEvent("playerCollisoin");
+				if((pMax >= dMin && pMin <= dMax) ||
+					pMin <= dMax && pMax >= dMin) {
+						sweet::Event * e = new sweet::Event("demonCollision");
+						e->setFloatData("damage", demon->damage);
+						player->eventManager.triggerEvent(e);
+
+						demon->eventManager.triggerEvent("playerCollisoin");
+				}
 			}
 		}
 	}

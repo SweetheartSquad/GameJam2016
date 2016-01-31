@@ -32,6 +32,11 @@ MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 	mesh->setScaleMode(GL_NEAREST);
 
 	meshTransform->scale(glm::vec3(DEMON_SCALE));
+
+	eventManager.addEventListener("spiritCollision", [this](sweet::Event * _event){
+		// Take damage and stuff here
+		ST_LOG_INFO("COLLIDE");
+	});
 }
 
 void MY_DemonBoss::render(sweet::MatrixStack* _matrixStack, RenderOptions* _renderOptions) {
@@ -39,7 +44,7 @@ void MY_DemonBoss::render(sweet::MatrixStack* _matrixStack, RenderOptions* _rend
 }
 
 void MY_DemonBoss::update(Step* _step) {
-
+	eventManager.update(_step);
 	Sprite::update(_step);
 }
 

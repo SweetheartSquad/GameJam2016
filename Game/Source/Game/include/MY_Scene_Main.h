@@ -48,9 +48,9 @@ public:
 	MY_UI_Counter * livesCounter;
 	MY_UI_Counter * demonsCounter;
 
-	MY_DemonSpirit * playerSpirit;
-
+	// Boss room stuff
 	MY_Demon * dummyDemon;
+	MY_DemonBoss * boss;
 
 	explicit MY_Scene_Main(MY_Game * _game);
 	~MY_Scene_Main();
