@@ -7,9 +7,14 @@
 #include <SpriteSheetAnimation.h>
 
 #define DEMON_SCALE 10
+#define SPEWER_TIMER_MIN 1
+#define SPEWER_TIMER_MAX 3
+#define SPEWER_COLUMNS 3
 
 MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
-	Sprite(_shader)
+	Sprite(_shader),
+	spawnSpewerTimer(0),
+	spawnSpewerTimerLength(sweet::NumberUtils::randomFloat(SPEWER_TIMER_MIN, SPEWER_TIMER_MAX))
 {
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet_enemy_1")->texture);
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("enemy_1")->texture);
@@ -32,6 +37,15 @@ MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 	mesh->setScaleMode(GL_NEAREST);
 
 	meshTransform->scale(glm::vec3(DEMON_SCALE));
+
+	spewerTimeout = new Timeout(2.f, [this](sweet::Event * _event){
+		sweet::Event * e = new sweet::Event("spawnSpewer");
+		e->setIntData("column", 1);
+		eventManager.triggerEvent(e);
+	});
+	spewerTimeout->start();
+
+	childTransform->addChild(spewerTimeout);
 }
 
 void MY_DemonBoss::render(sweet::MatrixStack* _matrixStack, RenderOptions* _renderOptions) {
@@ -39,8 +53,8 @@ void MY_DemonBoss::render(sweet::MatrixStack* _matrixStack, RenderOptions* _rend
 }
 
 void MY_DemonBoss::update(Step* _step) {
-
 	Sprite::update(_step);
+	eventManager.update(_step);
 }
 
 void MY_DemonBoss::unload() {

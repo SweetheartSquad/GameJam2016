@@ -8,6 +8,7 @@
 #include "MY_Scene_Base.h"
 #include "MY_Player.h"
 #include "MY_Demon.h"
+#include <MY_Spewer.h>
 #include "MY_Cam.h"
 #include <MY_UI_Counter.h>
 
@@ -30,6 +31,7 @@ public:
 	std::vector<MY_Demon *> demons;
 	MY_Demon * spawnDemon(Room * _room);
 	MY_DemonBoss * spawnBoss(Room * _room);
+	MY_Spewer * spawnSpewer(Room * _room, glm::vec3 _startPos, glm::vec3 _targetPos);
 	MY_Player * spawnPlayer(Room * _room);
 
 	MY_Cam * mainCam;
