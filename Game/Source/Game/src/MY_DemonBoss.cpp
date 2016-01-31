@@ -39,11 +39,10 @@ MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 
 	meshTransform->scale(glm::vec3(DEMON_SCALE));
 
-	spewerTimeout = new Timeout(2.f, [this](sweet::Event * _event){
-		sweet::Event * e = new sweet::Event("spawnSpewer");
-		e->setIntData("column", 1);
-		eventManager.triggerEvent(e);
+	spewerTimeout = new Timeout(1.f, [this](sweet::Event * _event){
+		enableSpewers();
 	});
+
 	spewerTimeout->start();
 	childTransform->addChild(spewerTimeout);
 
@@ -70,4 +69,41 @@ void MY_DemonBoss::unload() {
 void MY_DemonBoss::load() {
 
 	Sprite::load();
+}
+
+void MY_DemonBoss::addSpewer(MY_Spewer * _spewer){
+	spewers.push_back(_spewer);
+	spewerIdx.push(spewers.size()-1);
+
+	_spewer->eventManager.addEventListener("spewComplete", [this](sweet::Event * _event){
+		disableSpewers(_event->getIntData("column"));
+	});
+}
+
+void MY_DemonBoss::enableSpewers(){
+	if(spewers.size() > 0){
+		int n = sweet::NumberUtils::randomInt(1, spewers.size());
+		for(int i = 0; i < n; ++i){
+			int idx = spewerIdx.pop();
+			enabledSpewers.push_back(idx);
+			spewers.at(idx)->start();
+		}
+	}
+}
+
+void MY_DemonBoss::disableSpewers(int _column){
+	disableSpewer(_column);
+	if(enabledSpewers.size() == 0){
+		spewerTimeout->restart();
+	}
+}
+
+bool MY_DemonBoss::disableSpewer(int _column){
+	for(int i = 0; i < enabledSpewers.size(); ++i){
+		if(spewers.at(enabledSpewers.at(i))->column  == _column){
+			enabledSpewers.erase(enabledSpewers.begin() + i);
+			return true;
+		}
+	}
+	return false;
 }

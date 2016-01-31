@@ -5,8 +5,9 @@
 
 #define SPEWER_SIZE 5
 
-MY_Spewer::MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos) :
+MY_Spewer::MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos, int _column) :
 	Sprite(_shader),
+	column(_column),
 	startPos(_startPos),
 	deltaX(_targetPos.x - _startPos.x),
 	deltaY(_targetPos.y - _startPos.y),
@@ -26,65 +27,91 @@ MY_Spewer::MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos
 	
 	spew->meshTransform->scale(glm::vec3(SPEWER_SIZE, 1.f, 1.f));
 	spew->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture);
-	// align spew sprite's bottom with the origin
+	
+	childTransform->addChild(spew);
+
+	disable();
+}
+
+MY_Spewer::~MY_Spewer(){
+}
+
+void MY_Spewer::start(){
+	isComplete = false;
+	vOffset = 0;
+	moveTimer = 0;
+	spewTimer = 0;
+
 	for(int i = 0; i < spew->mesh->vertices.size(); ++i){
 		spew->mesh->vertices.at(i).y = 0;
 	}
 	spew->mesh->dirty = true;
 
 	spew->setVisible(false);
-	childTransform->addChild(spew);
-}
 
-MY_Spewer::~MY_Spewer(){
+	enable();
 }
 
 void MY_Spewer::update(Step * _step){
 	Sprite::update(_step);
 	eventManager.update(_step);
 
-	if(!isComplete){
-		if(moveTimer <= moveTimerDuration){
-			float x = deltaX * moveTimer/moveTimerDuration + startPos.x;
-			float y = Easing::easeOutCubic(moveTimer, startPos.y, deltaY, moveTimerDuration);
-			childTransform->translate(x, y, 0.f, false);
+	if(isEnabled){
+		if(!isComplete){
+			if(moveTimer <= moveTimerDuration){
+				float x = deltaX * moveTimer/moveTimerDuration + startPos.x;
+				float y = Easing::easeOutCubic(moveTimer, startPos.y, deltaY, moveTimerDuration);
+				childTransform->translate(x, y, 0.f, false);
 
-			moveTimer += _step->getDeltaTime();
-		}else{
-			spew->setVisible(true);
-		}
-
-		if(spew->isVisible()){
-			// Spew!!!!!
-			if(spewTimer <= spewTimerDuration){
-
-				if(spewTimer <= spewTimerDuration * 0.5){
-					// Falling
-					float y = -spewTimer/(spewTimerDuration * 0.5) * deltaY;
-
-					spew->mesh->vertices.at(2).y = y;
-					spew->mesh->vertices.at(3).y = y;
-				}else{
-					// Collapsing
-					float y = -(spewTimer - spewTimerDuration * 0.5)/(spewTimerDuration * 0.5) * deltaY;
-
-					spew->mesh->vertices.at(0).y = y;
-					spew->mesh->vertices.at(1).y = y;
-				}
-				vOffset += 0.4;
-				spewTimer += _step->getDeltaTime();
-
-				// Additional offset
-				// align spew sprite's bottom with the origin
-				for(auto &v : spew->mesh->vertices){
-					v.v =  v.y/SPEWER_SIZE + vOffset;
-				}
-
-				spew->mesh->dirty = true;
+				moveTimer += _step->getDeltaTime();
 			}else{
-				isComplete = true;
-				eventManager.triggerEvent("spewComplete");
+				spew->setVisible(true);
+			}
+
+			if(spew->isVisible()){
+				// Spew!!!!!
+				if(spewTimer <= spewTimerDuration){
+
+					if(spewTimer <= spewTimerDuration * 0.5){
+						// Falling
+						float y = -spewTimer/(spewTimerDuration * 0.5) * deltaY;
+
+						spew->mesh->vertices.at(2).y = y;
+						spew->mesh->vertices.at(3).y = y;
+					}else{
+						// Collapsing
+						float y = -(spewTimer - spewTimerDuration * 0.5)/(spewTimerDuration * 0.5) * deltaY;
+
+						spew->mesh->vertices.at(0).y = y;
+						spew->mesh->vertices.at(1).y = y;
+					}
+					vOffset += 0.4;
+					spewTimer += _step->getDeltaTime();
+
+					// Additional offset
+					for(auto &v : spew->mesh->vertices){
+						v.v =  v.y/SPEWER_SIZE + vOffset;
+					}
+
+					spew->mesh->dirty = true;
+				}else{
+					isComplete = true;
+					disable();
+					sweet::Event * e = new sweet::Event("spewComplete");
+					e->setIntData("column", column);
+					eventManager.triggerEvent(e);
+				}
 			}
 		}
 	}
+}
+
+void MY_Spewer::enable(){
+	setVisible(true);
+	isEnabled = true;
+}
+
+void MY_Spewer::disable(){
+	setVisible(false);
+	isEnabled = false;
 }

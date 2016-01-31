@@ -47,7 +47,7 @@ public:
 	std::vector<MY_Demon *> demons;
 	MY_Demon * spawnDemon(Room * _room);
 	MY_DemonBoss * spawnBoss(Room * _room);
-	MY_Spewer * spawnSpewer(Room * _room, glm::vec3 _startPos, glm::vec3 _targetPos);
+	MY_Spewer * spawnSpewer(Room * _room, MY_DemonBoss * _boss, int _column);
 	MY_Player * spawnPlayer(Room * _room);
 
 	MY_Cam * mainCam;
