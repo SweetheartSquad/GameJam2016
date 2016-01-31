@@ -403,27 +403,46 @@ void MY_Scene_Main::disableDebug(){
 }
 
 void MY_Scene_Main::collideEntities() {
+	auto  ptrans = player->firstParent()->getTranslationVector();
+	float pMin = ptrans.x - (player->firstParent()->getScaleVector().x  * 0.25f);
+	float pMax = ptrans.x + (player->firstParent()->getScaleVector().x  * 0.25f);
 
 	if(isBossRoom){
 		if(gripTarget == dummyDemon->spirit){
-			auto  ptrans = boss->firstParent()->getTranslationVector();
-			float pMin = ptrans.x - (boss->firstParent()->getScaleVector().x  * 0.25f);
-			float pMax = ptrans.x + (boss->firstParent()->getScaleVector().x  * 0.25f);
+			auto  btrans = boss->firstParent()->getTranslationVector();
+			float bMin = btrans.x - (boss->firstParent()->getScaleVector().x  * 0.25f);
+			float bMax = btrans.x + (boss->firstParent()->getScaleVector().x  * 0.25f);
 	
 			auto dtrans = gripTarget->meshTransform->getWorldPos();
 			float dMin = dtrans.x - gripTarget->meshTransform->getScaleVector().x;
 			float dMax = dtrans.x + gripTarget->meshTransform->getScaleVector().x;
 
-			if((pMax >= dMin && pMin <= dMax) ||
-				pMin <= dMax && pMax >= dMin) {
+			if((bMax >= dMin && bMin <= dMax) ||
+				bMin <= dMax && bMax >= dMin) {
 					boss->eventManager.triggerEvent("spiritCollision");
 					player->eventManager.triggerEvent("hitBoss");
 			}
 		}
+
+		float pMinY = ptrans.y;
+		float pMaxY = ptrans.y + (player->firstParent()->getScaleVector().y);
+		
+		for(auto i : boss->enabledSpewers){
+			Sprite * s = boss->spewers.at(i)->spew;
+			if(s->isVisible()){
+				auto strans = s->meshTransform->getWorldPos();
+				float sMinX = strans.x - s->meshTransform->getScaleVector().x * 0.25f;
+				float sMaxX = strans.x + s->meshTransform->getScaleVector().x * 0.25f;
+				float sMinY = strans.y - s->mesh->calcBoundingBox().height;
+				float sMaxY = strans.y;
+
+				if( ((pMax >= sMinX && pMin <= sMaxX) || (pMin <= sMaxX && pMax >= sMinX)) &&
+					((pMaxY >= sMinY && pMinY <= sMaxY) || (pMinY <= sMaxY && pMaxY >= sMinY))) {
+						player->eventManager.triggerEvent("demonCollision");
+				}
+			}
+		}
 	}else {
-		auto  ptrans = player->firstParent()->getTranslationVector();
-		float pMin = ptrans.x - (player->firstParent()->getScaleVector().x  * 0.25f);
-		float pMax = ptrans.x + (player->firstParent()->getScaleVector().x  * 0.25f);
 	
 		for(auto demon : demons) {
 			if(demon->state != MY_Demon::kDEAD && demon->spirit->state == MY_DemonSpirit::kIN){
