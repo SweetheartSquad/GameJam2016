@@ -233,6 +233,12 @@
     },
     {  
       "type":"audio",
+      "id":"PORTAL",
+      "src":"portal.ogg",
+      "category":"sfx"
+    },
+    {  
+      "type":"audio",
       "id":"DOOR",
       "src":"door.ogg",
       "category":"sfx"
