@@ -16,7 +16,7 @@ MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 	layout->setRationalWidth(1.f);
 	layout->setBackgroundColour(1.f, 1.f, 1.f);
 	layout->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("menu_bg")->texture);
-	layout->colliderMesh->setScaleMode(GL_NEAREST);
+	layout->background->mesh->setScaleMode(GL_NEAREST);
 
 	MY_Button * gameButton = new MY_Button(uiLayer->world, "menu_play");
 	MY_Button * exitButton = new MY_Button(uiLayer->world, "menu_quit");

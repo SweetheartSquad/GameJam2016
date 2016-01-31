@@ -16,6 +16,7 @@ MY_Button::MY_Button(BulletWorld * _world, std::string _name) :
 	texDown = MY_ResourceManager::globalAssets->getTexture(ss.str() + "Over")->texture;
 
 	background->mesh->pushTexture2D(texNormal);
+	background->mesh->setScaleMode(GL_NEAREST);
 
 	eventManager.addEventListener("click", [](sweet::Event * _event){
 		MY_ResourceManager::globalAssets->getAudio("DEFAULT")->sound->play();
