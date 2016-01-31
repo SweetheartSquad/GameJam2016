@@ -5,11 +5,6 @@
 #include <MY_ResourceManager.h>
 
 #include <MY_Scene_Menu.h>
-#include <MY_Scene_Box2D.h>
-#include <MY_Scene_Bullet3D.h>
-#include <MY_Scene_SurfaceShaders.h>
-#include <MY_Scene_ScreenShaders.h>
-#include <MY_Scene_VR.h>
 #include <MY_Scene_Main.h>
 #include <MY_Scene_Instructions.h>
 
