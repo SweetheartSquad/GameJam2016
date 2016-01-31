@@ -16,7 +16,7 @@ MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 	layout->setRationalWidth(1.f);
 	layout->setBackgroundColour(1.f, 1.f, 1.f);
 	layout->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("menu_bg")->texture);
-	layout->colliderMesh->setScaleMode(GL_NEAREST);
+	layout->background->mesh->setScaleMode(GL_NEAREST);
 
 	MY_Button * gameButton = new MY_Button(uiLayer->world, "menu_play");
 	MY_Button * exitButton = new MY_Button(uiLayer->world, "menu_quit");
@@ -44,9 +44,6 @@ MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 	exitButton->setMarginRight(1.f - exitBtnX - exitBtnW);
 	exitButton->setMarginBottom(exitBtnY);
 	exitButton->setMarginTop(1.f - exitBtnY - exitBtnH);
-	
-	gameButton->setBackgroundColour(1,0,1,0.5f);
-	exitButton->setBackgroundColour(1,1,0,0.5f);
 	
 	// make the buttons clickable
 	gameButton->setMouseEnabled(true);
