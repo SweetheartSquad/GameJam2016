@@ -7,6 +7,7 @@
 #include <MY_Game.h>
 #include <Room.h>
 #include <BossRoom.h>
+#include <RenderOptions.h>
 
 #include <shader\ComponentShaderBase.h>
 #include <shader\ComponentShaderText.h>
@@ -35,7 +36,14 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	hoverRadius2(hoverRadius*hoverRadius),
 	hoverTarget(nullptr),
 	ripTarget(nullptr),
-	gripTarget(nullptr)
+	gripTarget(nullptr),
+	boss(nullptr),
+	dummyDemon(nullptr),
+	screenSurfaceShader(new Shader("assets/RenderSurface_1", false, true)),
+	screenSurface(new RenderSurface(screenSurfaceShader)),
+	screenFBO(new StandardFrameBuffer(true)),
+	screenMagnitude(0)
+
 {
 	
 	baseShaderWithDepth->addComponent(new ShaderComponentMVP(baseShaderWithDepth));
@@ -105,14 +113,34 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 
 	// Setup a room
 	goToNewRoom();
+	
 
+	// memory management
+	++screenSurface->referenceCount;
+	++screenSurfaceShader->referenceCount;
+	++screenFBO->referenceCount;
 }
 
 MY_Scene_Main::~MY_Scene_Main(){
 	// we need to destruct the scene elements before the physics world to avoid memory issues
 	deleteChildTransform();
+
+	// memory management
+	screenSurface->decrementAndDelete();
+	screenSurfaceShader->decrementAndDelete();
+	screenFBO->decrementAndDelete();
 }
 
+
+void MY_Scene_Main::addDummyDemon(Room * _room) {
+	dummyDemon = new MY_Demon(baseShaderWithDepth, _room->gameground);
+	_room->gameground->addChild(dummyDemon)->translate(glm::vec3(sweet::NumberUtils::randomFloat(0, _room->doorPos*0.9f), 0, 0), false);
+	demons.push_back(dummyDemon);
+	dummyDemon->spirit->state = MY_DemonSpirit::kOUT;
+	dummyDemon->spirit->setVisible(true);
+	dummyDemon->isDummy = true;
+	dummyDemon->mesh->setVisible(false);
+}
 
 Room * MY_Scene_Main::goToNewRoom(){
 	previousRoom = currentRoom;
@@ -138,7 +166,8 @@ Room * MY_Scene_Main::goToNewRoom(){
 	player = spawnPlayer(res);
 
 	if(isBossRoom) {
-		spawnBoss(res);
+		boss = spawnBoss(res);
+		addDummyDemon(res);
 	} else{
 		if(demonsCounter->getItemCount() < MAX_DEMON_COUNT){
 			float numSpawnedDemons = sweet::NumberUtils::randomInt(1, MAX_DEMON_COUNT - demonsCounter->getItemCount() < MAX_SPAWNED_DEMON_COUNT ? MAX_DEMON_COUNT - demonsCounter->getItemCount() : MAX_SPAWNED_DEMON_COUNT);
@@ -187,6 +216,34 @@ Room * MY_Scene_Main::goToNewRoom(){
 }
 
 void MY_Scene_Main::update(Step * _step){
+	// Screen shader update
+	// Screen shaders are typically loaded from a file instead of built using components, so to update their uniforms
+	// we need to use the OpenGL API calls
+	if(player->state == MY_Player::kRIP_AND_GRIP){
+		screenMagnitude += 0.1f;
+	}else{
+		screenMagnitude *= 0.8f;
+		screenMagnitude -= 0.1f;
+		if(screenMagnitude < 0){
+			screenMagnitude = 0;
+		}
+	}
+	
+	screenSurfaceShader->bindShader(); // remember that we have to bind the shader before it can be updated
+	GLint test = glGetUniformLocation(screenSurfaceShader->getProgramId(), "time");
+	checkForGlError(0,__FILE__,__LINE__);
+	if(test != -1){
+		glUniform1f(test, _step->time);
+		checkForGlError(0,__FILE__,__LINE__);
+	}
+	test = glGetUniformLocation(screenSurfaceShader->getProgramId(), "magnitude");
+	checkForGlError(0,__FILE__,__LINE__);
+	if(test != -1){
+		glUniform1f(test, screenMagnitude);
+		checkForGlError(0,__FILE__,__LINE__);
+	}
+
+
 	// Scene update
 	MY_Scene_Base::update(_step);
 
@@ -209,6 +266,11 @@ void MY_Scene_Main::update(Step * _step){
 		if(roomTransition->complete){
 			player->eventManager.triggerEvent("newroom");
 		}
+	}
+	if(keyboard->keyJustDown(GLFW_KEY_L)){
+		screenSurfaceShader->unload();
+		screenSurfaceShader->loadFromFile(screenSurfaceShader->vertSource, screenSurfaceShader->fragSource);
+		screenSurfaceShader->load();
 	}
 
 
@@ -279,6 +341,32 @@ void MY_Scene_Main::update(Step * _step){
 	}
 }
 
+
+
+
+void MY_Scene_Main::render(sweet::MatrixStack * _matrixStack, RenderOptions * _renderOptions){
+	// keep our screen framebuffer up-to-date with the game's viewport
+	screenFBO->resize(game->viewPortWidth, game->viewPortHeight);
+
+	// bind our screen framebuffer
+	FrameBufferInterface::pushFbo(screenFBO);
+	// render the scene
+	_renderOptions->clear();
+	Scene::render(_matrixStack, _renderOptions);
+	// unbind our screen framebuffer, rebinding the previously bound framebuffer
+	// since we didn't have one bound before, this will be the default framebuffer (i.e. the one visible to the player)
+	FrameBufferInterface::popFbo();
+
+	// render our screen framebuffer using the standard render surface
+	screenSurface->render(screenFBO->getTextureId());
+
+	// render the uiLayer after the screen surface in order to avoid hiding it through shader code
+	uiLayer->render(_matrixStack, _renderOptions);
+}
+
+
+
+
 void MY_Scene_Main::enableDebug(){
 	MY_Scene_Base::enableDebug();
 }
@@ -287,23 +375,39 @@ void MY_Scene_Main::disableDebug(){
 }
 
 void MY_Scene_Main::collideEntities() {
-	auto  ptrans = player->firstParent()->getTranslationVector();
-	float pMin = ptrans.x - (player->firstParent()->getScaleVector().x  * 0.25f);
-	float pMax = ptrans.x + (player->firstParent()->getScaleVector().x  * 0.25f);
+
+	if(isBossRoom){
+		auto  ptrans = boss->firstParent()->getTranslationVector();
+		float pMin = ptrans.x - (boss->firstParent()->getScaleVector().x  * 0.25f);
+		float pMax = ptrans.x + (boss->firstParent()->getScaleVector().x  * 0.25f);
 	
-	for(auto demon : demons) {
-		if(demon->state != MY_Demon::kDEAD && demon->spirit->state == MY_DemonSpirit::kIN){
-			auto dtrans = demon->firstParent()->getTranslationVector();
-			float dMin = dtrans.x - (demon->firstParent()->getScaleVector().x  * 0.25f);
-			float dMax = dtrans.x + (demon->firstParent()->getScaleVector().x  * 0.25f);
+		auto dtrans = dummyDemon->spirit->firstParent()->getTranslationVector();
+		float dMin = dtrans.x - dummyDemon->spirit->meshTransform->getWorldPos().x;
+		float dMax = dtrans.x + dummyDemon->spirit->meshTransform->getWorldPos().x;
 
-			if((pMax >= dMin && pMin <= dMax) ||
-				pMin <= dMax && pMax >= dMin) {
-					sweet::Event * e = new sweet::Event("demonCollision");
-					e->setFloatData("damage", demon->damage);
-					player->eventManager.triggerEvent(e);
+		if((pMax >= dMin && pMin <= dMax) ||
+			pMin <= dMax && pMax >= dMin) {
+				boss->eventManager.triggerEvent("spiritCollisoin");
+		}
+	}else {
+		auto  ptrans = player->firstParent()->getTranslationVector();
+		float pMin = ptrans.x - (player->firstParent()->getScaleVector().x  * 0.25f);
+		float pMax = ptrans.x + (player->firstParent()->getScaleVector().x  * 0.25f);
+	
+		for(auto demon : demons) {
+			if(demon->state != MY_Demon::kDEAD && demon->spirit->state == MY_DemonSpirit::kIN){
+				auto dtrans = demon->firstParent()->getTranslationVector();
+				float dMin = dtrans.x - (demon->firstParent()->getScaleVector().x  * 0.25f);
+				float dMax = dtrans.x + (demon->firstParent()->getScaleVector().x  * 0.25f);
 
-					demon->eventManager.triggerEvent("playerCollisoin");
+				if((pMax >= dMin && pMin <= dMax) ||
+					pMin <= dMax && pMax >= dMin) {
+						sweet::Event * e = new sweet::Event("demonCollision");
+						e->setFloatData("damage", demon->damage);
+						player->eventManager.triggerEvent(e);
+
+						demon->eventManager.triggerEvent("playerCollisoin");
+				}
 			}
 		}
 	}
@@ -345,28 +449,59 @@ MY_Player * MY_Scene_Main::spawnPlayer(Room * _room){
 }
 
 MY_DemonSpirit * MY_Scene_Main::getHovered(){
+	float min = hoverRadius;
+	glm::vec3 demonPos, demonPosInScreen;
+	glm::vec2 dist;
+	float distMag;
+	MY_DemonSpirit * res = nullptr;
+	
 	for(auto d : demons){
 		if(d->state == MY_DemonSpirit::kDEAD){
 			continue;
 		}
+		
+		demonPos = d->spirit->meshTransform->getWorldPos();
+		demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
+		dist = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
+		distMag = glm::length(dist);
 
-		calcHover(d->spirit);
-		/*std::cout << "Mouse: " << mouse->mouseX() << " " << mouse->mouseY() << std::endl;
-		std::cout << "Demon: " << demonPosInScreen.x << " " << demonPosInScreen.y << " " << demonPosInScreen.z << std::endl;
-		std::cout << "Dist: " << distToHoverTarget.x << " " << distToHoverTarget.y << std::endl;
-		std::cout << "DistMag: " << distToHoverTargetMag << std::endl;*/
+		if(distMag < min){
+			min = distMag;
+			res = d->spirit;
+		}
 
-		if(distToHoverTargetMag < hoverRadius){
-			// return the found hoverTarget
-			return d->spirit;
+		demonPos = d->spiritFake1->meshTransform->getWorldPos();
+		demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
+		dist = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
+		distMag = glm::length(dist);
+
+		if(distMag < min){
+			min = distMag;
+			res = d->spiritFake1;
+		}
+
+
+		demonPos = d->spiritFake2->meshTransform->getWorldPos();
+		demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
+		dist = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
+		distMag = glm::length(dist);
+
+		if(distMag < min){
+			min = distMag;
+			res = d->spiritFake2;
 		}
 	}
+	
+	
 	// we didn't find a hoverTarget
-	return nullptr;
+	if(res != nullptr){
+		calcHover(res);
+	}
+	return res;
 }
 
-void MY_Scene_Main::calcHover(MY_DemonSpirit * _demon){
-	glm::vec3 demonPos = _demon->meshTransform->getWorldPos();
+void MY_Scene_Main::calcHover(MY_DemonSpirit * _demonSpirit){
+	glm::vec3 demonPos = _demonSpirit->meshTransform->getWorldPos();
 	glm::vec3 demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
 	distToHoverTarget = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
 	distToHoverTargetMag = glm::length(distToHoverTarget);
@@ -403,20 +538,22 @@ void MY_Scene_Main::gripIt(){
 }
 
 void MY_Scene_Main::sipIt(){
-	// if the demon gets close enough to the player, they get sipped
-	glm::vec3 demPos = gripTarget->getGamePos();
-	glm::vec3 playerPos = player->firstParent()->getTranslationVector();
-	playerPos.y += player->firstParent()->getScaleVector().y*0.9;
+	if(!isBossRoom){
+		// if the demon gets close enough to the player, they get sipped
+		glm::vec3 demPos = gripTarget->getGamePos();
+		glm::vec3 playerPos = player->firstParent()->getTranslationVector();
+		playerPos.y += player->firstParent()->getScaleVector().y*0.9;
 
-	if(glm::distance(demPos, playerPos) < gripTarget->scaleAnim.y * 0.5f){
-		gripTarget->sipIt();
-		demonsCounter->increment();
+		if(glm::distance(demPos, playerPos) < gripTarget->scaleAnim.y * 0.5f){
+			gripTarget->sipIt();
+			demonsCounter->increment();
 
-		// TODO: trigger sip animation on player, pass out animation on enemy, remove spirit
-		player->setCurrentAnimation("sip");
-		player->state = MY_Player::kSIP;
-		player->delayChange(1.f, MY_Player::kIDLE);
+			// TODO: trigger sip animation on player, pass out animation on enemy, remove spirit
+			player->setCurrentAnimation("sip");
+			player->state = MY_Player::kSIP;
+			player->delayChange(1.f, MY_Player::kIDLE);
 
-		gripTarget = nullptr;
+			gripTarget = nullptr;
+		}
 	}
 }

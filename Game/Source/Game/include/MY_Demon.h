@@ -29,15 +29,15 @@ public:
 	glm::vec3 origin;
 	// reference to the character this spirit is possessing
 	MY_Demon * possessed;
-	MY_Demon * player;
+	MY_Player * player;
 
-	MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed);
+	MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed, unsigned long int _mode);
 	MY_DemonSpirit(Shader * _shader, MY_Player * _possessed);
 
 	virtual void update(Step * _step) override;
 	
 	// rip the spirit from its body
-	void ripIt();
+	virtual void ripIt();
 	// grip the spirit away from its body
 	void gripIt();
 	// kill the demon i guess?
@@ -50,6 +50,14 @@ public:
 	glm::vec3 getGamePos();
 };
 
+
+class MY_DemonSpirit_False : public MY_DemonSpirit{
+public:
+	MY_DemonSpirit_False(Shader * _shader, MY_Demon * _possessed, unsigned long int _mode);
+
+	virtual void ripIt() override;
+};
+
 class MY_Demon : public Sprite {
 private:
 	Animation<float> * idleScaleAnim;
@@ -59,15 +67,20 @@ public:
 		kWALK,
 		kIDLE,
 		kDEAD,
+		kSAVED,
 		kSTUNNED
 	} state;
 
 	// reference to the spirit possessing this character
 	MY_DemonSpirit * spirit;
+	MY_DemonSpirit_False * spiritFake1;
+	MY_DemonSpirit_False * spiritFake2;
 
 	float speed;
 	float damage;
 	Transform * target;
+
+	bool isDummy;
 
 	Timeout * stateTimeout;
 
@@ -79,4 +92,6 @@ public:
 	void update(Step * _step) override;
 	void unload() override;
 	void load() override;
+
+	void kill(bool _saved);
 };

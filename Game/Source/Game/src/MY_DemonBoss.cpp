@@ -44,8 +44,12 @@ MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 		eventManager.triggerEvent(e);
 	});
 	spewerTimeout->start();
-
 	childTransform->addChild(spewerTimeout);
+
+	eventManager.addEventListener("spiritCollision", [this](sweet::Event * _event){
+		// Take damage and stuff here
+		ST_LOG_INFO("COLLIDE");
+	});
 }
 
 void MY_DemonBoss::render(sweet::MatrixStack* _matrixStack, RenderOptions* _renderOptions) {

@@ -1,7 +1,12 @@
 {
   "assets": [
-	// menu
-  {
+	{
+    "type": "mesh",
+    "id": "BOSS",
+    "src": "furnitureSets/boss.obj"
+  } 
+  // menu
+  ,{
       "type":"texture",
       "id":"menu_bg",
       "src":"ui/menu/menu_bg.png"
@@ -111,7 +116,7 @@
     {
       "type":"audio",
       "id":"BGM_3",
-      "src":"DevilIsADickweed.ogg",
+      "src":"DevilIsADickweed2.ogg",
       "category": "music"
     },
     {

@@ -5,6 +5,7 @@
 #include <MY_ResourceManager.h>
 #include <SpriteSheet.h>
 #include <SpriteSheetAnimation.h>
+#include <MY_Player.h>
 
 #define NUM_DEMON_TEXTURES 2
 #define TIMEOUT_TIME 1.0
@@ -18,7 +19,7 @@
 #define DEMON_POS_JOHHNY 0.5f
 
 
-MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed) : 
+MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed, unsigned long int _mode) : 
 	Sprite(_shader),
 	speed(0),
 	state(kIN),
@@ -26,12 +27,10 @@ MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed) :
 	origin(0, DEMON_SCALE, 0.2f),
 	possessed(_possessed)
 {
-
-	int locIdx = sweet::NumberUtils::randomInt(1, 3);
 	float loc = DEMON_POS_JOHHNY;
-	if(locIdx == 1) {
+	if(_mode == 1) {
 		loc = DEMON_POS_HEAD;
-	}else if(locIdx == 2) {
+	}else if(_mode == 2) {
 		loc = DEMON_POS_TORSO;
 	}
 
@@ -56,14 +55,30 @@ MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed) :
 	setVisible(false);
 }
 
-MY_DemonSpirit::MY_DemonSpirit(Shader* _shader, MY_Player* _possessed) :
+MY_DemonSpirit::MY_DemonSpirit(Shader* _shader, MY_Player * _player) :
 	Sprite(_shader),
 	speed(0),
 	state(kIN),
 	scaleAnim(3),
-	origin(0, DEMON_SCALE, 0.2f),
-	possessed(nullptr)
+	origin(0, 0.9f, 0.2f),
+	possessed(nullptr),	
+	player(_player)
 {
+	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("demon_spirit")->texture);
+
+	stunTimer = new Timeout(1.f, [this](sweet::Event * _event){
+		state = kOUT;
+	});
+	childTransform->addChild(stunTimer, false);
+
+	mesh->setScaleMode(GL_NEAREST);
+
+	idleScaleAnim = new Animation<float>(&scaleAnim.y);
+	idleScaleAnim->tweens.push_back(new Tween<float>(0.4f, 2, Easing::kEASE_IN_OUT_CIRC));
+	idleScaleAnim->tweens.push_back(new Tween<float>(0.2f, -2, Easing::kEASE_IN_OUT_CIRC));
+	idleScaleAnim->hasStart = true;
+	idleScaleAnim->startValue = scaleAnim.y;
+	idleScaleAnim->loopType = Animation<float>::kLOOP;
 }
 
 void MY_DemonSpirit::update(Step * _step){
@@ -88,7 +103,7 @@ void MY_DemonSpirit::update(Step * _step){
 		accelMod = 0.1f;
 		damping = 0.1f;
 		// if the spirit is far from the origin, they get ripped out
-		if(ma > (firstParent()->getScaleVector().x + possessed->firstParent()->getScaleVector().x) * 2.5f){
+		if(ma > (firstParent()->getScaleVector().x + targ->getScaleVector().x) * 2.5f){
 			ripIt();
 		}
 		break;
@@ -104,7 +119,7 @@ void MY_DemonSpirit::update(Step * _step){
 		a += sweet::NumberUtils::randomVec3(glm::vec3(-5), glm::vec3(5));
 		damping = 0.2f;
 		// if the spirit is close to the origin, they can repossess the body
-		if(ma < (firstParent()->getScaleVector().x + possessed->firstParent()->getScaleVector().x) * 0.5f){
+		if(ma < (firstParent()->getScaleVector().x + targ->getScaleVector().x) * 0.5f){
 			getBackInThere();
 		}
 		break;
@@ -152,8 +167,8 @@ void MY_DemonSpirit::ripIt(){
 	state = kSTUNNED;
 	int randRipitSound = sweet::NumberUtils::randomInt(1, RIPIT_SOUND_COUNT);
 	MY_ResourceManager::globalAssets->getAudio("ripitSound" + std::to_string(randRipitSound))->sound->play();
+	stunTimer->restart();
 	if(possessed != nullptr){
-		stunTimer->restart();
 		possessed->state = MY_Demon::kSTUNNED;
 		setVisible(true);
 	}
@@ -164,8 +179,8 @@ void MY_DemonSpirit::gripIt(){
 	state = kSTUNNED;
 	int randGripitSound = sweet::NumberUtils::randomInt(1, GRIPIT_SOUND_COUNT);
 	MY_ResourceManager::globalAssets->getAudio("GRIPIT_SOUND_" + std::to_string(randGripitSound))->sound->play();
+	stunTimer->restart();
 	if(possessed != nullptr){
-		stunTimer->restart();
 		possessed->state = MY_Demon::kSTUNNED;
 		setVisible(true);
 	}
@@ -173,30 +188,23 @@ void MY_DemonSpirit::gripIt(){
 
 void MY_DemonSpirit::sipIt(){
 	std::cout << "demon sipped" << std::endl;
-	state = kDEAD;
 
 	int randRipitSound = sweet::NumberUtils::randomInt(1, SIPIT_SOUND_COUNT);
 	MY_ResourceManager::globalAssets->getAudio("SIPIT_SOUND_" + std::to_string(randRipitSound))->sound->play();
 	
 	if(possessed != nullptr){
-		possessed->stateTimeout->stop();
-		possessed->state = MY_Demon::kDEAD;
-		possessed->currentAnimation->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
-		Timeout * t = new Timeout(0.75f, [this](sweet::Event * _event){
-			possessed->setVisible(false);
-		});
-		possessed->childTransform->addChild(t);
-		t->start();
-		setVisible(true);
+		possessed->kill(true);
 	}
+	setVisible(true);
 }
 
 void MY_DemonSpirit::getBackInThere(){
-	state = kIN;
 	if(possessed != nullptr){
-		setVisible(false);
+		if(!possessed->isDummy){
+			setVisible(false);
+			state = kIN;
+		}
 		possessed->state = MY_Demon::kIDLE;
-		possessed->setCurrentAnimation("idle");
 	}
 }
 
@@ -204,16 +212,41 @@ glm::vec3 MY_DemonSpirit::getGamePos(){
 	return firstParent()->getTranslationVector() + possessed->firstParent()->getTranslationVector();
 }
 
+MY_DemonSpirit_False::MY_DemonSpirit_False(Shader * _shader, MY_Demon * _possessed, unsigned long int _mode) :
+	MY_DemonSpirit(_shader, _possessed, _mode)
+{
+}
+
+void MY_DemonSpirit_False::ripIt(){
+	std::cout << "wrong spirit ripped" << std::endl;
+	possessed->kill(false);
+}
+
+
 MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	Sprite(_shader), 
 	state(kIDLE),
-	spirit(new MY_DemonSpirit(_shader, this)),
+	spirit(nullptr),
+	spiritFake1(nullptr),
+	spiritFake2(nullptr),
 	speed(0.02f),
 	damage(10.f),
 	target(_target),
-	scaleAnim(1)
+	scaleAnim(1),
+	isDummy(false)
 {
+	sweet::ShuffleVector<unsigned long int> shuffle;
+	shuffle.push(1);
+	shuffle.push(2);
+	shuffle.push(3);
+	
+	spirit = new MY_DemonSpirit(_shader, this, shuffle.pop());
+	spiritFake1 = new MY_DemonSpirit_False(_shader, this, shuffle.pop());
+	spiritFake2 = new MY_DemonSpirit_False(_shader, this, shuffle.pop());
+
 	childTransform->addChild(spirit)->translate(spirit->origin);
+	childTransform->addChild(spiritFake1)->translate(spiritFake1->origin);
+	childTransform->addChild(spiritFake2)->translate(spiritFake2->origin);
 
 	int demonTexId = sweet::NumberUtils::randomInt(1, NUM_DEMON_TEXTURES);
 	
@@ -238,6 +271,11 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	anim->pushFramesInRange(0, 1, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	anim->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
 	spriteSheet->addAnimation("stunned", anim);
+
+	anim = new SpriteSheetAnimation(0.4f);
+	anim->pushFramesInRange(7, 7, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	anim->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
+	spriteSheet->addAnimation("saved", anim);
 
 	setSpriteSheet(spriteSheet, "idle");
 
@@ -295,6 +333,7 @@ void MY_Demon::update(Step * _step) {
 		case kIDLE: setCurrentAnimation("idle"); break;
 		case kDEAD: setCurrentAnimation("die"); break;
 		case kSTUNNED: setCurrentAnimation("stunned"); break;
+		case kSAVED: setCurrentAnimation("saved"); break;
 		default:
 			setCurrentAnimation("idle"); break;
 	}
@@ -310,4 +349,28 @@ void MY_Demon::unload() {
 void MY_Demon::load() {
 	
 	Sprite::load();
+}
+
+void MY_Demon::kill(bool _saved){
+	stateTimeout->stop();
+	state = _saved ? MY_Demon::kSAVED : MY_Demon::kDEAD;
+	currentAnimation->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
+
+	Timeout * t = new Timeout(0.75f, [this](sweet::Event * _event){
+		setVisible(false);
+	});
+
+	if(_saved){
+		t->eventManager->addEventListener("progress", [this](sweet::Event * _event){
+			childTransform->translate(0, 0.025f, 0);
+		});
+	}
+
+	childTransform->addChild(t);
+	t->start();
+	setVisible(true);
+	
+	spirit->state = MY_DemonSpirit::kDEAD;
+	spiritFake1->state = MY_DemonSpirit::kDEAD;
+	spiritFake2->state = MY_DemonSpirit::kDEAD;
 }

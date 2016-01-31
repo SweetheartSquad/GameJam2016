@@ -8,9 +8,9 @@ private:
 	float spawnSpewerTimer;
 	float spawnSpewerTimerLength;
 public:	
-	explicit MY_DemonBoss(Shader * _shader);
-
 	sweet::EventManager eventManager;
+
+	explicit MY_DemonBoss(Shader * _shader);
 
 	Timeout * spewerTimeout;
 

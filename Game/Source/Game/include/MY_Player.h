@@ -48,6 +48,8 @@ public:
 	void unload() override;
 	void load() override;
 
+	void spawnDemon();
+
 	Timeout * voiceTimer;
 
 	// prevents player input for _seconds
