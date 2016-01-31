@@ -1,587 +1,581 @@
-{
-  "assets": [
-	{
-    "type": "mesh",
-    "id": "BOSS",
-    "src": "furnitureSets/boss.obj"
-  } 
-  // menu
-  ,{
+{  
+  "assets":[  
+    {  
+      "type":"mesh",
+      "id":"BOSS",
+      "src":"furnitureSets/boss.obj"
+    }    
+    // menu
+    ,{  
       "type":"texture",
       "id":"menu_bg",
       "src":"ui/menu/menu_bg.png"
     },
-	{
+    {  
+      "type":"texture",
+      "id":"instructions_bg",
+      "src":"ui/menu/instructions_bg.png"
+    },
+    {  
       "type":"texture",
       "id":"menu_play",
       "src":"ui/menu/menu_play.png"
     },
-	{
+    {  
       "type":"texture",
       "id":"menu_playOver",
       "src":"ui/menu/menu_playOver.png"
     },
-  {
+    {  
       "type":"texture",
       "id":"menu_howtoplay",
       "src":"ui/menu/menu_howtoplay.png"
     },
-  {
+    {  
       "type":"texture",
       "id":"menu_howtoplayOver",
       "src":"ui/menu/menu_howtoplayOver.png"
     },
-  {
+    {  
       "type":"texture",
       "id":"menu_quit",
       "src":"ui/menu/menu_quit.png"
     },
-  {
+    {  
       "type":"texture",
       "id":"menu_quitOver",
       "src":"ui/menu/menu_quitOver.png"
     },
-  {
+    {  
       "type":"texture",
       "id":"CURSOR_OPEN",
       "src":"cursor_open.png"
     },
-  {
+    {  
       "type":"texture",
       "id":"CURSOR_GRAB",
       "src":"cursor_grab.png"
     },
-
     // enemy
-    {
+    {  
       "type":"texture",
       "id":"INDICATOR",
       "src":"demon_spirit.png"
     },
-    {
+    {  
       "type":"texture",
       "id":"spritesheet_enemy_1",
       "src":"spritesheet_enemy_1.png"
     },
-    {
+    {  
       "type":"texture",
       "id":"spritesheet_enemy_2",
       "src":"spritesheet_enemy_2.png"
     },
-    {
+    {  
       "type":"texture",
       "id":"enemy_1",
       "src":"enemy_1.png"
     },
-    {
+    {  
       "type":"texture",
       "id":"enemy_2",
       "src":"enemy_2.png"
     },
-    {
+    {  
       "type":"texture",
       "id":"demon_spirit",
       "src":"demonToken4.png"
     },
-    {
+    {  
       "type":"texture",
       "id":"SPEW",
       "src":"spew.png"
-    }
-
+    }    
     // player
-    ,{
+    ,{  
       "type":"texture",
       "id":"player",
       "src":"player.png"
     },
-    {
+    {  
       "type":"texture",
       "id":"BG",
       "src":"backThing.png"
     },
-    {
+    {  
       "type":"texture",
       "id":"spritesheet_player",
       "src":"spritesheet_player.png"
-    }
-
-    
-    ,{
+    },
+    {  
       "type":"texture",
       "id":"LIFE",
       "src":"life.png"
     },
-    {
+    {  
       "type":"texture",
       "id":"EMPTY_LIFE",
       "src":"emptyLife.png"
     },
-
-
-
-    // BGM
-    {
+    // BGM    
+    {  
       "type":"audio",
       "id":"BGM_1",
       "src":"PleaseGod.ogg",
-      "category": "music"
+      "category":"music"
     },
-    {
+    {  
       "type":"audio",
       "id":"BGM_2",
       "src":"MyGirlfriendsADemon.ogg",
-      "category": "music"
+      "category":"music"
     },
-    {
+    {  
       "type":"audio",
       "id":"BGM_3",
       "src":"DevilIsADickweed2.ogg",
-      "category": "music"
+      "category":"music"
     },
-    {
+    {  
       "type":"audio",
       "id":"BGM_4",
       "src":"ExcerciseMyHeart.ogg",
-      "category": "music"
+      "category":"music"
     },
-
-    // sfx
-    {
+    // sfx    
+    {  
       "type":"audio",
       "id":"FOOTSTEP",
       "src":"footstep.ogg",
-      "category": "sfx"
+      "category":"sfx"
     },
-    {
-		"type":"audio",
-      	"id":"ripitSound1",
-      	"src":"GRS/ripitSound1.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"ripitSound1",
+      "src":"GRS/ripitSound1.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"ripit",
-      	"src":"GRS/Ripit1.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"ripit",
+      "src":"GRS/Ripit1.ogg",
+      "category":"sfx"
     },
-    {
-		"type":"audio",
-      	"id":"gripit",
-      	"src":"GRS/Gripit1.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"gripit",
+      "src":"GRS/Gripit1.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"sipit",
-      	"src":"GRS/sipit1.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"sipit",
+      "src":"GRS/sipit1.ogg",
+      "category":"sfx"
     },
-    {
-		"type":"audio",
-      	"id":"GRIPIT_SOUND_1",
-      	"src":"GRS/Ripit_Sound_1.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"GRIPIT_SOUND_1",
+      "src":"GRS/Ripit_Sound_1.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"GRIPIT_SOUND_2",
-      	"src":"GRS/Ripit_Sound_2.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"GRIPIT_SOUND_2",
+      "src":"GRS/Ripit_Sound_2.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"GRIPIT_SOUND_3",
-      	"src":"GRS/Ripit_Sound_3.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"GRIPIT_SOUND_3",
+      "src":"GRS/Ripit_Sound_3.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"GRIPIT_SOUND_4",
-      	"src":"GRS/Ripit_Sound_4.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"GRIPIT_SOUND_4",
+      "src":"GRS/Ripit_Sound_4.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"GRIPIT_SOUND_5",
-      	"src":"GRS/Ripit_Sound_5.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"GRIPIT_SOUND_5",
+      "src":"GRS/Ripit_Sound_5.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"GRIPIT_SOUND_6",
-      	"src":"GRS/Ripit_Sound_6.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"GRIPIT_SOUND_6",
+      "src":"GRS/Ripit_Sound_6.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"GRIPIT_SOUND_7",
-      	"src":"GRS/Ripit_Sound_7.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"GRIPIT_SOUND_7",
+      "src":"GRS/Ripit_Sound_7.ogg",
+      "category":"sfx"
     },
-        {
-		"type":"audio",
-      	"id":"SIPIT_SOUND_1",
-      	"src":"GRS/Sipit_Sound_1.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"SIPIT_SOUND_1",
+      "src":"GRS/Sipit_Sound_1.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"SIPIT_SOUND_2",
-      	"src":"GRS/Sipit_Sound_2.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"SIPIT_SOUND_2",
+      "src":"GRS/Sipit_Sound_2.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"SIPIT_SOUND_3",
-      	"src":"GRS/Sipit_Sound_3.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"SIPIT_SOUND_3",
+      "src":"GRS/Sipit_Sound_3.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"SIPIT_SOUND_4",
-      	"src":"GRS/Sipit_Sound_4.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"SIPIT_SOUND_4",
+      "src":"GRS/Sipit_Sound_4.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"SIPIT_SOUND_5",
-      	"src":"GRS/Sipit_Sound_5.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"SIPIT_SOUND_5",
+      "src":"GRS/Sipit_Sound_5.ogg",
+      "category":"sfx"
     },
-     {
-		"type":"audio",
-      	"id":"HIT_SOUND_1",
-      	"src":"GRS/Ow_1.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"HIT_SOUND_1",
+      "src":"GRS/Ow_1.ogg",
+      "category":"sfx"
     },
-     {
-		"type":"audio",
-      	"id":"HIT_SOUND_2",
-      	"src":"GRS/Ow_2.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"HIT_SOUND_2",
+      "src":"GRS/Ow_2.ogg",
+      "category":"sfx"
     },
-    {
-		"type":"audio",
-      	"id":"HIT_SOUND_3",
-      	"src":"GRS/Ow_3.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"HIT_SOUND_3",
+      "src":"GRS/Ow_3.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"HIT_SOUND_4",
-      	"src":"GRS/Ow_4.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"HIT_SOUND_4",
+      "src":"GRS/Ow_4.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"HIT_SOUND_5",
-      	"src":"GRS/Ow_5.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"HIT_SOUND_5",
+      "src":"GRS/Ow_5.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"HIT_SOUND_6",
-      	"src":"GRS/Ow_6.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"HIT_SOUND_6",
+      "src":"GRS/Ow_6.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"HIT_SOUND_7",
-      	"src":"GRS/Ow_7.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"HIT_SOUND_7",
+      "src":"GRS/Ow_7.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"HIT_SOUND_8",
-      	"src":"GRS/Ow_8.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"HIT_SOUND_8",
+      "src":"GRS/Ow_8.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"HIT_SOUND_9",
-      	"src":"GRS/Ow_9.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"HIT_SOUND_9",
+      "src":"GRS/Ow_9.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"HIT_SOUND_10",
-      	"src":"GRS/Ow_10.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"HIT_SOUND_10",
+      "src":"GRS/Ow_10.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"HIT_SOUND_11",
-      	"src":"GRS/Ow_11.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"HIT_SOUND_11",
+      "src":"GRS/Ow_11.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_ATTACK_1",
-      	"src":"GS/Demon_Attack_1.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_ATTACK_1",
+      "src":"GS/Demon_Attack_1.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_DEATH_1",
-      	"src":"GS/Demon_Death_1.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_DEATH_1",
+      "src":"GS/Demon_Death_1.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_DEATH_2",
-      	"src":"GS/Demon_Death_2.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_DEATH_2",
+      "src":"GS/Demon_Death_2.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_DEATH_3",
-      	"src":"GS/Demon_Death_3.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_DEATH_3",
+      "src":"GS/Demon_Death_3.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_DEATH_4",
-      	"src":"GS/Demon_Death_4.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_DEATH_4",
+      "src":"GS/Demon_Death_4.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_GROWL_1",
-      	"src":"GS/Demon_Growl_1.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_GROWL_1",
+      "src":"GS/Demon_Growl_1.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_GROWL_2",
-      	"src":"GS/Demon_Growl_2.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_GROWL_2",
+      "src":"GS/Demon_Growl_2.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_GROWL_3",
-      	"src":"GS/Demon_Growl_3.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_GROWL_3",
+      "src":"GS/Demon_Growl_3.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_GROWL_4",
-      	"src":"GS/Demon_Growl_4.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_GROWL_4",
+      "src":"GS/Demon_Growl_4.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_GROWL_5",
-      	"src":"GS/Demon_Growl_5.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_GROWL_5",
+      "src":"GS/Demon_Growl_5.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_GRUNT_1",
-      	"src":"GS/Demon_Grunt_1.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_GRUNT_1",
+      "src":"GS/Demon_Grunt_1.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_GRUNT_2",
-      	"src":"GS/Demon_Grunt_2.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_GRUNT_2",
+      "src":"GS/Demon_Grunt_2.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_GRUNT_3",
-      	"src":"GS/Demon_Grunt_3.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_GRUNT_3",
+      "src":"GS/Demon_Grunt_3.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_GRUNT_4",
-      	"src":"GS/Demon_Grunt_4.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_GRUNT_4",
+      "src":"GS/Demon_Grunt_4.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_GRUNT_5",
-      	"src":"GS/Demon_Grunt_5.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_GRUNT_5",
+      "src":"GS/Demon_Grunt_5.ogg",
+      "category":"sfx"
     },
-	
-	{
-		"type":"audio",
-      	"id":"DEMON_GRUNT_6",
-      	"src":"GS/Demon_Grunt_6.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_GRUNT_6",
+      "src":"GS/Demon_Grunt_6.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_GRUNT_7",
-      	"src":"GS/Demon_Grunt_7.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_GRUNT_7",
+      "src":"GS/Demon_Grunt_7.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_HISS_1",
-      	"src":"GS/Demon_Hiss_1.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_HISS_1",
+      "src":"GS/Demon_Hiss_1.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_HISS_2",
-      	"src":"GS/Demon_Hiss_2.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_HISS_2",
+      "src":"GS/Demon_Hiss_2.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_HISS_3",
-      	"src":"GS/Demon_Hiss_3.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_HISS_3",
+      "src":"GS/Demon_Hiss_3.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_LAUGH_1",
-      	"src":"GS/Demon_Laugh_1.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_LAUGH_1",
+      "src":"GS/Demon_Laugh_1.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_LAUGH_2",
-      	"src":"GS/Demon_Laugh_2.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_LAUGH_2",
+      "src":"GS/Demon_Laugh_2.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_LAUGH_3",
-      	"src":"GS/Demon_Laugh_3.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_LAUGH_3",
+      "src":"GS/Demon_Laugh_3.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_LAUGH_4",
-      	"src":"GS/Demon_Laugh_4.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_LAUGH_4",
+      "src":"GS/Demon_Laugh_4.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_LAUGH_5",
-      	"src":"GS/Demon_Laugh_5.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_LAUGH_5",
+      "src":"GS/Demon_Laugh_5.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_RIPPED_1",
-      	"src":"GS/Demon_Ripped_1.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_RIPPED_1",
+      "src":"GS/Demon_Ripped_1.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_RIPPED_2",
-      	"src":"GS/Demon_Ripped_2.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_RIPPED_2",
+      "src":"GS/Demon_Ripped_2.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_SPEAK_1",
-      	"src":"GS/Demon_Speak_1.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_SPEAK_1",
+      "src":"GS/Demon_Speak_1.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_SPEAK_2",
-      	"src":"GS/Demon_Speak_2.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_SPEAK_2",
+      "src":"GS/Demon_Speak_2.ogg",
+      "category":"sfx"
     },
-	{
-		"type":"audio",
-      	"id":"DEMON_SPEAK_3",
-      	"src":"GS/Demon_Speak_3.ogg",
-      	"category": "sfx"
+    {  
+      "type":"audio",
+      "id":"DEMON_SPEAK_3",
+      "src":"GS/Demon_Speak_3.ogg",
+      "category":"sfx"
     },
-
-
-    // voice
-    {
+    // voice    
+    {  
       "type":"audio",
       "id":"VOICE_1",
       "src":"Voices/voice1.ogg",
-      "category": "voice"
+      "category":"voice"
     },
-    {
+    {  
       "type":"audio",
       "id":"VOICE_2",
       "src":"Voices/voice2.ogg",
-      "category": "voice"
+      "category":"voice"
     },
-    {
+    {  
       "type":"audio",
       "id":"VOICE_3",
       "src":"Voices/voice3.ogg",
-      "category": "voice"
+      "category":"voice"
     },
-    {
+    {  
       "type":"audio",
       "id":"VOICE_4",
       "src":"Voices/voice4.ogg",
-      "category": "voice"
+      "category":"voice"
     },
-    {
+    {  
       "type":"audio",
       "id":"VOICE_5",
       "src":"Voices/voice5.ogg",
-      "category": "voice"
+      "category":"voice"
     },
-    {
+    {  
       "type":"audio",
       "id":"VOICE_6",
       "src":"Voices/voice6.ogg",
-      "category": "voice"
+      "category":"voice"
     },
-    {
+    {  
       "type":"audio",
       "id":"VOICE_7",
       "src":"Voices/voice7.ogg",
-      "category": "voice"
+      "category":"voice"
     },
-    {
+    {  
       "type":"audio",
       "id":"VOICE_8",
       "src":"Voices/voice8.ogg",
-      "category": "voice"
+      "category":"voice"
     },
-    {
+    {  
       "type":"audio",
       "id":"VOICE_9",
       "src":"Voices/voice9.ogg",
-      "category": "voice"
+      "category":"voice"
     },
-    {
+    {  
       "type":"audio",
       "id":"VOICE_10",
       "src":"Voices/voice10.ogg",
-      "category": "voice"
+      "category":"voice"
     },
-    {
+    {  
       "type":"audio",
       "id":"VOICE_11",
       "src":"Voices/voice11.ogg",
-      "category": "voice"
+      "category":"voice"
     },
-    {
+    {  
       "type":"audio",
       "id":"VOICE_12",
       "src":"Voices/voice12.ogg",
-      "category": "voice"
+      "category":"voice"
     },
-    {
+    {  
       "type":"audio",
       "id":"VOICE_13",
       "src":"Voices/voice13.ogg",
-      "category": "voice"
+      "category":"voice"
     },
-    {
+    {  
       "type":"audio",
       "id":"VOICE_14",
       "src":"Voices/voice14.ogg",
-      "category": "voice"
+      "category":"voice"
     }
   ]
 }

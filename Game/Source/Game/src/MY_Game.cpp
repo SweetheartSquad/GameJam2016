@@ -11,6 +11,7 @@
 #include <MY_Scene_ScreenShaders.h>
 #include <MY_Scene_VR.h>
 #include <MY_Scene_Main.h>
+#include <MY_Scene_Instructions.h>
 
 #include <NumberUtils.h>
 
@@ -20,6 +21,7 @@ MY_Game::MY_Game() :
 	bgm(nullptr)
 {
 	scenes["game"] = new MY_Scene_Main(this);
+	scenes["instructions"] = nullptr;
 
 	playBGM();
 }

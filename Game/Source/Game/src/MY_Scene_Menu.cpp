@@ -4,6 +4,7 @@
 #include <shader/ComponentShaderText.h>
 #include <sweet/UI.h>
 #include <MY_Button.h>
+#include <MY_Scene_Instructions.h>
 
 MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 	MY_Scene_Base(_game)
@@ -62,6 +63,10 @@ MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 		game->switchScene("game", false);
 	});
 	howButton->eventManager.addEventListener("click", [&](sweet::Event * _event){
+		if(game->scenes["instructions"] != nullptr){
+			delete game->scenes["instructions"];
+		}
+		game->scenes["instructions"] = new MY_Scene_Instructions(game);
 		game->switchScene("instructions", false);
 	});
 	exitButton->eventManager.addEventListener("click", [&](sweet::Event * _event){
