@@ -43,6 +43,11 @@
     },
     {  
       "type":"texture",
+      "id":"menu_playDown",
+      "src":"ui/menu_playDown.png"
+    },
+    {  
+      "type":"texture",
       "id":"menu_howtoplay",
       "src":"ui/menu_howtoplay.png"
     },
@@ -53,6 +58,11 @@
     },
     {  
       "type":"texture",
+      "id":"menu_howtoplayDown",
+      "src":"ui/menu_howtoplayDown.png"
+    },
+    {  
+      "type":"texture",
       "id":"menu_quit",
       "src":"ui/menu_quit.png"
     },
@@ -60,6 +70,11 @@
       "type":"texture",
       "id":"menu_quitOver",
       "src":"ui/menu_quitOver.png"
+    },
+    {  
+      "type":"texture",
+      "id":"menu_quitDown",
+      "src":"ui/menu_quitDown.png"
     },
     {  
       "type":"texture",

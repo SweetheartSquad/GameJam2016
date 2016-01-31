@@ -13,7 +13,7 @@ MY_Button::MY_Button(BulletWorld * _world, std::string _name) :
 	ss << _name;
 	texNormal = MY_ResourceManager::globalAssets->getTexture(ss.str())->texture;
 	texOver = MY_ResourceManager::globalAssets->getTexture(ss.str() + "Over")->texture;
-	texDown = MY_ResourceManager::globalAssets->getTexture(ss.str() + "Over")->texture;
+	texDown = MY_ResourceManager::globalAssets->getTexture(ss.str() + "Down")->texture;
 
 	background->mesh->pushTexture2D(texNormal);
 	background->mesh->setScaleMode(GL_NEAREST);
