@@ -66,7 +66,7 @@ MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 		s->push(new Slide(MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture));
 		s->push(new Slide(MY_ResourceManager::globalAssets->getTexture("demon_spirit")->texture));
 		s->push(new Slide(MY_ResourceManager::globalAssets->getTexture("intro_bg")->texture));
-		s->setNewSlide();
+		s->setNewSlide(true);
 		game->scenes["intro"] = s;//new MY_Scene_Intro(game);
 		
 		game->switchScene("intro", false);

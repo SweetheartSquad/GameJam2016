@@ -16,6 +16,7 @@ private:
 	NodeUI * slideNew;
 
 	bool isTransitioning;
+	bool isTransitioningForwards;
 public:
 	SlideShowScene(Game * _game);
 	~SlideShowScene();
@@ -28,6 +29,6 @@ public:
 	void push(Slide * _slide);
 	void next();
 	void prev();
-	void setNewSlide();
+	void setNewSlide(bool _isForwards);
 	void transitionNext();
 };
