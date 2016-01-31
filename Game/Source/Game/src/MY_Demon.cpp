@@ -56,7 +56,7 @@ MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed, unsigned
 
 	indicator = new Sprite(_shader);
 	indicator->setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("INDICATOR")->texture);
-	childTransform->addChild(indicator);
+	childTransform->addChild(indicator)->scale(0.5f);
 }
 
 MY_DemonSpirit::MY_DemonSpirit(Shader* _shader, MY_Player * _player) :

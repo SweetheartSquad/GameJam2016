@@ -465,6 +465,8 @@ MY_DemonSpirit * MY_Scene_Main::getHovered(){
 		dist = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
 		distMag = glm::length(dist);
 
+		d->spirit->indicator->meshTransform->scale(glm::min(3.f,(100/distMag)), false);
+
 		if(distMag < min){
 			min = distMag;
 			res = d->spirit;

@@ -19,6 +19,7 @@ MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 	layout->background->mesh->setScaleMode(GL_NEAREST);
 
 	MY_Button * gameButton = new MY_Button(uiLayer->world, "menu_play");
+	MY_Button * howButton = new MY_Button(uiLayer->world, "menu_howtoplay");
 	MY_Button * exitButton = new MY_Button(uiLayer->world, "menu_quit");
 
 	float gameBtnW = 0.128f;
@@ -33,6 +34,8 @@ MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 
 	gameButton->setRationalWidth(1.f, layout);
 	gameButton->setRationalHeight(1.f, layout);
+	howButton->setRationalWidth(1.f, layout);
+	howButton->setRationalHeight(1.f, layout);
 	exitButton->setRationalWidth(1.f, layout);
 	exitButton->setRationalHeight(1.f, layout);
 	
@@ -40,18 +43,26 @@ MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 	gameButton->setMarginRight(1.f - gameBtnX - gameBtnW);
 	gameButton->setMarginBottom(gameBtnY);
 	gameButton->setMarginTop(1.f - gameBtnY - gameBtnH);
+	howButton->setMarginLeft(exitBtnX);
+	howButton->setMarginRight(1.f - exitBtnX - exitBtnW);
+	howButton->setMarginBottom(exitBtnY);
+	howButton->setMarginTop(1.f - exitBtnY - exitBtnH);
 	exitButton->setMarginLeft(exitBtnX);
 	exitButton->setMarginRight(1.f - exitBtnX - exitBtnW);
-	exitButton->setMarginBottom(exitBtnY);
-	exitButton->setMarginTop(1.f - exitBtnY - exitBtnH);
+	exitButton->setMarginBottom((exitBtnY - 0.15f));
+	exitButton->setMarginTop(1.f - (exitBtnY - 0.15f) - exitBtnH);
 	
 	// make the buttons clickable
 	gameButton->setMouseEnabled(true);
+	howButton->setMouseEnabled(true);
 	exitButton->setMouseEnabled(true);
 
 	// add listeners to each label, making them buttons that take the player to different scenes
 	gameButton->eventManager.addEventListener("click", [&](sweet::Event * _event){
 		game->switchScene("game", false);
+	});
+	howButton->eventManager.addEventListener("click", [&](sweet::Event * _event){
+		game->switchScene("instructions", false);
 	});
 	exitButton->eventManager.addEventListener("click", [&](sweet::Event * _event){
 		game->exit();
@@ -59,6 +70,7 @@ MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 
 	// add the labels to the layout
 	layout->addChild(gameButton);
+	layout->addChild(howButton);
 	layout->addChild(exitButton);
 
 	// add the layout to the uiLayer

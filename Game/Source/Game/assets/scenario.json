@@ -21,12 +21,22 @@
       "id":"menu_playOver",
       "src":"ui/menu/menu_playOver.png"
     },
-	{
+  {
+      "type":"texture",
+      "id":"menu_howtoplay",
+      "src":"ui/menu/menu_howtoplay.png"
+    },
+  {
+      "type":"texture",
+      "id":"menu_howtoplayOver",
+      "src":"ui/menu/menu_howtoplayOver.png"
+    },
+  {
       "type":"texture",
       "id":"menu_quit",
       "src":"ui/menu/menu_quit.png"
     },
-	{
+  {
       "type":"texture",
       "id":"menu_quitOver",
       "src":"ui/menu/menu_quitOver.png"
@@ -43,6 +53,11 @@
     },
 
     // enemy
+    {
+      "type":"texture",
+      "id":"INDICATOR",
+      "src":"demon_spirit.png"
+    },
     {
       "type":"texture",
       "id":"spritesheet_enemy_1",
@@ -67,6 +82,11 @@
       "type":"texture",
       "id":"demon_spirit",
       "src":"demonToken4.png"
+    },
+    {
+      "type":"texture",
+      "id":"SPEW",
+      "src":"spew.png"
     }
 
     // player
