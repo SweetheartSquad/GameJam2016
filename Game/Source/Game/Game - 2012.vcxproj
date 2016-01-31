@@ -33,6 +33,7 @@
     <ClCompile Include="src\MY_Scene_ScreenShaders.cpp" />
     <ClCompile Include="src\MY_Scene_SurfaceShaders.cpp" />
     <ClCompile Include="src\MY_Scene_VR.cpp" />
+    <ClCompile Include="src\MY_Scene_Win.cpp" />
     <ClCompile Include="src\MY_Spewer.cpp" />
     <ClCompile Include="src\MY_UI_Counter.cpp" />
     <ClCompile Include="src\Room.cpp" />
@@ -62,6 +63,7 @@
     <ClInclude Include="include\MY_Scene_SurfaceShaders.h" />
     <ClInclude Include="include\MY_Scene_VR.h" />
     <ClInclude Include="include\MY_UI_Counter.h" />
+    <ClInclude Include="include\MY_Scene_Win.h" />
     <ClInclude Include="include\Room.h" />
     <ClInclude Include="include\MY_Spewer.h" />
     <ClInclude Include="include\Slide.h" />

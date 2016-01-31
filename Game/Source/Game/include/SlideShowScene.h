@@ -17,6 +17,10 @@ private:
 
 	bool isTransitioning;
 	bool isTransitioningForwards;
+
+	void next();
+	void prev();
+	void setNewSlide(bool _isForwards);
 public:
 	SlideShowScene(Game * _game);
 	~SlideShowScene();
@@ -27,8 +31,6 @@ public:
 	sweet::EventManager eventManager;
 
 	void push(Slide * _slide);
-	void next();
-	void prev();
-	void setNewSlide(bool _isForwards);
-	void transitionNext();
+	
+	void changeSlide(bool _isForwards);
 };

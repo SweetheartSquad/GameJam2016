@@ -28,8 +28,18 @@
     },
     {  
       "type":"texture",
-      "id":"win_bg",
-      "src":"ui/win_bg.png"
+      "id":"win_bg1",
+      "src":"ui/win_bg1.png"
+    },
+	{  
+      "type":"texture",
+      "id":"win_bg2",
+      "src":"ui/win_bg2.png"
+    },
+	{  
+      "type":"texture",
+      "id":"win_bg3",
+      "src":"ui/win_bg3.png"
     },
     {  
       "type":"texture",

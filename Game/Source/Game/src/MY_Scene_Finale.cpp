@@ -4,6 +4,7 @@
 #include <MY_Scene_Loss.h>
 #include <HorizontalLinearLayout.h>
 #include <MY_Scene_Main.h>
+#include <MY_Scene_Win.h>
 
 MY_Scene_Finale::MY_Scene_Finale(Game * _game) :
 	MY_Scene_MenuBase(_game),
@@ -60,9 +61,12 @@ MY_Scene_Finale::MY_Scene_Finale(Game * _game) :
 		MY_ResourceManager::globalAssets->getAudio(curTarget)->sound->play(false);
 	});
 	eventManager->addEventListener("sipit", [this, layout](sweet::Event * _event){
-		layout->background->mesh->replaceTextures(MY_ResourceManager::globalAssets->getTexture("win_bg")->texture);
 		timer->stop();
 		pressDisplay->setVisible(false);
+
+		auto newScene = new MY_Scene_Win(game);
+		game->scenes["win"] = newScene;
+		game->switchScene("win", true);
 	});
 
 

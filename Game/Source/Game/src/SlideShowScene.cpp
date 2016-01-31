@@ -46,15 +46,6 @@ SlideShowScene::SlideShowScene(Game * _game) :
 		}
 	});
 
-	uiLayer->eventManager.addEventListener("click", [this](sweet::Event * _event){
-		if(forwards.size() > 0){
-			setNewSlide(true);
-		}else{
-			game->scenes["game"] = new MY_Scene_Main(dynamic_cast<MY_Game *>(game));
-			game->switchScene("game", true);
-		}
-	});
-
 	eventManager.addEventListener("transitionComplete", [this](sweet::Event * _event){
 		isTransitioning = false;
 		slide = slideNew;
@@ -72,14 +63,6 @@ void SlideShowScene::update(Step * _step){
 	eventManager.update(_step);
 	transition->update(_step);
 	MY_Scene_Base::update(_step);
-
-	if(keyboard->keyJustDown(GLFW_KEY_BACKSPACE)){
-		if(backwards.size() > 0){
-			setNewSlide(false);
-		}else{
-			game->switchScene("menu", true);
-		}
-	}
 }
 
 void SlideShowScene::push(Slide * _slide){
@@ -94,16 +77,9 @@ void SlideShowScene::next(){
 	
 		currSlide = forwards.front();
 		forwards.erase(forwards.begin());
-	}else{
-		eventManager.triggerEvent("slidesEnd");
 	}
 }
-// x 000
-// xx 00
-// xxx 0
 
-
-// xxxxxx i 000
 void SlideShowScene::prev(){
 	if(backwards.size() > 0){
 		if(currSlide != nullptr){
@@ -112,8 +88,22 @@ void SlideShowScene::prev(){
 	
 		currSlide = backwards.back();
 		backwards.pop_back();
+	}
+}
+
+void SlideShowScene::changeSlide(bool _isForwards){
+	if(_isForwards){
+		if(forwards.size() > 0){
+			setNewSlide(true);
+		}else{
+			eventManager.triggerEvent("overflow");
+		}
 	}else{
-		eventManager.triggerEvent("slidesBegin");
+		if(backwards.size() > 0){
+			setNewSlide(false);
+		}else{
+			eventManager.triggerEvent("underflow");
+		}
 	}
 }
 
@@ -146,9 +136,12 @@ void SlideShowScene::setNewSlide(bool _isForwards){
 			}
 		}else{
 			// Can't transition
+			Log::error("No slide could be found");
 			isTransitioning = false;
 		}
+		/*
 		slideNew->setBackgroundColour(1.f, 0, 0);
 		slideOld->setBackgroundColour(0, 1.f, 0);
+		*/
 	}
 }
