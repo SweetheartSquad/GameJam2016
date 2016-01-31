@@ -38,9 +38,12 @@ MeshEntity * BossRoom::getFurnitureSet(){
 	*/
 
 	std::stringstream ssObj;
-	ssObj << "assets/meshes/furnitureSets/" << idx << ".obj";
-	MeshEntity * res = new MeshEntity(Resource::loadMeshFromObj(ssObj.str(), true).at(0), getShader());
-	res->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture);
+	ssObj << "assets/meshes/furnitureSets/boss.obj";
+	MeshEntity * res = new MeshEntity(MY_ResourceManager::globalAssets->getMesh("BOSS")->meshes.at(0), getShader());
+	Texture * tex = new Texture("assets/textures/furnitureSets/boss.png", false, true, false);
+	tex->load();
+
+	res->mesh->pushTexture2D(tex);
 	res->mesh->setScaleMode(GL_NEAREST);
 
 	return res;
