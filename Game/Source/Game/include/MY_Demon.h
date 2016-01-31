@@ -67,6 +67,7 @@ public:
 		kWALK,
 		kIDLE,
 		kDEAD,
+		kSAVED,
 		kSTUNNED
 	} state;
 
@@ -90,5 +91,5 @@ public:
 	void unload() override;
 	void load() override;
 
-	void kill();
+	void kill(bool _saved);
 };

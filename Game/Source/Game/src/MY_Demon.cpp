@@ -193,7 +193,7 @@ void MY_DemonSpirit::sipIt(){
 	MY_ResourceManager::globalAssets->getAudio("SIPIT_SOUND_" + std::to_string(randRipitSound))->sound->play();
 	
 	if(possessed != nullptr){
-		possessed->kill();
+		possessed->kill(true);
 	}
 	setVisible(true);
 }
@@ -217,7 +217,7 @@ MY_DemonSpirit_False::MY_DemonSpirit_False(Shader * _shader, MY_Demon * _possess
 
 void MY_DemonSpirit_False::ripIt(){
 	std::cout << "wrong spirit ripped" << std::endl;
-	possessed->kill();
+	possessed->kill(false);
 }
 
 
@@ -268,6 +268,11 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	anim->pushFramesInRange(0, 1, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	anim->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
 	spriteSheet->addAnimation("stunned", anim);
+
+	anim = new SpriteSheetAnimation(0.4f);
+	anim->pushFramesInRange(7, 7, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	anim->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
+	spriteSheet->addAnimation("saved", anim);
 
 	setSpriteSheet(spriteSheet, "idle");
 
@@ -325,6 +330,7 @@ void MY_Demon::update(Step * _step) {
 		case kIDLE: setCurrentAnimation("idle"); break;
 		case kDEAD: setCurrentAnimation("die"); break;
 		case kSTUNNED: setCurrentAnimation("stunned"); break;
+		case kSAVED: setCurrentAnimation("saved"); break;
 		default:
 			setCurrentAnimation("idle"); break;
 	}
@@ -342,13 +348,21 @@ void MY_Demon::load() {
 	Sprite::load();
 }
 
-void MY_Demon::kill(){
+void MY_Demon::kill(bool _saved){
 	stateTimeout->stop();
-	state = MY_Demon::kDEAD;
+	state = _saved ? MY_Demon::kSAVED : MY_Demon::kDEAD;
 	currentAnimation->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
+
 	Timeout * t = new Timeout(0.75f, [this](sweet::Event * _event){
 		setVisible(false);
 	});
+
+	if(_saved){
+		t->eventManager->addEventListener("progress", [this](sweet::Event * _event){
+			childTransform->translate(0, 0.025f, 0);
+		});
+	}
+
 	childTransform->addChild(t);
 	t->start();
 	setVisible(true);
