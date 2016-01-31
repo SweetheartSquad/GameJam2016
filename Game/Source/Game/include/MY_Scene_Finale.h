@@ -2,7 +2,7 @@
 
 #include <MY_Scene_MenuBase.h>
 
-#define NUM_REQUIRED_PRESSES 10
+#define NUM_REQUIRED_PRESSES 20
 
 class MY_Scene_Finale : public MY_Scene_MenuBase{
 public:

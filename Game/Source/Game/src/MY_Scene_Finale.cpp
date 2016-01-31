@@ -66,7 +66,7 @@ MY_Scene_Finale::MY_Scene_Finale(Game * _game) :
 	});
 
 
-	timer = new Timeout(2.f, [this](sweet::Event * _event){
+	timer = new Timeout(4.f, [this](sweet::Event * _event){
 		auto newScene = new MY_Scene_Main(reinterpret_cast<MY_Game *>(game), true);
 		game->scenes["main"] = newScene;
 		game->switchScene("main", true);
