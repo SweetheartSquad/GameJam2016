@@ -81,7 +81,7 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	
 	// setup UI
 	livesCounter = new MY_UI_Counter(uiLayer->world, MY_ResourceManager::globalAssets->getTexture("LIFE")->texture, MY_ResourceManager::globalAssets->getTexture("EMPTY_LIFE")->texture);
-	livesCounter->setBackgroundColour(1.f, 0.f, 0.f, 0.5f);
+	livesCounter->setBackgroundColour(1.f, 0.f, 0.f, 0.f);
 	livesCounter->setRationalWidth(1.f);
 	livesCounter->setRationalHeight(1.f);
 	livesCounter->setMarginRight(0.5f);
@@ -89,7 +89,7 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	livesCounter->horizontalAlignment = kLEFT;
 
 	demonsCounter = new MY_UI_Counter(uiLayer->world, MY_ResourceManager::globalAssets->getTexture("demon_spirit")->texture);
-	demonsCounter->setBackgroundColour(0.f, 0.f, 1.f, 0.5f);
+	demonsCounter->setBackgroundColour(0.f, 0.f, 1.f, 0.f);
 	demonsCounter->setRationalWidth(1.f);
 	demonsCounter->setRationalHeight(1.f);
 	demonsCounter->setMarginLeft(0.1f);
@@ -291,14 +291,14 @@ void MY_Scene_Main::disableDebug(){
 
 void MY_Scene_Main::collideEntities() {
 	auto  ptrans = player->firstParent()->getTranslationVector();
-	float pMin = ptrans.x - (player->firstParent()->getScaleVector().x  * 0.5f);
-	float pMax = ptrans.x + (player->firstParent()->getScaleVector().x  * 0.5f);
+	float pMin = ptrans.x - (player->firstParent()->getScaleVector().x  * 0.25f);
+	float pMax = ptrans.x + (player->firstParent()->getScaleVector().x  * 0.25f);
 	
 	for(auto demon : demons) {
 		if(demon->state != MY_Demon::kDEAD && demon->spirit->state == MY_DemonSpirit::kIN){
 			auto dtrans = demon->firstParent()->getTranslationVector();
-			float dMin = dtrans.x - (demon->firstParent()->getScaleVector().x  * 0.5f);
-			float dMax = dtrans.x + (demon->firstParent()->getScaleVector().x  * 0.5f);
+			float dMin = dtrans.x - (demon->firstParent()->getScaleVector().x  * 0.25f);
+			float dMax = dtrans.x + (demon->firstParent()->getScaleVector().x  * 0.25f);
 
 			if((pMax >= dMin && pMin <= dMax) ||
 				pMin <= dMax && pMax >= dMin) {
