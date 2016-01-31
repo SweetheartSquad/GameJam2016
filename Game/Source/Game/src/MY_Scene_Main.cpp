@@ -31,7 +31,7 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	currentRoom(nullptr),
 	previousRoom(nullptr),
 	mainCam(new MY_Cam()),
-	hoverRadius(50),
+	hoverRadius(0.05),
 	hoverRadius2(hoverRadius*hoverRadius),
 	hoverTarget(nullptr),
 	ripTarget(nullptr),
@@ -345,15 +345,12 @@ void MY_Scene_Main::update(Step * _step){
 		}
 	}
 
+	// if the player is gripping, make sure they face towards the cursor
 	if(mouse->leftDown()) {
 		if(player->state == MY_Player::kRIP_AND_GRIP) {
 			glm::vec3 playerPos = player->meshTransform->getWorldPos();
 			glm::vec3 playerPosInScreen = mainCam->worldToScreen(playerPos, sweet::getWindowDimensions());
-			if(mouse->mouseX() - playerPosInScreen.x > 0) {
-				player->meshTransform->scale(1,1,1, false);
-			}else {
-				player->meshTransform->scale(-1,1,1, false);	
-			}
+			player->meshTransform->scale(glm::sign(mouse->mouseX() - playerPosInScreen.x),1,1, false);
 		}
 	}
 
@@ -523,6 +520,7 @@ MY_Player * MY_Scene_Main::spawnPlayer(Room * _room){
 }
 
 MY_DemonSpirit * MY_Scene_Main::getHovered(){
+	glm::vec2 window = sweet::getWindowDimensions();
 	float min = hoverRadius;
 	glm::vec3 demonPos, demonPosInScreen;
 	glm::vec2 dist;
@@ -536,10 +534,10 @@ MY_DemonSpirit * MY_Scene_Main::getHovered(){
 		
 		demonPos = d->spirit->meshTransform->getWorldPos();
 		demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
-		dist = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
+		dist = (glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY())) / window;
 		distMag = glm::length(dist);
 
-		d->spirit->indicator->meshTransform->scale(glm::min(3.f,(100/distMag)), false);
+		d->spirit->indicator->meshTransform->scale(glm::min(3.f,(3*(1-distMag))), false);
 
 		if(distMag < min){
 			min = distMag;
@@ -549,7 +547,7 @@ MY_DemonSpirit * MY_Scene_Main::getHovered(){
 		if(!d->isDummy){
 			demonPos = d->spiritFake1->meshTransform->getWorldPos();
 			demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
-			dist = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
+			dist = (glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY())) / window;
 			distMag = glm::length(dist);
 
 			if(distMag < min){
@@ -560,7 +558,7 @@ MY_DemonSpirit * MY_Scene_Main::getHovered(){
 
 			demonPos = d->spiritFake2->meshTransform->getWorldPos();
 			demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
-			dist = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
+			dist = (glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY())) / window;
 			distMag = glm::length(dist);
 
 			if(distMag < min){
