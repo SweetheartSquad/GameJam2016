@@ -17,8 +17,9 @@
 #include <shader\ShaderComponentMVP.h>
 
 #include <NumberUtils.h>
+#include <MY_DemonBoss.h>
 
-#define MAX_DEMON_COUNT 10
+#define MAX_DEMON_COUNT 1
 #define MAX_SPAWNED_DEMON_COUNT 3
 
 MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
@@ -128,20 +129,25 @@ Room * MY_Scene_Main::goToNewRoom(){
 
 	}
 
-	Room * res = currentRoom = demonsCounter->getItemCount() < MAX_DEMON_COUNT ? new Room(baseShader) : new BossRoom(baseShader);
+	bool isBossRoom = !demonsCounter->getItemCount() < MAX_DEMON_COUNT;
+
+	Room * res = currentRoom = !isBossRoom ? new Room(baseShader) : new BossRoom(baseShader);
 
 	childTransform->addChild(res);
 	
 	res->placeBG();
 	res->placeGG();
-
 	
 	player = spawnPlayer(res);
 
-	if(demonsCounter->getItemCount() < MAX_DEMON_COUNT){
-		float numSpawnedDemons = sweet::NumberUtils::randomInt(1, MAX_DEMON_COUNT - demonsCounter->getItemCount() < MAX_SPAWNED_DEMON_COUNT ? MAX_DEMON_COUNT - demonsCounter->getItemCount() : MAX_SPAWNED_DEMON_COUNT);
-		for(int i = 0; i < numSpawnedDemons; ++i){
-			spawnDemon(res);
+	if(isBossRoom) {
+		spawnBoss(res);
+	} else{
+		if(demonsCounter->getItemCount() < MAX_DEMON_COUNT){
+			float numSpawnedDemons = sweet::NumberUtils::randomInt(1, MAX_DEMON_COUNT - demonsCounter->getItemCount() < MAX_SPAWNED_DEMON_COUNT ? MAX_DEMON_COUNT - demonsCounter->getItemCount() : MAX_SPAWNED_DEMON_COUNT);
+			for(int i = 0; i < numSpawnedDemons; ++i){
+				spawnDemon(res);
+			}
 		}
 	}
 
@@ -158,9 +164,11 @@ Room * MY_Scene_Main::goToNewRoom(){
 		ripTarget = nullptr;
 		player->delayChange(0.5f, MY_Player::kIDLE);
 	});
+	
 	player->eventManager.addEventListener("invincibilityStart", [this](sweet::Event * _event){
 		mainCam->shakeTimer->restart();
 	});
+
 	player->eventManager.addEventListener("gameOver", [this](sweet::Event * _event){
 		gameOver = true;
 		// gameOver stuff
@@ -309,6 +317,13 @@ MY_Demon * MY_Scene_Main::spawnDemon(Room * _room){
 	_room->gameground->addChild(d)->translate(glm::vec3(sweet::NumberUtils::randomFloat(0, _room->doorPos*0.9f), 0, 0), false);
 	demons.push_back(d);
 	return d;
+}
+
+MY_DemonBoss * MY_Scene_Main::spawnBoss(Room* _room) {
+	MY_DemonBoss * boss = new MY_DemonBoss(baseShaderWithDepth);
+	_room->gameground->addChild(boss);
+	boss->firstParent()->translate(_room->doorPos*0.9f, 0.f, 0.f, false);
+	return boss;
 }
 
 MY_Player * MY_Scene_Main::spawnPlayer(Room * _room){

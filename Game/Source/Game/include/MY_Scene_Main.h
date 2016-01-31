@@ -11,6 +11,7 @@
 #include "MY_Cam.h"
 #include <MY_UI_Counter.h>
 
+class MY_DemonBoss;
 class Room;
 class MY_Game;
 
@@ -27,6 +28,7 @@ public:
 
 	std::vector<MY_Demon *> demons;
 	MY_Demon * spawnDemon(Room * _room);
+	MY_DemonBoss * spawnBoss(Room * _room);
 	MY_Player * spawnPlayer(Room * _room);
 
 	MY_Cam * mainCam;

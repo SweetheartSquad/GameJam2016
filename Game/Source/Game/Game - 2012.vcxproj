@@ -15,6 +15,7 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\MY_Cam.cpp" />
     <ClCompile Include="src\MY_Demon.cpp" />
+    <ClCompile Include="src\MY_DemonBoss.cpp" />
     <ClCompile Include="src\MY_Game.cpp" />
     <ClCompile Include="src\MY_Player.cpp" />
     <ClCompile Include="src\MY_ResourceManager.cpp" />
@@ -33,6 +34,7 @@
     <ClInclude Include="include\BossRoom.h" />
     <ClInclude Include="include\MY_Cam.h" />
     <ClInclude Include="include\MY_Demon.h" />
+    <ClInclude Include="include\MY_DemonBoss.h" />
     <ClInclude Include="include\MY_Game.h" />
     <ClInclude Include="include\MY_Player.h" />
     <ClInclude Include="include\MY_ResourceManager.h" />
