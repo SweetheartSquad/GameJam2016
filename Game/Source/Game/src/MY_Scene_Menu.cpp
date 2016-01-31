@@ -3,6 +3,7 @@
 #include <MY_Scene_Menu.h>
 #include <shader/ComponentShaderText.h>
 #include <sweet/UI.h>
+#include <MY_Button.h>
 
 MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 	MY_Scene_Base(_game)
@@ -15,30 +16,39 @@ MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 	layout->setRationalWidth(1.f);
 	layout->setBackgroundColour(1.f, 1.f, 1.f);
 	layout->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("menu_bg")->texture);
+	layout->colliderMesh->setScaleMode(GL_NEAREST);
 
-	NodeUI * gameButton = new NodeUI(uiLayer->world);
-	NodeUI * exitButton = new NodeUI(uiLayer->world);
+	MY_Button * gameButton = new MY_Button(uiLayer->world, "menu_play");
+	MY_Button * exitButton = new MY_Button(uiLayer->world, "menu_quit");
 
-	gameButton->boxSizing = kCONTENT_BOX;
-	exitButton->boxSizing = kCONTENT_BOX;
+	float gameBtnW = 0.128f;
+	float gameBtnH = 0.15;
+	float gameBtnX = 0.83f;
+	float gameBtnY = 0.475f;
 
+	float exitBtnW = 0.138f;
+	float exitBtnH = 0.15f;
+	float exitBtnX = 0.83f;
+	float exitBtnY = 0.3f;
+
+	gameButton->setRationalWidth(1.f, layout);
+	gameButton->setRationalHeight(1.f, layout);
+	exitButton->setRationalWidth(1.f, layout);
+	exitButton->setRationalHeight(1.f, layout);
 	
-	gameButton->setRationalWidth(0.128f, layout);
-	gameButton->setRationalHeight(0.15f, layout);
-	exitButton->setRationalWidth(0.138f, layout);
-	exitButton->setRationalHeight(0.15f, layout);
-	
-	gameButton->setMarginLeft(0.83f);
-	exitButton->setMarginLeft(0.83f);
-
-	gameButton->setMarginBottom(0.475f);
-	exitButton->setMarginBottom(0.3f);
-
+	gameButton->setMarginLeft(gameBtnX);
+	gameButton->setMarginRight(1.f - gameBtnX - gameBtnW);
+	gameButton->setMarginBottom(gameBtnY);
+	gameButton->setMarginTop(1.f - gameBtnY - gameBtnH);
+	exitButton->setMarginLeft(exitBtnX);
+	exitButton->setMarginRight(1.f - exitBtnX - exitBtnW);
+	exitButton->setMarginBottom(exitBtnY);
+	exitButton->setMarginTop(1.f - exitBtnY - exitBtnH);
 	
 	gameButton->setBackgroundColour(1,0,1,0.5f);
 	exitButton->setBackgroundColour(1,1,0,0.5f);
 	
-	// make the labels clickable
+	// make the buttons clickable
 	gameButton->setMouseEnabled(true);
 	exitButton->setMouseEnabled(true);
 

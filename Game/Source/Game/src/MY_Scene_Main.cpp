@@ -51,7 +51,7 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	activeCamera = mainCam;
 	//mainCam->childTransform->addChild(new CameraController(mainCam));
 	mainCam->farClip = 1000.f;
-	mainCam->firstParent()->translate(0.f, 5, 20);
+	mainCam->firstParent()->translate(0.f, 7.5, 21);
 	mainCam->yaw = 90.0f;
 	mainCam->pitch = 0;
 	mainCam->fieldOfView = 70;
@@ -126,10 +126,6 @@ Room * MY_Scene_Main::goToNewRoom(){
 		demons.clear();
 	}
 
-	if(demonsCounter->getItemCount() == MAX_DEMON_COUNT){
-
-	}
-
 	isBossRoom = !demonsCounter->getItemCount() < MAX_DEMON_COUNT;
 
 	Room * res = currentRoom = !isBossRoom ? new Room(baseShader) : new BossRoom(baseShader);
@@ -138,7 +134,7 @@ Room * MY_Scene_Main::goToNewRoom(){
 	
 	res->placeBG();
 	res->placeGG();
-	
+
 	player = spawnPlayer(res);
 
 	if(isBossRoom) {

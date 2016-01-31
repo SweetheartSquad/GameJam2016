@@ -17,6 +17,7 @@
 #include <NumberUtils.h>
 
 #include <RenderOptions.h>
+#include <Sprite.h>
 
 MY_Scene_Base::MY_Scene_Base(Game * _game) :
 	Scene(_game),
@@ -65,6 +66,12 @@ MY_Scene_Base::~MY_Scene_Base(){
 
 void MY_Scene_Base::update(Step * _step){
 	controller->update(_step);
+
+	if(mouse->leftJustPressed()){
+		uiLayer->mouseIndicator->setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("CURSOR_GRAB")->texture);
+	}else if(mouse->leftJustReleased()){
+		uiLayer->mouseIndicator->setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("CURSOR_OPEN")->texture);
+	}
 
 	// basic debugging controls
 	if(keyboard->keyJustDown(GLFW_KEY_ESCAPE)){
