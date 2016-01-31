@@ -119,7 +119,7 @@ void MY_Scene_Finale::update(Step * _step){
 		}
 		uiLayer->cam->firstParent()->translate(shakeVec, false);
 	}else{
-		 uiLayer->cam->firstParent()->translate(glm::vec3(0, 0, 0), false);
+		uiLayer->cam->firstParent()->translate(sweet::NumberUtils::randomVec3(glm::vec3(-6,-6, 0), glm::vec3(6, 6, 0)), false);
 	}
 
 	MY_Scene_MenuBase::update(_step);
