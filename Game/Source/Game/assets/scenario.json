@@ -1,5 +1,12 @@
 {
   "assets": [
+	// menu
+	{
+      "type":"texture",
+      "id":"menu_bg",
+      "src":"menu_bg.png"
+    },
+
     // enemy
     {
       "type":"texture",
