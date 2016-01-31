@@ -3,6 +3,7 @@
 #include <MY_Scene_Finale.h>
 #include <MY_Scene_Loss.h>
 #include <HorizontalLinearLayout.h>
+#include <MY_Scene_Main.h>
 
 MY_Scene_Finale::MY_Scene_Finale(Game * _game) :
 	MY_Scene_MenuBase(_game),
@@ -66,9 +67,11 @@ MY_Scene_Finale::MY_Scene_Finale(Game * _game) :
 
 
 	timer = new Timeout(2.f, [this](sweet::Event * _event){
-		game->scenes["loss"] = new MY_Scene_Loss(game);
-		game->switchScene("loss", true);
+		auto newScene = new MY_Scene_Main(reinterpret_cast<MY_Game *>(game), true);
+		game->scenes["main"] = newScene;
+		game->switchScene("main", true);
 	});
+
 	childTransform->addChild(timer, false);
 
 	timer->start();
