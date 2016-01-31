@@ -15,6 +15,8 @@
 #define DEMON_GROWL_COUNT 5
 #define DEMON_HISS_COUNT 3
 #define DEMON_LAUGH_COUNT 5
+#define DEMON_SAVED_COUNT 3
+#define DEMON_DEATH_COUNT 4
 
 #define DEMON_POS_HEAD 0.9f
 #define DEMON_POS_TORSO 0.7f
@@ -367,6 +369,10 @@ void MY_Demon::update(Step * _step) {
 	idleScaleAnim->update(_step);
 	childTransform->scale(scaleAnim, false);
 
+	if(isDummy) {
+		canPlayGrowl = false;
+	}
+
 	growlTimeout.update(_step);
 
 	eventManager.update(_step);
@@ -378,6 +384,8 @@ void MY_Demon::update(Step * _step) {
 	}
 	
 	// animation handling
+	int x = 0;
+	int y = 0;
 	switch(state){
 		case kWALK: setCurrentAnimation("walk"); break;
 		case kIDLE: setCurrentAnimation("idle"); break;
@@ -423,4 +431,12 @@ void MY_Demon::kill(bool _saved){
 	spirit->state = MY_DemonSpirit::kDEAD;
 	spiritFake1->state = MY_DemonSpirit::kDEAD;
 	spiritFake2->state = MY_DemonSpirit::kDEAD;
+
+	if(state == kDEAD){
+		int x = sweet::NumberUtils::randomInt(1, DEMON_SAVED_COUNT);
+		MY_ResourceManager::globalAssets->getAudio("DEMON_DEATH_" + std::to_string(x))->sound->play();
+	}else {
+		int x = sweet::NumberUtils::randomInt(1, DEMON_SAVED_COUNT);
+		MY_ResourceManager::globalAssets->getAudio("SAVED_SOUND_" + std::to_string(x))->sound->play();
+	}
 }

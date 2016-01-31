@@ -364,6 +364,24 @@
     },
     {  
       "type":"audio",
+      "id":"SAVED_SOUND_1",
+      "src":"GRS/Relief_1.ogg",
+      "category":"sfx"
+    },
+    {  
+      "type":"audio",
+      "id":"SAVED_SOUND_2",
+      "src":"GRS/Relief_2.ogg",
+      "category":"sfx"
+    },
+    {  
+      "type":"audio",
+      "id":"SAVED_SOUND_3",
+      "src":"GRS/Relief_3.ogg",
+      "category":"sfx"
+    },
+    {  
+      "type":"audio",
       "id":"DEMON_ATTACK_1",
       "src":"GS/Demon_Attack_1.ogg",
       "category":"sfx"
