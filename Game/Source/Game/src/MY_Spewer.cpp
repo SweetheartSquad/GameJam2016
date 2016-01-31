@@ -4,6 +4,7 @@
 #include <Easing.h>
 
 #define SPEWER_SIZE 5
+#define SPEW_SIZE 4
 
 MY_Spewer::MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos, int _column, float _columnWidth) :
 	Sprite(_shader),
@@ -15,7 +16,7 @@ MY_Spewer::MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos
 	speed(25.f),
 	moveTimer(0),
 	moveTimerDuration(std::abs(deltaX)/speed),
-	slideX(-(columnWidth - SPEWER_SIZE)),
+	slideX(-(columnWidth - SPEWER_SIZE * 0.5)),
 	spewTimer(0),
 	spewTimerDuration(2.f),
 	vOffset(0),
@@ -29,7 +30,7 @@ MY_Spewer::MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos
 
 	mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("SPEWER")->texture);
 	
-	spew->meshTransform->scale(glm::vec3(SPEWER_SIZE, 1.f, 1.f));
+	spew->meshTransform->scale(glm::vec3(SPEW_SIZE, 1.f, 1.f));
 	spew->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("SPEW")->texture);
 	
 	childTransform->addChild(spew);
@@ -53,6 +54,9 @@ void MY_Spewer::start(){
 
 	spew->setVisible(false);
 
+	meshTransform->scale(glm::vec3(SPEWER_SIZE, SPEWER_SIZE, 1.f), false);
+	spew->meshTransform->scale(glm::vec3(SPEW_SIZE, 1.f, 1.f), false);
+
 	enable();
 }
 
@@ -75,9 +79,14 @@ void MY_Spewer::update(Step * _step){
 			if(spew->isVisible()){
 				// Spew!!!!!
 				if(spewTimer <= spewTimerDuration){
-					// Slide
-					float x = startPos.x + deltaX + slideX * spewTimer/spewTimerDuration;
+					float progress = spewTimer/spewTimerDuration;
+
+					// Slide & Shrink
+					float x = startPos.x + deltaX + slideX * progress;
 					childTransform->translate(x, startPos.y + deltaY, 0, false);
+
+					meshTransform->scale(SPEWER_SIZE * (1 - progress), false);
+					spew->meshTransform->scale(glm::vec3(SPEW_SIZE * (1 - progress), 1, 1), false);
 
 					if(spewTimer <= spewTimerDuration * 0.5){
 						// Falling
@@ -97,7 +106,7 @@ void MY_Spewer::update(Step * _step){
 
 					// Additional offset
 					for(auto &v : spew->mesh->vertices){
-						v.v =  v.y/SPEWER_SIZE + vOffset;
+						v.v =  v.y/SPEW_SIZE + vOffset;
 					}
 
 					spew->mesh->dirty = true;
