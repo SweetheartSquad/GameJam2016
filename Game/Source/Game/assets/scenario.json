@@ -64,6 +64,16 @@
     },
     {  
       "type":"texture",
+      "id":"spritesheet_boss",
+      "src":"spritesheet_boss.png"
+    },
+    {  
+      "type":"texture",
+      "id":"boss",
+      "src":"boss.png"
+    },
+    {  
+      "type":"texture",
       "id":"spritesheet_enemy_1",
       "src":"spritesheet_enemy_1.png"
     },
@@ -91,17 +101,17 @@
       "type":"texture",
       "id":"SPEW",
       "src":"spew.png"
+    },   
+    {  
+      "type":"texture",
+      "id":"SPEWER",
+      "src":"spewer.png"
     }    
     // player
     ,{  
       "type":"texture",
       "id":"player",
       "src":"player.png"
-    },
-    {  
-      "type":"texture",
-      "id":"BG",
-      "src":"backThing.png"
     },
     {  
       "type":"texture",
