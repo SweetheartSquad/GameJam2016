@@ -30,6 +30,7 @@ public:
 	// reference to the character this spirit is possessing
 	MY_Demon * possessed;
 	MY_Player * player;
+	Sprite * indicator;
 
 	MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed, unsigned long int _mode);
 	MY_DemonSpirit(Shader * _shader, MY_Player * _possessed);
