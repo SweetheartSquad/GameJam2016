@@ -1,10 +1,12 @@
 #pragma once
 
-#include <MY_Scene_Instructions.h>
+#include <MY_Game.h>
+#include <MY_Scene_Intro.h>
+#include <MY_Scene_Main.h>
 
 #include <Easing.h>
 
-MY_Scene_Instructions::MY_Scene_Instructions(Game * _game) :
+MY_Scene_Intro::MY_Scene_Intro(Game * _game) :
 	MY_Scene_Base(_game)
 {
 	// Create a linear layout to contain all of our menu items
@@ -21,7 +23,7 @@ MY_Scene_Instructions::MY_Scene_Instructions(Game * _game) :
 	layout2->setRationalHeight(1.f);
 	layout2->setRationalWidth(1.f);
 	layout2->setBackgroundColour(1.f, 1.f, 1.f);
-	layout2->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("instructions_bg")->texture);
+	layout2->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("intro_bg")->texture);
 	layout2->background->mesh->setScaleMode(GL_NEAREST);
 	layout2->setMarginLeft(1.f);
 	layout2->boxSizing = kCONTENT_BOX;
@@ -40,7 +42,7 @@ MY_Scene_Instructions::MY_Scene_Instructions(Game * _game) :
 		uiLayer->cam->resize(v.x,2*v.x,0,v.y);
 		layout->setMarginLeft(-1.f);
 		layout->setRationalWidth(2.f);
-		layout->background->mesh->replaceTextures(MY_ResourceManager::globalAssets->getTexture("instructions_bg")->texture);
+		layout->background->mesh->replaceTextures(MY_ResourceManager::globalAssets->getTexture("intro_bg")->texture);
 	});
 	t->eventManager->addEventListener("progress", [this](sweet::Event * _event){
 		glm::vec2 v = sweet::getWindowDimensions();
@@ -52,11 +54,11 @@ MY_Scene_Instructions::MY_Scene_Instructions(Game * _game) :
 	t->start();
 }
 
-void MY_Scene_Instructions::update(Step * _step){
-	if(mouse->leftJustPressed()){
-		game->switchScene("menu", true);
-	}
-
-
+void MY_Scene_Intro::update(Step * _step){
 	MY_Scene_Base::update(_step);
+
+	if(mouse->leftJustPressed()){
+		game->scenes["game"] = new MY_Scene_Main(dynamic_cast<MY_Game *>(game));
+		game->switchScene("game", true);
+	}
 }

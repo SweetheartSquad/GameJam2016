@@ -20,7 +20,8 @@ MY_Game::MY_Game() :
 	Game("menu", new MY_Scene_Menu(this), true), // initialize our game with a menu scene,
 	bgm(nullptr)
 {
-	scenes["game"] = new MY_Scene_Main(this);
+	scenes["game"] = nullptr;
+	scenes["intro"] = nullptr;
 	scenes["instructions"] = nullptr;
 
 	playBGM();

@@ -5,6 +5,7 @@
 #include <sweet/UI.h>
 #include <MY_Button.h>
 #include <MY_Scene_Instructions.h>
+#include <MY_Scene_Intro.h>
 
 MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 	MY_Scene_Base(_game)
@@ -60,12 +61,10 @@ MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 
 	// add listeners to each label, making them buttons that take the player to different scenes
 	gameButton->eventManager.addEventListener("click", [&](sweet::Event * _event){
-		game->switchScene("game", false);
+		game->scenes["intro"] = new MY_Scene_Intro(game);
+		game->switchScene("intro", false);
 	});
 	howButton->eventManager.addEventListener("click", [&](sweet::Event * _event){
-		if(game->scenes["instructions"] != nullptr){
-			delete game->scenes["instructions"];
-		}
 		game->scenes["instructions"] = new MY_Scene_Instructions(game);
 		game->switchScene("instructions", false);
 	});

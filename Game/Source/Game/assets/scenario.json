@@ -9,42 +9,52 @@
     ,{  
       "type":"texture",
       "id":"menu_bg",
-      "src":"ui/menu/menu_bg.png"
+      "src":"ui/menu_bg.png"
     },
     {  
       "type":"texture",
       "id":"instructions_bg",
-      "src":"ui/menu/instructions_bg.png"
+      "src":"ui/instructions_bg.png"
+    },
+    {  
+      "type":"texture",
+      "id":"intro_bg",
+      "src":"ui/intro_bg.png"
+    },
+    {  
+      "type":"texture",
+      "id":"loss_bg",
+      "src":"ui/loss_bg.png"
     },
     {  
       "type":"texture",
       "id":"menu_play",
-      "src":"ui/menu/menu_play.png"
+      "src":"ui/menu_play.png"
     },
     {  
       "type":"texture",
       "id":"menu_playOver",
-      "src":"ui/menu/menu_playOver.png"
+      "src":"ui/menu_playOver.png"
     },
     {  
       "type":"texture",
       "id":"menu_howtoplay",
-      "src":"ui/menu/menu_howtoplay.png"
+      "src":"ui/menu_howtoplay.png"
     },
     {  
       "type":"texture",
       "id":"menu_howtoplayOver",
-      "src":"ui/menu/menu_howtoplayOver.png"
+      "src":"ui/menu_howtoplayOver.png"
     },
     {  
       "type":"texture",
       "id":"menu_quit",
-      "src":"ui/menu/menu_quit.png"
+      "src":"ui/menu_quit.png"
     },
     {  
       "type":"texture",
       "id":"menu_quitOver",
-      "src":"ui/menu/menu_quitOver.png"
+      "src":"ui/menu_quitOver.png"
     },
     {  
       "type":"texture",

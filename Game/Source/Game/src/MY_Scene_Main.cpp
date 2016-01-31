@@ -1,6 +1,7 @@
 #pragma once
 
 #include <MY_Scene_Main.h>
+#include <MY_Scene_Loss.h>
 #include <Box2DDebugDrawer.h>
 #include <MeshFactory.h>
 #include <MY_Player.h>
@@ -199,10 +200,8 @@ Room * MY_Scene_Main::goToNewRoom(){
 		// gameOver stuff
 		Log::info("GAME OVER");
 
-		std::stringstream ss;
-		ss << "game_" << glfwGetTime();
-		game->scenes[ss.str()] = new MY_Scene_Main(dynamic_cast<MY_Game *>(game));
-		game->switchScene(ss.str(), true);
+		game->scenes["loss"] = new MY_Scene_Loss(game);
+		game->switchScene("loss", true);
 
 		MY_Player::lives = MAX_LIVES;
 	});
