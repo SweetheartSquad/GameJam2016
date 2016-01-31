@@ -52,7 +52,11 @@ MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed, unsigned
 	idleScaleAnim->startValue = scaleAnim.y;
 	idleScaleAnim->loopType = Animation<float>::kLOOP;
 
-	setVisible(false);
+	meshTransform->setVisible(false);
+
+	indicator = new Sprite(_shader);
+	indicator->setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("INDICATOR")->texture);
+	childTransform->addChild(indicator);
 }
 
 MY_DemonSpirit::MY_DemonSpirit(Shader* _shader, MY_Player * _player) :
@@ -170,7 +174,7 @@ void MY_DemonSpirit::ripIt(){
 	stunTimer->restart();
 	if(possessed != nullptr){
 		possessed->state = MY_Demon::kSTUNNED;
-		setVisible(true);
+		meshTransform->setVisible(true);
 	}
 }
 
@@ -182,7 +186,7 @@ void MY_DemonSpirit::gripIt(){
 	stunTimer->restart();
 	if(possessed != nullptr){
 		possessed->state = MY_Demon::kSTUNNED;
-		setVisible(true);
+		meshTransform->setVisible(true);
 	}
 }
 
@@ -195,13 +199,13 @@ void MY_DemonSpirit::sipIt(){
 	if(possessed != nullptr){
 		possessed->kill(true);
 	}
-	setVisible(true);
+	meshTransform->setVisible(true);
 }
 
 void MY_DemonSpirit::getBackInThere(){
 	if(possessed != nullptr){
 		if(!possessed->isDummy){
-			setVisible(false);
+			meshTransform->setVisible(false);
 			state = kIN;
 		}
 		possessed->state = MY_Demon::kIDLE;
@@ -215,6 +219,7 @@ glm::vec3 MY_DemonSpirit::getGamePos(){
 MY_DemonSpirit_False::MY_DemonSpirit_False(Shader * _shader, MY_Demon * _possessed, unsigned long int _mode) :
 	MY_DemonSpirit(_shader, _possessed, _mode)
 {
+	indicator->setVisible(false);
 }
 
 void MY_DemonSpirit_False::ripIt(){
