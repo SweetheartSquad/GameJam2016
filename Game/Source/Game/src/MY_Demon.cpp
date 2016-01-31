@@ -196,12 +196,6 @@ void MY_DemonSpirit::ripIt(){
 void MY_DemonSpirit::gripIt(){
 	std::cout << "demon gripped" << std::endl;
 	state = kSTUNNED;
-	if(canPlayGripit){
-		int randGripitSound = sweet::NumberUtils::randomInt(1, GRIPIT_SOUND_COUNT);
-		MY_ResourceManager::globalAssets->getAudio("GRIPIT_SOUND_" + std::to_string(randGripitSound))->sound->play();
-		canPlayGripit = false;
-		gripitTimeout.restart();
-	}
 	stunTimer->restart();
 	if(possessed != nullptr){
 		possessed->state = MY_Demon::kSTUNNED;
@@ -268,21 +262,23 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	isDummy(false),
 	canPlayGrowl(true),
 	growlTimeout(2.0f, [this](sweet::Event * _event){
-		int rand = sweet::NumberUtils::randomInt(0, 10);
-		if(rand > 5) {
-			int r =  sweet::NumberUtils::randomInt(1, 3);
-			if(r == 1) {
-				int x =  sweet::NumberUtils::randomInt(1, DEMON_GROWL_COUNT);
-				MY_ResourceManager::globalAssets->getAudio("DEMON_GROWL_" + std::to_string(x))->sound->play();
-			}else if (r == 2) {
-				int x =  sweet::NumberUtils::randomInt(1, DEMON_HISS_COUNT);
-				MY_ResourceManager::globalAssets->getAudio("DEMON_HISS_" + std::to_string(x))->sound->play();
-			}else {
-				int x =  sweet::NumberUtils::randomInt(1, DEMON_LAUGH_COUNT);
-				MY_ResourceManager::globalAssets->getAudio("DEMON_LAUGH_" + std::to_string(x))->sound->play();
+		if(!isDummy){
+			int rand = sweet::NumberUtils::randomInt(0, 10);
+			if(rand > 5) {
+				int r =  sweet::NumberUtils::randomInt(1, 3);
+				if(r == 1) {
+					int x =  sweet::NumberUtils::randomInt(1, DEMON_GROWL_COUNT);
+					MY_ResourceManager::globalAssets->getAudio("DEMON_GROWL_" + std::to_string(x))->sound->play();
+				}else if (r == 2) {
+					int x =  sweet::NumberUtils::randomInt(1, DEMON_HISS_COUNT);
+					MY_ResourceManager::globalAssets->getAudio("DEMON_HISS_" + std::to_string(x))->sound->play();
+				}else {
+					int x =  sweet::NumberUtils::randomInt(1, DEMON_LAUGH_COUNT);
+					MY_ResourceManager::globalAssets->getAudio("DEMON_LAUGH_" + std::to_string(x))->sound->play();
+				}
 			}
+			growlTimeout.restart();
 		}
-		growlTimeout.restart();
 	})
 {
 
@@ -368,10 +364,6 @@ void MY_Demon::render(sweet::MatrixStack* _matrixStack, RenderOptions* _renderOp
 void MY_Demon::update(Step * _step) {
 	idleScaleAnim->update(_step);
 	childTransform->scale(scaleAnim, false);
-
-	if(isDummy) {
-		canPlayGrowl = false;
-	}
 
 	growlTimeout.update(_step);
 

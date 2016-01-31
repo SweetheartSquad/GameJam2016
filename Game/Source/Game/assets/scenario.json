@@ -233,6 +233,12 @@
     },
     {  
       "type":"audio",
+      "id":"DOOR",
+      "src":"door.ogg",
+      "category":"sfx"
+    },
+    {  
+      "type":"audio",
       "id":"BUTTON",
       "src":"BUTTON.ogg",
       "category":"sfx"
