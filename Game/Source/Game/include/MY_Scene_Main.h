@@ -21,7 +21,7 @@ class Room;
 class MY_Game;
 
 // number of demons that have to be captured to fight boss, also boss's health
-#define MAX_DEMON_COUNT 10
+#define MAX_DEMON_COUNT 2
 // maximum number of demons per room (overriden by total maximum; i.e. if you're only one from the boss, it won't spawn two enemies)
 #define MAX_SPAWNED_DEMON_COUNT 3
 
