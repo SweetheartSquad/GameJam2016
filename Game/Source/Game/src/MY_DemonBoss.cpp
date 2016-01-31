@@ -33,7 +33,7 @@ MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 
 	meshTransform->scale(glm::vec3(DEMON_SCALE));
 
-	eventManager.addEventListener("spiritCollision", [this](sweet::Event * _event){
+	eventManager.addEventListener("spiritCollisson", [this](sweet::Event * _event){
 		// Take damage and stuff here
 		ST_LOG_INFO("COLLIDE");
 	});
