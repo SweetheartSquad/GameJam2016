@@ -6,6 +6,7 @@
 #include <MY_Button.h>
 #include <MY_Scene_Instructions.h>
 #include <MY_Scene_Intro.h>
+#include <MY_Player.h>
 
 MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 	MY_Scene_MenuBase(_game)
@@ -64,6 +65,7 @@ MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 	gameButton->eventManager.addEventListener("click", [&](sweet::Event * _event){
 		game->scenes["intro"] = new MY_Scene_Intro(game);
 		game->switchScene("intro", false);
+		MY_Player::lives = MAX_LIVES;
 	});
 	howButton->eventManager.addEventListener("click", [&](sweet::Event * _event){
 		game->scenes["instructions"] = new MY_Scene_Instructions(game);
