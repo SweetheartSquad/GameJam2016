@@ -56,9 +56,26 @@ MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed) :
 	setVisible(false);
 }
 
+MY_DemonSpirit::MY_DemonSpirit(Shader* _shader, MY_Player* _possessed) :
+	Sprite(_shader),
+	speed(0),
+	state(kIN),
+	scaleAnim(3),
+	origin(0, DEMON_SCALE, 0.2f),
+	possessed(nullptr)
+{
+}
+
 void MY_DemonSpirit::update(Step * _step){
 	idleScaleAnim->update(_step);
 	childTransform->scale(scaleAnim, false);
+
+	Transform * targ;
+	if(possessed != nullptr){
+		targ = possessed->firstParent();
+	}else {
+		targ = player->firstParent();
+	}
 
 	// accelerate towards the possession target (which is at 0,0,0)
 	glm::vec3 a = origin - firstParent()->getTranslationVector();
@@ -127,7 +144,6 @@ void MY_DemonSpirit::update(Step * _step){
 	}
 	childTransform->rotate(angle, 0, 0, 1, kOBJECT);
 
-
 	Sprite::update(_step);
 }
 
@@ -136,9 +152,11 @@ void MY_DemonSpirit::ripIt(){
 	state = kSTUNNED;
 	int randRipitSound = sweet::NumberUtils::randomInt(1, RIPIT_SOUND_COUNT);
 	MY_ResourceManager::globalAssets->getAudio("ripitSound" + std::to_string(randRipitSound))->sound->play();
-	stunTimer->restart();
-	possessed->state = MY_Demon::kSTUNNED;
-	setVisible(true);
+	if(possessed != nullptr){
+		stunTimer->restart();
+		possessed->state = MY_Demon::kSTUNNED;
+		setVisible(true);
+	}
 }
 
 void MY_DemonSpirit::gripIt(){
@@ -146,32 +164,40 @@ void MY_DemonSpirit::gripIt(){
 	state = kSTUNNED;
 	int randGripitSound = sweet::NumberUtils::randomInt(1, GRIPIT_SOUND_COUNT);
 	MY_ResourceManager::globalAssets->getAudio("GRIPIT_SOUND_" + std::to_string(randGripitSound))->sound->play();
-	stunTimer->restart();
-	possessed->state = MY_Demon::kSTUNNED;
-	setVisible(true);
+	if(possessed != nullptr){
+		stunTimer->restart();
+		possessed->state = MY_Demon::kSTUNNED;
+		setVisible(true);
+	}
 }
 
 void MY_DemonSpirit::sipIt(){
 	std::cout << "demon sipped" << std::endl;
 	state = kDEAD;
+
 	int randRipitSound = sweet::NumberUtils::randomInt(1, SIPIT_SOUND_COUNT);
 	MY_ResourceManager::globalAssets->getAudio("SIPIT_SOUND_" + std::to_string(randRipitSound))->sound->play();
-	possessed->stateTimeout->stop();
-	possessed->state = MY_Demon::kDEAD;
-	possessed->currentAnimation->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
-	Timeout * t = new Timeout(0.75f, [this](sweet::Event * _event){
-		possessed->setVisible(false);
-	});
-	possessed->childTransform->addChild(t);
-	t->start();
-	setVisible(true);
+	
+	if(possessed != nullptr){
+		possessed->stateTimeout->stop();
+		possessed->state = MY_Demon::kDEAD;
+		possessed->currentAnimation->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
+		Timeout * t = new Timeout(0.75f, [this](sweet::Event * _event){
+			possessed->setVisible(false);
+		});
+		possessed->childTransform->addChild(t);
+		t->start();
+		setVisible(true);
+	}
 }
 
 void MY_DemonSpirit::getBackInThere(){
 	state = kIN;
-	setVisible(false);
-	possessed->state = MY_Demon::kIDLE;
-	possessed->setCurrentAnimation("idle");
+	if(possessed != nullptr){
+		setVisible(false);
+		possessed->state = MY_Demon::kIDLE;
+		possessed->setCurrentAnimation("idle");
+	}
 }
 
 glm::vec3 MY_DemonSpirit::getGamePos(){

@@ -24,17 +24,18 @@
 
 MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	MY_Scene_Base(_game),
+	gameOver(false),
+	started(false),
+	isBossRoom(false),
+	baseShaderWithDepth(new ComponentShaderBase(true)),
+	currentRoom(nullptr),
+	previousRoom(nullptr),
 	mainCam(new MY_Cam()),
 	hoverRadius(50),
 	hoverRadius2(hoverRadius*hoverRadius),
 	hoverTarget(nullptr),
 	ripTarget(nullptr),
-	gripTarget(nullptr),
-	gameOver(false),
-	baseShaderWithDepth(new ComponentShaderBase(true)),
-	currentRoom(nullptr),
-	previousRoom(nullptr),
-	started(false)
+	gripTarget(nullptr)
 {
 	
 	baseShaderWithDepth->addComponent(new ShaderComponentMVP(baseShaderWithDepth));
@@ -129,7 +130,7 @@ Room * MY_Scene_Main::goToNewRoom(){
 
 	}
 
-	bool isBossRoom = !demonsCounter->getItemCount() < MAX_DEMON_COUNT;
+	isBossRoom = !demonsCounter->getItemCount() < MAX_DEMON_COUNT;
 
 	Room * res = currentRoom = !isBossRoom ? new Room(baseShader) : new BossRoom(baseShader);
 

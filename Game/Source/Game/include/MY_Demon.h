@@ -5,9 +5,7 @@
 #include <Animation.h>
 
 
-
-
-
+class MY_Player;
 class MY_Demon;
 
 class MY_DemonSpirit : public Sprite{
@@ -31,7 +29,10 @@ public:
 	glm::vec3 origin;
 	// reference to the character this spirit is possessing
 	MY_Demon * possessed;
+	MY_Demon * player;
+
 	MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed);
+	MY_DemonSpirit(Shader * _shader, MY_Player * _possessed);
 
 	virtual void update(Step * _step) override;
 	

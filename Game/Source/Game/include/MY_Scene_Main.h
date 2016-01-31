@@ -19,6 +19,7 @@ class MY_Scene_Main : public MY_Scene_Base{
 public:
 	bool gameOver;
 	bool started;
+	bool isBossRoom;
 	ComponentShaderBase * baseShaderWithDepth;
 
 	MY_Player * player;

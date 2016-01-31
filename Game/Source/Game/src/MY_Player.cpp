@@ -7,6 +7,7 @@
 #include <SpriteSheetAnimation.h>
 
 #include <NumberUtils.h>
+#include <MY_Demon.h>
 
 #define HIT_SOUND_COUNT 2
 #define FLASH_DURATION 0.05f
@@ -20,6 +21,7 @@ MY_Player::MY_Player(Shader * _shader) :
 	speed(0.1f),
 	bounds(0),
 	scaleAnim(1),
+	spirit(new MY_DemonSpirit(_shader, this)),
 	invincible(false),
 	invincibilityTimer(0.f),
 	invincibilityTimerLength(2.f),

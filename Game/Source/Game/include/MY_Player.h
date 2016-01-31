@@ -9,6 +9,8 @@
 
 #define MAX_LIVES 5
 
+class MY_DemonSpirit;
+
 class MY_Player : public Sprite {
 public:
 	enum PlayerState {
@@ -28,6 +30,8 @@ public:
 
 	Animation<float> * idleScaleAnim;
 	glm::vec3 scaleAnim;
+
+	MY_DemonSpirit * spirit;
 
 	bool invincible;
 	float invincibilityTimer; // Counts DOWN

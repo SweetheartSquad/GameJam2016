@@ -12,10 +12,10 @@ MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 	Sprite(_shader)
 {
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet_enemy_1")->texture);
-	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("spritesheet_enemy_1")->texture);
+	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("enemy_1")->texture);
 	
 	auto anim = new SpriteSheetAnimation(0.4f);
-	anim->pushFramesInRange(0, 0, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	anim->pushFramesInRange(0, 1, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	spriteSheet->addAnimation("idle", anim);
 
 	anim = new SpriteSheetAnimation(0.4f);
