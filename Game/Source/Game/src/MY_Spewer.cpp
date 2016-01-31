@@ -26,7 +26,7 @@ MY_Spewer::MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos
 	mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture);
 	
 	spew->meshTransform->scale(glm::vec3(SPEWER_SIZE, 1.f, 1.f));
-	spew->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture);
+	spew->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("SPEW")->texture);
 	
 	childTransform->addChild(spew);
 
@@ -85,7 +85,7 @@ void MY_Spewer::update(Step * _step){
 						spew->mesh->vertices.at(0).y = y;
 						spew->mesh->vertices.at(1).y = y;
 					}
-					vOffset += 0.4;
+					vOffset += 0.05;
 					spewTimer += _step->getDeltaTime();
 
 					// Additional offset
@@ -99,6 +99,9 @@ void MY_Spewer::update(Step * _step){
 					disable();
 					sweet::Event * e = new sweet::Event("spewComplete");
 					e->setIntData("column", column);
+					std::stringstream s;
+					s << "COMPLETE: " << column;
+					Log::info(s.str());
 					eventManager.triggerEvent(e);
 				}
 			}

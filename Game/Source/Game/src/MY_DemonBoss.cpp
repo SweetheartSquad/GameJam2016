@@ -82,11 +82,16 @@ void MY_DemonBoss::addSpewer(MY_Spewer * _spewer){
 
 void MY_DemonBoss::enableSpewers(){
 	if(spewers.size() > 0){
+		spewerIdx.shuffle();
+
 		int n = sweet::NumberUtils::randomInt(1, spewers.size());
 		for(int i = 0; i < n; ++i){
 			int idx = spewerIdx.pop();
 			enabledSpewers.push_back(idx);
 			spewers.at(idx)->start();
+			std::stringstream s;
+			s << "ENABLE: " << idx;
+			Log::info(s.str());
 		}
 	}
 }
@@ -94,7 +99,14 @@ void MY_DemonBoss::enableSpewers(){
 void MY_DemonBoss::disableSpewers(int _column){
 	disableSpewer(_column);
 	if(enabledSpewers.size() == 0){
+		std::stringstream s;
+		s << "ALL DISABLED";
+		Log::info(s.str());
 		spewerTimeout->restart();
+	}else{
+		std::stringstream s;
+		s << "LEFT: " << enabledSpewers.size();
+		Log::info(s.str());
 	}
 }
 
@@ -102,6 +114,9 @@ bool MY_DemonBoss::disableSpewer(int _column){
 	for(int i = 0; i < enabledSpewers.size(); ++i){
 		if(spewers.at(enabledSpewers.at(i))->column  == _column){
 			enabledSpewers.erase(enabledSpewers.begin() + i);
+			std::stringstream s;
+			s << "DISABLE: " << _column;
+			Log::info(s.str());
 			return true;
 		}
 	}
