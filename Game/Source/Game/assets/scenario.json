@@ -93,6 +93,11 @@
       "id":"finale_sipit",
       "src":"ui/finale_sipit.png"
     },
+    {  
+      "type":"texture",
+      "id":"finale_fail",
+      "src":"ui/finale_fail.png"
+    },
 
 
     {  
