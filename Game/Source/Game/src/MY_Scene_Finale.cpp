@@ -86,6 +86,8 @@ MY_Scene_Finale::~MY_Scene_Finale(){
 void MY_Scene_Finale::update(Step * _step){
 	eventManager->update(_step);
 
+	auto shakeVec = sweet::NumberUtils::randomVec3(glm::vec3(-3, -3, 0), glm::vec3(3, 3, 0));
+
 	if(pressDisplay->isVisible()){
 		pressDisplay->invalidateLayout();
 		pressDisplay->setWidth(pressDisplay->getHeight(true,true));
@@ -97,6 +99,7 @@ void MY_Scene_Finale::update(Step * _step){
 			}else if(keyboard->keyJustDown(GLFW_KEY_D) || keyboard->keyJustDown(GLFW_KEY_RIGHT) || mouse->rightJustPressed()){
 				correctPress();
 				MY_ResourceManager::globalAssets->getAudio("BUTTON")->sound->play(false);
+				shakeVec = sweet::NumberUtils::randomVec3(glm::vec3(-10, -10, 0), glm::vec3(10, 10, 0));
 			}
 		}else{
 			if(keyboard->keyJustDown(GLFW_KEY_D) || keyboard->keyJustDown(GLFW_KEY_RIGHT) || mouse->rightJustPressed()){
@@ -105,10 +108,13 @@ void MY_Scene_Finale::update(Step * _step){
 			}else if(keyboard->keyJustDown(GLFW_KEY_A) || keyboard->keyJustDown(GLFW_KEY_LEFT) || mouse->leftJustPressed()){
 				correctPress();
 				MY_ResourceManager::globalAssets->getAudio("BUTTON")->sound->play(false);
+				shakeVec = sweet::NumberUtils::randomVec3(glm::vec3(-10, -10, 0), glm::vec3(10, 10, 0));
 			}
 		}
+		uiLayer->cam->firstParent()->translate(shakeVec, false);
+	}else{
+		 uiLayer->cam->firstParent()->translate(glm::vec3(0, 0, 0), false);
 	}
-
 
 	if(mouse->leftJustPressed()){
 		game->switchScene("menu", true);
