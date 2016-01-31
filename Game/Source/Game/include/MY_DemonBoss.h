@@ -12,6 +12,7 @@ private:
 
 	bool disableSpewer(int _column);
 public:	
+	bool isDead;
 	unsigned long int hits;
 	sweet::EventManager eventManager;
 
@@ -22,8 +23,9 @@ public:
 	std::vector<int> enabledSpewers;
 	sweet::ShuffleVector<int> spewerIdx;
 
-	void addSpewer(MY_Spewer * _spewer);
+	void die();
 
+	void addSpewer(MY_Spewer * _spewer);
 	void enableSpewers();
 	void disableSpewers(int _column);
 	

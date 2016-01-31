@@ -223,8 +223,7 @@ Room * MY_Scene_Main::goToNewRoom(){
 			}else{
 				Log::info("gj you beat the boss");
 				// TODO: disable boss, enable walking into trigger
-
-				
+				boss->die();
 				player->eventManager.addEventListener("newroom", [this](sweet::Event * _event){
 					// go to finale instead of new room
 					goToNewRoom();
@@ -392,9 +391,6 @@ void MY_Scene_Main::render(sweet::MatrixStack * _matrixStack, RenderOptions * _r
 	uiLayer->render(_matrixStack, _renderOptions);
 }
 
-
-
-
 void MY_Scene_Main::enableDebug(){
 	MY_Scene_Base::enableDebug();
 }
@@ -408,37 +404,39 @@ void MY_Scene_Main::collideEntities() {
 	float pMax = ptrans.x + (player->firstParent()->getScaleVector().x  * 0.25f);
 
 	if(isBossRoom){
-		if(gripTarget == dummyDemon->spirit){
-			auto  btrans = boss->firstParent()->getTranslationVector();
-			float bMin = btrans.x - (boss->firstParent()->getScaleVector().x  * 0.25f);
-			float bMax = btrans.x + (boss->firstParent()->getScaleVector().x  * 0.25f);
+		if(!boss->isDead){
+			if(gripTarget == dummyDemon->spirit){
+				auto  btrans = boss->firstParent()->getTranslationVector();
+				float bMin = btrans.x - (boss->firstParent()->getScaleVector().x  * 0.25f);
+				float bMax = btrans.x + (boss->firstParent()->getScaleVector().x  * 0.25f);
 	
-			auto dtrans = gripTarget->meshTransform->getWorldPos();
-			float dMin = dtrans.x - gripTarget->meshTransform->getScaleVector().x;
-			float dMax = dtrans.x + gripTarget->meshTransform->getScaleVector().x;
+				auto dtrans = gripTarget->meshTransform->getWorldPos();
+				float dMin = dtrans.x - gripTarget->meshTransform->getScaleVector().x;
+				float dMax = dtrans.x + gripTarget->meshTransform->getScaleVector().x;
 
-			if((bMax >= dMin && bMin <= dMax) ||
-				bMin <= dMax && bMax >= dMin) {
-					boss->eventManager.triggerEvent("spiritCollision");
-					player->eventManager.triggerEvent("hitBoss");
+				if((bMax >= dMin && bMin <= dMax) ||
+					bMin <= dMax && bMax >= dMin) {
+						boss->eventManager.triggerEvent("spiritCollision");
+						player->eventManager.triggerEvent("hitBoss");
+				}
 			}
-		}
 
-		float pMinY = ptrans.y;
-		float pMaxY = ptrans.y + (player->firstParent()->getScaleVector().y);
+			float pMinY = ptrans.y;
+			float pMaxY = ptrans.y + (player->firstParent()->getScaleVector().y);
 		
-		for(auto i : boss->enabledSpewers){
-			Sprite * s = boss->spewers.at(i)->spew;
-			if(s->isVisible()){
-				auto strans = s->meshTransform->getWorldPos();
-				float sMinX = strans.x - s->meshTransform->getScaleVector().x * 0.25f;
-				float sMaxX = strans.x + s->meshTransform->getScaleVector().x * 0.25f;
-				float sMinY = strans.y - s->mesh->calcBoundingBox().height;
-				float sMaxY = strans.y;
+			for(auto i : boss->enabledSpewers){
+				Sprite * s = boss->spewers.at(i)->spew;
+				if(s->isVisible()){
+					auto strans = s->meshTransform->getWorldPos();
+					float sMinX = strans.x - s->meshTransform->getScaleVector().x * 0.25f;
+					float sMaxX = strans.x + s->meshTransform->getScaleVector().x * 0.25f;
+					float sMinY = strans.y - s->mesh->calcBoundingBox().height;
+					float sMaxY = strans.y;
 
-				if( ((pMax >= sMinX && pMin <= sMaxX) || (pMin <= sMaxX && pMax >= sMinX)) &&
-					((pMaxY >= sMinY && pMinY <= sMaxY) || (pMinY <= sMaxY && pMaxY >= sMinY))) {
-						player->eventManager.triggerEvent("demonCollision");
+					if( ((pMax >= sMinX && pMin <= sMaxX) || (pMin <= sMaxX && pMax >= sMinX)) &&
+						((pMaxY >= sMinY && pMinY <= sMaxY) || (pMinY <= sMaxY && pMaxY >= sMinY))) {
+							player->eventManager.triggerEvent("demonCollision");
+					}
 				}
 			}
 		}

@@ -15,7 +15,8 @@ MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 	Sprite(_shader),
 	spawnSpewerTimer(0),
 	spawnSpewerTimerLength(sweet::NumberUtils::randomFloat(SPEWER_TIMER_MIN, SPEWER_TIMER_MAX)),
-	hits(0)
+	hits(0),
+	isDead(false)
 {
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet_boss")->texture);
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("boss")->texture);
@@ -39,7 +40,9 @@ MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 	meshTransform->scale(glm::vec3(DEMON_SCALE)*1.5f);
 
 	spewerTimeout = new Timeout(1.f, [this](sweet::Event * _event){
-		enableSpewers();
+		if(!isDead){
+			enableSpewers();
+		}
 	});
 
 	spewerTimeout->start();
@@ -68,6 +71,19 @@ void MY_DemonBoss::unload() {
 void MY_DemonBoss::load() {
 
 	Sprite::load();
+}
+
+void MY_DemonBoss::die(){
+	if(!isDead){
+		isDead = true;
+		for(auto s : spewers){
+			s->eventManager.listeners.at("spewComplete").clear();
+		}
+
+		while(enabledSpewers.size() > 0){
+			disableSpewer(spewers.at(enabledSpewers.back())->column);
+		}
+	}
 }
 
 void MY_DemonBoss::addSpewer(MY_Spewer * _spewer){
@@ -112,6 +128,7 @@ void MY_DemonBoss::disableSpewers(int _column){
 bool MY_DemonBoss::disableSpewer(int _column){
 	for(int i = 0; i < enabledSpewers.size(); ++i){
 		if(spewers.at(enabledSpewers.at(i))->column  == _column){
+			spewers.at(enabledSpewers.at(i))->disable();
 			enabledSpewers.erase(enabledSpewers.begin() + i);
 			std::stringstream s;
 			s << "DISABLE: " << _column;
