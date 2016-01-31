@@ -37,6 +37,10 @@ public:
 	MY_UI_Counter * livesCounter;
 	MY_UI_Counter * demonsCounter;
 
+	MY_DemonSpirit * playerSpirit;
+
+	MY_Demon * dummyDemon;
+
 	explicit MY_Scene_Main(MY_Game * _game);
 	~MY_Scene_Main();
 
@@ -67,6 +71,8 @@ public:
 	MY_DemonSpirit * hoverTarget;
 	MY_DemonSpirit * ripTarget;
 	MY_DemonSpirit * gripTarget;
+
+	void addDummyDemon(Room * _room);
 
 	Room * goToNewRoom();
 

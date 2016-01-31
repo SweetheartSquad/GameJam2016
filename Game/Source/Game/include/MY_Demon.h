@@ -80,6 +80,8 @@ public:
 	float damage;
 	Transform * target;
 
+	bool isDummy;
+
 	Timeout * stateTimeout;
 
 	sweet::EventManager eventManager;

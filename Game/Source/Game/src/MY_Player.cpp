@@ -231,6 +231,7 @@ void MY_Player::spawnDemon() {
 	spirit = new MY_DemonSpirit(shader, this);
 	childTransform->addChild(spirit)->translate(spirit->origin);
 	spirit->firstParent()->scale(0.1f);
+	spirit->freezeTransformation();
 }
 
 void MY_Player::delayChange(float _seconds, PlayerState _state){

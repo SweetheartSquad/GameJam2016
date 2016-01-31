@@ -35,7 +35,9 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	hoverRadius2(hoverRadius*hoverRadius),
 	hoverTarget(nullptr),
 	ripTarget(nullptr),
-	gripTarget(nullptr)
+	gripTarget(nullptr),
+	playerSpirit(nullptr),
+	dummyDemon(nullptr)
 {
 	
 	baseShaderWithDepth->addComponent(new ShaderComponentMVP(baseShaderWithDepth));
@@ -114,6 +116,14 @@ MY_Scene_Main::~MY_Scene_Main(){
 }
 
 
+void MY_Scene_Main::addDummyDemon(Room * _room) {
+	dummyDemon = new MY_Demon(baseShaderWithDepth, _room->gameground);
+	_room->gameground->addChild(dummyDemon)->translate(glm::vec3(sweet::NumberUtils::randomFloat(0, _room->doorPos*0.9f), 0, 0), false);
+	demons.push_back(dummyDemon);
+	dummyDemon->spirit->state = MY_DemonSpirit::kOUT;
+	dummyDemon->isDummy = true;
+}
+
 Room * MY_Scene_Main::goToNewRoom(){
 	previousRoom = currentRoom;
 
@@ -139,7 +149,7 @@ Room * MY_Scene_Main::goToNewRoom(){
 
 	if(isBossRoom) {
 		spawnBoss(res);
-		player->spawnDemon();
+		addDummyDemon(res);a
 	} else{
 		if(demonsCounter->getItemCount() < MAX_DEMON_COUNT){
 			float numSpawnedDemons = sweet::NumberUtils::randomInt(1, MAX_DEMON_COUNT - demonsCounter->getItemCount() < MAX_SPAWNED_DEMON_COUNT ? MAX_DEMON_COUNT - demonsCounter->getItemCount() : MAX_SPAWNED_DEMON_COUNT);
@@ -338,11 +348,11 @@ MY_DemonSpirit * MY_Scene_Main::getHovered(){
 	glm::vec2 dist;
 	float distMag;
 	MY_DemonSpirit * res = nullptr;
+	
 	for(auto d : demons){
 		if(d->state == MY_DemonSpirit::kDEAD){
 			continue;
 		}
-
 		
 		demonPos = d->spirit->meshTransform->getWorldPos();
 		demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
@@ -353,8 +363,6 @@ MY_DemonSpirit * MY_Scene_Main::getHovered(){
 			min = distMag;
 			res = d->spirit;
 		}
-
-
 
 		demonPos = d->spiritFake1->meshTransform->getWorldPos();
 		demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
@@ -377,6 +385,8 @@ MY_DemonSpirit * MY_Scene_Main::getHovered(){
 			res = d->spiritFake2;
 		}
 	}
+	
+	
 	// we didn't find a hoverTarget
 	if(res != nullptr){
 		calcHover(res);
@@ -422,20 +432,22 @@ void MY_Scene_Main::gripIt(){
 }
 
 void MY_Scene_Main::sipIt(){
-	// if the demon gets close enough to the player, they get sipped
-	glm::vec3 demPos = gripTarget->getGamePos();
-	glm::vec3 playerPos = player->firstParent()->getTranslationVector();
-	playerPos.y += player->firstParent()->getScaleVector().y*0.9;
+	if(!isBossRoom){
+		// if the demon gets close enough to the player, they get sipped
+		glm::vec3 demPos = gripTarget->getGamePos();
+		glm::vec3 playerPos = player->firstParent()->getTranslationVector();
+		playerPos.y += player->firstParent()->getScaleVector().y*0.9;
 
-	if(glm::distance(demPos, playerPos) < gripTarget->scaleAnim.y * 0.5f){
-		gripTarget->sipIt();
-		demonsCounter->increment();
+		if(glm::distance(demPos, playerPos) < gripTarget->scaleAnim.y * 0.5f){
+			gripTarget->sipIt();
+			demonsCounter->increment();
 
-		// TODO: trigger sip animation on player, pass out animation on enemy, remove spirit
-		player->setCurrentAnimation("sip");
-		player->state = MY_Player::kSIP;
-		player->delayChange(1.f, MY_Player::kIDLE);
+			// TODO: trigger sip animation on player, pass out animation on enemy, remove spirit
+			player->setCurrentAnimation("sip");
+			player->state = MY_Player::kSIP;
+			player->delayChange(1.f, MY_Player::kIDLE);
 
-		gripTarget = nullptr;
+			gripTarget = nullptr;
+		}
 	}
 }

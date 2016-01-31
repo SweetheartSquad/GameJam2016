@@ -199,9 +199,11 @@ void MY_DemonSpirit::sipIt(){
 }
 
 void MY_DemonSpirit::getBackInThere(){
-	state = kIN;
 	if(possessed != nullptr){
-		setVisible(false);
+		if(!possessed->isDummy){
+			setVisible(false);
+			state = kIN;
+		}
 		possessed->state = MY_Demon::kIDLE;
 	}
 }
@@ -230,7 +232,8 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	speed(0.02f),
 	damage(10.f),
 	target(_target),
-	scaleAnim(1)
+	scaleAnim(1),
+	isDummy(false)
 {
 	sweet::ShuffleVector<unsigned long int> shuffle;
 	shuffle.push(1);
