@@ -184,7 +184,8 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	spirit(new MY_DemonSpirit(_shader, this)),
 	speed(0.02f),
 	damage(10.f),
-	target(_target)
+	target(_target),
+	scaleAnim(1)
 {
 	childTransform->addChild(spirit)->translate(spirit->origin);
 
@@ -236,6 +237,13 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	mesh->setScaleMode(GL_NEAREST);
 
 	meshTransform->scale(glm::vec3(DEMON_SCALE));
+
+	idleScaleAnim = new Animation<float>(&scaleAnim.y);
+	idleScaleAnim->tweens.push_back(new Tween<float>(0.75f, 0.1f, Easing::kEASE_IN_OUT_CIRC));
+	idleScaleAnim->tweens.push_back(new Tween<float>(0.65f, -0.1f, Easing::kEASE_IN_OUT_CIRC));
+	idleScaleAnim->hasStart = true;
+	idleScaleAnim->startValue = scaleAnim.y;
+	idleScaleAnim->loopType = Animation<float>::kLOOP;
 }
 
 void MY_Demon::render(sweet::MatrixStack* _matrixStack, RenderOptions* _renderOptions) {
@@ -244,6 +252,9 @@ void MY_Demon::render(sweet::MatrixStack* _matrixStack, RenderOptions* _renderOp
 }
 
 void MY_Demon::update(Step * _step) {
+	idleScaleAnim->update(_step);
+	childTransform->scale(scaleAnim, false);
+
 	eventManager.update(_step);
 	stateTimeout->update(_step);
 	if(target != nullptr && state == kWALK){

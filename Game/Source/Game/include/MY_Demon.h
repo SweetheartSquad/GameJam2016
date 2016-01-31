@@ -50,7 +50,10 @@ public:
 };
 
 class MY_Demon : public Sprite {
+private:
+	Animation<float> * idleScaleAnim;
 public:
+	glm::vec3 scaleAnim;
 	enum DemonState {
 		kWALK,
 		kIDLE,

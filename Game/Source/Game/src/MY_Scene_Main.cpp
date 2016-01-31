@@ -80,7 +80,7 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	
 	// setup UI
 	livesCounter = new MY_UI_Counter(uiLayer->world, MY_ResourceManager::globalAssets->getTexture("LIFE")->texture, MY_ResourceManager::globalAssets->getTexture("EMPTY_LIFE")->texture);
-	livesCounter->setBackgroundColour(1.f, 0.f, 0.f, 0.5f);
+	livesCounter->setBackgroundColour(1.f, 0.f, 0.f, 0.f);
 	livesCounter->setRationalWidth(1.f);
 	livesCounter->setRationalHeight(1.f);
 	livesCounter->setMarginRight(0.5f);
@@ -88,7 +88,7 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	livesCounter->horizontalAlignment = kLEFT;
 
 	demonsCounter = new MY_UI_Counter(uiLayer->world, MY_ResourceManager::globalAssets->getTexture("demon_spirit")->texture);
-	demonsCounter->setBackgroundColour(0.f, 0.f, 1.f, 0.5f);
+	demonsCounter->setBackgroundColour(0.f, 0.f, 1.f, 0.f);
 	demonsCounter->setRationalWidth(1.f);
 	demonsCounter->setRationalHeight(1.f);
 	demonsCounter->setMarginLeft(0.1f);
