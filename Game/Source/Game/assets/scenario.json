@@ -76,6 +76,25 @@
       "id":"menu_quitDown",
       "src":"ui/menu_quitDown.png"
     },
+
+
+    {  
+      "type":"texture",
+      "id":"finale_ripit",
+      "src":"ui/finale_ripit.png"
+    },
+    {  
+      "type":"texture",
+      "id":"finale_gripit",
+      "src":"ui/finale_gripit.png"
+    },
+    {  
+      "type":"texture",
+      "id":"finale_sipit",
+      "src":"ui/finale_sipit.png"
+    },
+
+
     {  
       "type":"texture",
       "id":"CURSOR_OPEN",
