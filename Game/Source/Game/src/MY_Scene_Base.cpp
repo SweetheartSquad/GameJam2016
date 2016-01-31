@@ -73,13 +73,13 @@ void MY_Scene_Base::update(Step * _step){
 		uiLayer->mouseIndicator->setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("CURSOR_OPEN")->texture);
 	}
 
-	if(keyboard->keyJustDown(GLFW_KEY_F11)){
+	/*if(keyboard->keyJustDown(GLFW_KEY_F11)){
 		game->toggleFullScreen();
 	}if(keyboard->keyJustDown(GLFW_KEY_1)){
 		cycleCamera();
 	}if(keyboard->keyJustDown(GLFW_KEY_2)){
 		toggleDebug();
-	}
+	}*/
 
 	glm::uvec2 sd = sweet::getWindowDimensions();
 	uiLayer->resize(0, sd.x, 0, sd.y);
