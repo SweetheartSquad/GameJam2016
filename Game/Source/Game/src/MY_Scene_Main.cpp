@@ -537,6 +537,15 @@ MY_Player * MY_Scene_Main::spawnPlayer(Room * _room){
 	MY_Player * p = new MY_Player(baseShaderWithDepth);
 	_room->gameground->addChild(p)->scale(10)->translate(glm::vec3(-_room->doorPos*0.9f, 0, 0), false);
 	p->bounds = _room->doorPos;
+
+	p->eventManager.addEventListener("increaseMusic", [this](sweet::Event * _event){
+		((MY_Game *)game)->bgm->setGain(1.0);
+	});
+	
+	p->eventManager.addEventListener("decreaseMusic", [this](sweet::Event * _event){
+		((MY_Game *)game)->bgm->setGain(0.7);
+	});
+
 	return p;
 }
 

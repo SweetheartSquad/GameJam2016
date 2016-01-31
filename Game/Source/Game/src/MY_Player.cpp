@@ -104,7 +104,7 @@ MY_Player::MY_Player(Shader * _shader) :
 		std::stringstream ss;
 		ss << "VOICE_" << sweet::NumberUtils::randomInt(1, 14);
 		voice = MY_ResourceManager::globalAssets->getAudio(ss.str())->sound;
-		OpenAL_Sound::categoricalGain["music"] = 0.4f;
+		eventManager.triggerEvent("decreaseMusic");
 		voice->play();
 		quipPlayed = true;
 	});
@@ -142,7 +142,7 @@ void MY_Player::update(Step * _step) {
 	}
 
 	if(voice != nullptr && voice->source->state != AL_PLAYING) {
-		OpenAL_Sound::categoricalGain["music"] = 0.8f;
+		eventManager.triggerEvent("increaseMusic");
 	}
 
 	if(!isDead){
