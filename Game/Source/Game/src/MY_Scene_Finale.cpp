@@ -116,10 +116,6 @@ void MY_Scene_Finale::update(Step * _step){
 		 uiLayer->cam->firstParent()->translate(glm::vec3(0, 0, 0), false);
 	}
 
-	if(mouse->leftJustPressed()){
-		game->switchScene("menu", true);
-	}
-
 	MY_Scene_MenuBase::update(_step);
 }
 
