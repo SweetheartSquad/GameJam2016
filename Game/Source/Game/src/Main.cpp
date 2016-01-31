@@ -30,8 +30,8 @@ int WinMain(HINSTANCE inst, HINSTANCE prev, LPSTR cmd, int show){
 	Log::THROW_ON_ERROR = true;
 	
 	//OpenAL_Sound::masterGain = 0; // mute
-	OpenAL_Sound::categoricalGain["music"] = 0.2f;
-	OpenAL_Sound::categoricalGain["voice"] = 1.2f;
+	OpenAL_Sound::categoricalGain["music"] = 1.25f;
+	OpenAL_Sound::categoricalGain["voice"] = 1.f;
 	sweet::NumberUtils::seed(time(nullptr)); // seed RNG
 
 	sweet::initialize("Rip It, Grip It, & Sip It!");

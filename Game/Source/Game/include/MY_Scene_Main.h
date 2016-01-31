@@ -31,11 +31,9 @@ public:
 	Shader * screenSurfaceShader;
 	RenderSurface * screenSurface;
 	StandardFrameBuffer * screenFBO;
-	
+
 	float screenMagnitude;
 	float screenMagnitude2;
-
-
 	bool gameOver;
 	bool started;
 	bool isBossRoom;
@@ -61,7 +59,7 @@ public:
 	MY_Demon * dummyDemon;
 	MY_DemonBoss * boss;
 
-	explicit MY_Scene_Main(MY_Game * _game);
+	explicit MY_Scene_Main(MY_Game * _game, bool _bossRoom = false);
 	~MY_Scene_Main();
 
 	virtual void update(Step * _step) override;

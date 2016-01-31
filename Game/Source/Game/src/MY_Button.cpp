@@ -19,7 +19,11 @@ MY_Button::MY_Button(BulletWorld * _world, std::string _name) :
 	background->mesh->setScaleMode(GL_NEAREST);
 
 	eventManager.addEventListener("click", [](sweet::Event * _event){
-		MY_ResourceManager::globalAssets->getAudio("DEFAULT")->sound->play();
+		MY_ResourceManager::globalAssets->getAudio("BUTTON")->sound->play();
+	});
+
+	eventManager.addEventListener("mousein", [](sweet::Event * _event){
+		MY_ResourceManager::globalAssets->getAudio("BUTTON")->sound->play();
 	});
 }
 

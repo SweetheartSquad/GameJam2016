@@ -10,9 +10,13 @@
 #define NUM_DEMON_TEXTURES 3
 #define TIMEOUT_TIME 1.0
 #define DEMON_SCALE 10
-#define RIPIT_SOUND_COUNT 2
-#define GRIPIT_SOUND_COUNT 2
-#define SIPIT_SOUND_COUNT 2
+#define GRIPIT_SOUND_COUNT 7
+#define SIPIT_SOUND_COUNT 5
+#define DEMON_GROWL_COUNT 5
+#define DEMON_HISS_COUNT 3
+#define DEMON_LAUGH_COUNT 5
+#define DEMON_SAVED_COUNT 3
+#define DEMON_DEATH_COUNT 4
 
 #define DEMON_POS_HEAD 0.9f
 #define DEMON_POS_TORSO 0.7f
@@ -25,8 +29,13 @@ MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed, unsigned
 	state(kIN),
 	scaleAnim(3),
 	origin(0, DEMON_SCALE, 0.2f),
-	possessed(_possessed)
+	possessed(_possessed),
+	canPlayGripit(true),
+	gripitTimeout(1.2, [this](sweet::Event * _event){
+		canPlayGripit = true;
+	})
 {
+
 	float loc = DEMON_POS_JOHHNY;
 	if(_mode == 1) {
 		loc = DEMON_POS_HEAD;
@@ -66,7 +75,11 @@ MY_DemonSpirit::MY_DemonSpirit(Shader* _shader, MY_Player * _player) :
 	scaleAnim(3),
 	origin(0, 0.9f, 0.2f),
 	possessed(nullptr),	
-	player(_player)
+	player(_player),
+	canPlayGripit(true),
+	gripitTimeout(1.2, [this](sweet::Event * _event){
+		canPlayGripit = true;
+	})
 {
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("demon_spirit")->texture);
 
@@ -88,6 +101,8 @@ MY_DemonSpirit::MY_DemonSpirit(Shader* _shader, MY_Player * _player) :
 void MY_DemonSpirit::update(Step * _step){
 	idleScaleAnim->update(_step);
 	childTransform->scale(scaleAnim, false);
+
+	gripitTimeout.update(_step);
 
 	Transform * targ;
 	if(possessed != nullptr){
@@ -169,8 +184,8 @@ void MY_DemonSpirit::update(Step * _step){
 void MY_DemonSpirit::ripIt(){
 	std::cout << "demon ripped" << std::endl;
 	state = kSTUNNED;
-	int randRipitSound = sweet::NumberUtils::randomInt(1, RIPIT_SOUND_COUNT);
-	MY_ResourceManager::globalAssets->getAudio("ripitSound" + std::to_string(randRipitSound))->sound->play();
+	int randRipitSound = sweet::NumberUtils::randomInt(1, GRIPIT_SOUND_COUNT);
+	MY_ResourceManager::globalAssets->getAudio("GRIPIT_SOUND_" + std::to_string(randRipitSound))->sound->play();
 	stunTimer->restart();
 	if(possessed != nullptr){
 		possessed->state = MY_Demon::kSTUNNED;
@@ -181,8 +196,6 @@ void MY_DemonSpirit::ripIt(){
 void MY_DemonSpirit::gripIt(){
 	std::cout << "demon gripped" << std::endl;
 	state = kSTUNNED;
-	int randGripitSound = sweet::NumberUtils::randomInt(1, GRIPIT_SOUND_COUNT);
-	MY_ResourceManager::globalAssets->getAudio("GRIPIT_SOUND_" + std::to_string(randGripitSound))->sound->play();
 	stunTimer->restart();
 	if(possessed != nullptr){
 		possessed->state = MY_Demon::kSTUNNED;
@@ -246,8 +259,31 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	damage(10.f),
 	target(_target),
 	scaleAnim(1),
-	isDummy(false)
+	isDummy(false),
+	canPlayGrowl(true),
+	growlTimeout(2.0f, [this](sweet::Event * _event){
+		if(!isDummy){
+			int rand = sweet::NumberUtils::randomInt(0, 10);
+			if(rand > 5) {
+				int r =  sweet::NumberUtils::randomInt(1, 3);
+				if(r == 1) {
+					int x =  sweet::NumberUtils::randomInt(1, DEMON_GROWL_COUNT);
+					MY_ResourceManager::globalAssets->getAudio("DEMON_GROWL_" + std::to_string(x))->sound->play();
+				}else if (r == 2) {
+					int x =  sweet::NumberUtils::randomInt(1, DEMON_HISS_COUNT);
+					MY_ResourceManager::globalAssets->getAudio("DEMON_HISS_" + std::to_string(x))->sound->play();
+				}else {
+					int x =  sweet::NumberUtils::randomInt(1, DEMON_LAUGH_COUNT);
+					MY_ResourceManager::globalAssets->getAudio("DEMON_LAUGH_" + std::to_string(x))->sound->play();
+				}
+			}
+			growlTimeout.restart();
+		}
+	})
 {
+
+	growlTimeout.start();
+
 	sweet::ShuffleVector<unsigned long int> shuffle;
 	shuffle.push(1);
 	shuffle.push(2);
@@ -329,6 +365,8 @@ void MY_Demon::update(Step * _step) {
 	idleScaleAnim->update(_step);
 	childTransform->scale(scaleAnim, false);
 
+	growlTimeout.update(_step);
+
 	eventManager.update(_step);
 	stateTimeout->update(_step);
 	if(target != nullptr && state == kWALK){
@@ -338,6 +376,8 @@ void MY_Demon::update(Step * _step) {
 	}
 	
 	// animation handling
+	int x = 0;
+	int y = 0;
 	switch(state){
 		case kWALK: setCurrentAnimation("walk"); break;
 		case kIDLE: setCurrentAnimation("idle"); break;
@@ -383,4 +423,12 @@ void MY_Demon::kill(bool _saved){
 	spirit->state = MY_DemonSpirit::kDEAD;
 	spiritFake1->state = MY_DemonSpirit::kDEAD;
 	spiritFake2->state = MY_DemonSpirit::kDEAD;
+
+	if(state == kDEAD){
+		int x = sweet::NumberUtils::randomInt(1, DEMON_SAVED_COUNT);
+		MY_ResourceManager::globalAssets->getAudio("DEMON_DEATH_" + std::to_string(x))->sound->play();
+	}else {
+		int x = sweet::NumberUtils::randomInt(1, DEMON_SAVED_COUNT);
+		MY_ResourceManager::globalAssets->getAudio("SAVED_SOUND_" + std::to_string(x))->sound->play();
+	}
 }

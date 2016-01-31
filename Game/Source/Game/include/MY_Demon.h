@@ -11,6 +11,9 @@ class MY_Demon;
 
 class MY_DemonSpirit : public Sprite{
 private:
+	
+	bool canPlayGripit;
+	Timeout gripitTimeout;
 
 	glm::vec3 speed;
 	// when ripped, the spirit is stunned and stops targeting its body
@@ -67,6 +70,10 @@ private:
 	static sweet::ShuffleVector<unsigned long int> demonIds;
 	static bool staticInitialized;
 	static bool staticInit();
+
+	bool canPlayGrowl;
+	Timeout growlTimeout;
+
 public:
 	glm::vec3 scaleAnim;
 	enum DemonState {

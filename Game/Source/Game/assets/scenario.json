@@ -76,6 +76,37 @@
       "id":"menu_quitDown",
       "src":"ui/menu_quitDown.png"
     },
+
+
+    {  
+      "type":"texture",
+      "id":"finale_ripit",
+      "src":"ui/finale_ripit.png"
+    },
+    {  
+      "type":"texture",
+      "id":"finale_gripit",
+      "src":"ui/finale_gripit.png"
+    },
+    {  
+      "type":"texture",
+      "id":"finale_sipit",
+      "src":"ui/finale_sipit.png"
+    },
+
+
+    {  
+      "type":"texture",
+      "id":"press_left",
+      "src":"ui/press_left.png"
+    },
+    {  
+      "type":"texture",
+      "id":"press_right",
+      "src":"ui/press_right.png"
+    },
+
+
     {  
       "type":"texture",
       "id":"CURSOR_OPEN",
@@ -198,6 +229,24 @@
       "type":"audio",
       "id":"FOOTSTEP",
       "src":"footstep.ogg",
+      "category":"sfx"
+    },
+    {  
+      "type":"audio",
+      "id":"PORTAL",
+      "src":"portal.ogg",
+      "category":"sfx"
+    },
+    {  
+      "type":"audio",
+      "id":"DOOR",
+      "src":"door.ogg",
+      "category":"sfx"
+    },
+    {  
+      "type":"audio",
+      "id":"BUTTON",
+      "src":"BUTTON.ogg",
       "category":"sfx"
     },
     {  
@@ -360,6 +409,24 @@
       "type":"audio",
       "id":"HIT_SOUND_11",
       "src":"GRS/Ow_11.ogg",
+      "category":"sfx"
+    },
+    {  
+      "type":"audio",
+      "id":"SAVED_SOUND_1",
+      "src":"GRS/Relief_1.ogg",
+      "category":"sfx"
+    },
+    {  
+      "type":"audio",
+      "id":"SAVED_SOUND_2",
+      "src":"GRS/Relief_2.ogg",
+      "category":"sfx"
+    },
+    {  
+      "type":"audio",
+      "id":"SAVED_SOUND_3",
+      "src":"GRS/Relief_3.ogg",
       "category":"sfx"
     },
     {  

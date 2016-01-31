@@ -52,6 +52,8 @@ MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 			enableSpewers();
 			setCurrentAnimation("attack");
 			animationTimeout->restart();
+			int x =  sweet::NumberUtils::randomInt(1, 3);
+			MY_ResourceManager::globalAssets->getAudio("DEMON_HISS_" + std::to_string(x))->sound->play();
 		}
 	});
 

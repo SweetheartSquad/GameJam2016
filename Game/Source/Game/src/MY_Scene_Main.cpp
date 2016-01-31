@@ -22,7 +22,7 @@
 #include <NumberUtils.h>
 #include <MY_DemonBoss.h>
 
-MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
+MY_Scene_Main::MY_Scene_Main(MY_Game * _game, bool _bossRoom) :
 	MY_Scene_Base(_game),
 	gameOver(false),
 	started(false),
@@ -110,6 +110,10 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	uiLayer->addChild(livesCounter);
 	uiLayer->addChild(demonsCounter);
 
+	if(_bossRoom) {
+		demonsCounter->setItemCount(MAX_DEMON_COUNT);
+	}
+
 	// Setup a room
 	goToNewRoom();
 	
@@ -144,6 +148,8 @@ void MY_Scene_Main::addDummyDemon(Room * _room) {
 }
 
 Room * MY_Scene_Main::goToNewRoom(){
+
+	MY_ResourceManager::globalAssets->getAudio("DOOR")->sound->play();
 	previousRoom = currentRoom;
 
 	// clear out old stuff
@@ -209,6 +215,9 @@ Room * MY_Scene_Main::goToNewRoom(){
 
 	if(isBossRoom){
 		player->eventManager.addEventListener("hitBoss", [this](sweet::Event * _event){
+			
+			int x = sweet::NumberUtils::randomInt(1, 7);
+			MY_ResourceManager::globalAssets->getAudio("DEMON_GRUNT_" + std::to_string(x))->sound->play();
 			// BOSS LOGIC
 			ST_LOG_INFO("COLLIDE");
 			dummyDemon->kill(false);
@@ -385,6 +394,19 @@ void MY_Scene_Main::update(Step * _step){
 		gripIt();
 		sipIt();
 	}
+
+	if(!player->quipPlayed) {
+		bool allDead = true;
+		for(auto d : demons) {
+			if(d->state != MY_Demon::kSAVED && d->state != MY_Demon::kDEAD) {
+				allDead = false; 
+				break;
+			}
+		}
+		if(allDead) {
+			player->voiceTimer->start();
+		}
+	}
 }
 
 
@@ -524,6 +546,15 @@ MY_Player * MY_Scene_Main::spawnPlayer(Room * _room){
 	MY_Player * p = new MY_Player(baseShaderWithDepth);
 	_room->gameground->addChild(p)->scale(10)->translate(glm::vec3(-_room->doorPos*0.9f, 0, 0), false);
 	p->bounds = _room->doorPos;
+
+	p->eventManager.addEventListener("increaseMusic", [this](sweet::Event * _event){
+		static_cast<MY_Game *>(game)->bgm->setGain(1.2);
+	});
+	
+	p->eventManager.addEventListener("decreaseMusic", [this](sweet::Event * _event){
+		static_cast<MY_Game *>(game)->bgm->setGain(0.7);
+	});
+
 	return p;
 }
 
@@ -607,7 +638,7 @@ void MY_Scene_Main::ripIt(){
 		float demonResistance = 0.01f;
 		mouse->translate(distToHoverTarget*mouseResistance);
 		ripTarget->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
-	}
+	} 
 }
 
 void MY_Scene_Main::gripIt(){
