@@ -4,7 +4,27 @@
 	{
       "type":"texture",
       "id":"menu_bg",
-      "src":"menu_bg.png"
+      "src":"ui/menu/menu_bg.png"
+    },
+	{
+      "type":"texture",
+      "id":"menu_play",
+      "src":"ui/menu/menu_play.png"
+    },
+	{
+      "type":"texture",
+      "id":"menu_playOver",
+      "src":"ui/menu/menu_playOver.png"
+    },
+	{
+      "type":"texture",
+      "id":"menu_quit",
+      "src":"ui/menu/menu_quit.png"
+    },
+	{
+      "type":"texture",
+      "id":"menu_quitOver",
+      "src":"ui/menu/menu_quitOver.png"
     },
 
     // enemy

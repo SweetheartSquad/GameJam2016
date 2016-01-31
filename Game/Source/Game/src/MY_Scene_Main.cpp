@@ -124,10 +124,6 @@ Room * MY_Scene_Main::goToNewRoom(){
 		demons.clear();
 	}
 
-	if(demonsCounter->getItemCount() == MAX_DEMON_COUNT){
-
-	}
-
 	Room * res = currentRoom = demonsCounter->getItemCount() < MAX_DEMON_COUNT ? new Room(baseShader) : new BossRoom(baseShader);
 
 	childTransform->addChild(res);
@@ -135,7 +131,6 @@ Room * MY_Scene_Main::goToNewRoom(){
 	res->placeBG();
 	res->placeGG();
 
-	
 	player = spawnPlayer(res);
 
 	if(demonsCounter->getItemCount() < MAX_DEMON_COUNT){
