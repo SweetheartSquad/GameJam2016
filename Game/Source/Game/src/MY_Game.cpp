@@ -33,7 +33,7 @@ void MY_Game::addSplashes(){
 	Game::addSplashes();
 
 	// add custom splashes
-	addSplash(new Scene_Splash(this, new Texture("assets/textures/GGJ-splash.png", false, true), MY_ResourceManager::globalAssets->getAudio("DEFAULT")->sound));
+	addSplash(new Scene_Splash(this, new Texture("assets/textures/GGJ-splash.png", false, true), MY_ResourceManager::globalAssets->getAudio("PORTAL")->sound));
 }
 
 void MY_Game::playBGM(){
