@@ -382,12 +382,12 @@ void MY_Scene_Main::collideEntities() {
 		float pMax = ptrans.x + (boss->firstParent()->getScaleVector().x  * 0.25f);
 	
 		auto dtrans = dummyDemon->spirit->firstParent()->getTranslationVector();
-		float dMin = dtrans.x - dummyDemon->spirit->meshTransform->getWorldPos().x;
-		float dMax = dtrans.x + dummyDemon->spirit->meshTransform->getWorldPos().x;
+		float dMin = dtrans.x - dummyDemon->spirit->meshTransform->getScaleVector().x;
+		float dMax = dtrans.x + dummyDemon->spirit->meshTransform->getScaleVector().x;
 
 		if((pMax >= dMin && pMin <= dMax) ||
 			pMin <= dMax && pMax >= dMin) {
-				boss->eventManager.triggerEvent("spiritCollisoin");
+				boss->eventManager.triggerEvent("spiritCollison");
 		}
 	}else {
 		auto  ptrans = player->firstParent()->getTranslationVector();
