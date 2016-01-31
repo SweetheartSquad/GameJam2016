@@ -18,7 +18,8 @@
 
 MY_Game::MY_Game() :
 	Game("menu", new MY_Scene_Menu(this), true), // initialize our game with a menu scene,
-	bgm(nullptr)
+	bgm(nullptr),
+	currentBgm(1)
 {
 	scenes["game"] = nullptr;
 	scenes["intro"] = nullptr;
@@ -43,7 +44,19 @@ void MY_Game::playBGM(){
 	}
 	
 	std::stringstream ss;
-	ss << "BGM_" << sweet::NumberUtils::randomInt(1,4);
+	ss << "BGM_" << currentBgm;
+	if(++currentBgm > NUM_BGM_TRACKS){
+		currentBgm = 1;
+	}
 	bgm = MY_ResourceManager::globalAssets->getAudio(ss.str())->sound;
-	bgm->play(true);
+	bgm->play(false);
+}
+
+void MY_Game::update(Step * _step){
+	Game::update(_step);
+
+	bgm->update(_step);
+	if(bgm->source->state != AL_PLAYING){
+		playBGM();
+	}
 }

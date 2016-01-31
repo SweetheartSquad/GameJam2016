@@ -20,8 +20,8 @@ vec4 standard(vec2 _uv){
 }
 
 vec4 mod(vec2 _uv){
-	vec3 rgb = standard(_uv - vec2(cos(time*33)*0.0005,abs(sin(time*100))*0.005)).rgb;
 	vec3 rgbs = standard(_uv).rgb;
+	vec3 rgb = standard(_uv - vec2(cos(time*33)*0.0005, abs(sin(time*100))*0.005)).rgb;
 	if(rgb.b < rgb.r){
 		rgbs = rgb;
 	}
