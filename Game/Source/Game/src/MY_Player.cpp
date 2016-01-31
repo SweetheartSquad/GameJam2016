@@ -21,7 +21,7 @@ MY_Player::MY_Player(Shader * _shader) :
 	speed(0.1f),
 	bounds(0),
 	scaleAnim(1),
-	spirit(new MY_DemonSpirit(_shader, this)),
+	spirit(nullptr),
 	invincible(false),
 	invincibilityTimer(0.f),
 	invincibilityTimerLength(2.f),
@@ -86,6 +86,7 @@ MY_Player::MY_Player(Shader * _shader) :
 	for(auto & v : mesh->vertices){
 		v.y += 0.5f;
 	}
+
 	mesh->dirty = true;
 
 	idleScaleAnim = new Animation<float>(&scaleAnim.y);
@@ -224,6 +225,11 @@ void MY_Player::unload() {
 void MY_Player::load() {
 
 	Sprite::load();
+}
+
+void MY_Player::spawnDemon() {
+	spirit = new MY_DemonSpirit(shader, this);
+	childTransform->addChild(spirit)->translate(spirit->origin);
 }
 
 void MY_Player::delayChange(float _seconds, PlayerState _state){

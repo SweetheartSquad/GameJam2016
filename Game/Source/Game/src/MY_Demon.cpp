@@ -5,6 +5,7 @@
 #include <MY_ResourceManager.h>
 #include <SpriteSheet.h>
 #include <SpriteSheetAnimation.h>
+#include <MY_Player.h>
 
 #define NUM_DEMON_TEXTURES 2
 #define TIMEOUT_TIME 1.0
@@ -54,14 +55,30 @@ MY_DemonSpirit::MY_DemonSpirit(Shader * _shader, MY_Demon * _possessed, unsigned
 	setVisible(false);
 }
 
-MY_DemonSpirit::MY_DemonSpirit(Shader* _shader, MY_Player* _possessed) :
+MY_DemonSpirit::MY_DemonSpirit(Shader* _shader, MY_Player * _player) :
 	Sprite(_shader),
 	speed(0),
 	state(kIN),
 	scaleAnim(3),
-	origin(0, DEMON_SCALE, 0.2f),
-	possessed(nullptr)
+	origin(0, 0.9f, 0.2f),
+	possessed(nullptr),
+	player(_player)
 {
+	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("demon_spirit")->texture);
+
+	stunTimer = new Timeout(1.f, [this](sweet::Event * _event){
+		state = kOUT;
+	});
+	childTransform->addChild(stunTimer, false);
+
+	mesh->setScaleMode(GL_NEAREST);
+
+	idleScaleAnim = new Animation<float>(&scaleAnim.y);
+	idleScaleAnim->tweens.push_back(new Tween<float>(0.4f, 2, Easing::kEASE_IN_OUT_CIRC));
+	idleScaleAnim->tweens.push_back(new Tween<float>(0.2f, -2, Easing::kEASE_IN_OUT_CIRC));
+	idleScaleAnim->hasStart = true;
+	idleScaleAnim->startValue = scaleAnim.y;
+	idleScaleAnim->loopType = Animation<float>::kLOOP;
 }
 
 void MY_DemonSpirit::update(Step * _step){
@@ -86,7 +103,7 @@ void MY_DemonSpirit::update(Step * _step){
 		accelMod = 0.1f;
 		damping = 0.1f;
 		// if the spirit is far from the origin, they get ripped out
-		if(ma > (firstParent()->getScaleVector().x + possessed->firstParent()->getScaleVector().x) * 2.5f){
+		if(ma > (firstParent()->getScaleVector().x + targ->getScaleVector().x) * 2.5f){
 			ripIt();
 		}
 		break;
@@ -102,7 +119,7 @@ void MY_DemonSpirit::update(Step * _step){
 		a += sweet::NumberUtils::randomVec3(glm::vec3(-5), glm::vec3(5));
 		damping = 0.2f;
 		// if the spirit is close to the origin, they can repossess the body
-		if(ma < (firstParent()->getScaleVector().x + possessed->firstParent()->getScaleVector().x) * 0.5f){
+		if(ma < (firstParent()->getScaleVector().x + targ->getScaleVector().x) * 0.5f){
 			getBackInThere();
 		}
 		break;
@@ -150,8 +167,8 @@ void MY_DemonSpirit::ripIt(){
 	state = kSTUNNED;
 	int randRipitSound = sweet::NumberUtils::randomInt(1, RIPIT_SOUND_COUNT);
 	MY_ResourceManager::globalAssets->getAudio("ripitSound" + std::to_string(randRipitSound))->sound->play();
+	stunTimer->restart();
 	if(possessed != nullptr){
-		stunTimer->restart();
 		possessed->state = MY_Demon::kSTUNNED;
 		setVisible(true);
 	}
@@ -162,8 +179,8 @@ void MY_DemonSpirit::gripIt(){
 	state = kSTUNNED;
 	int randGripitSound = sweet::NumberUtils::randomInt(1, GRIPIT_SOUND_COUNT);
 	MY_ResourceManager::globalAssets->getAudio("GRIPIT_SOUND_" + std::to_string(randGripitSound))->sound->play();
+	stunTimer->restart();
 	if(possessed != nullptr){
-		stunTimer->restart();
 		possessed->state = MY_Demon::kSTUNNED;
 		setVisible(true);
 	}
@@ -178,6 +195,7 @@ void MY_DemonSpirit::sipIt(){
 	if(possessed != nullptr){
 		possessed->kill();
 	}
+	setVisible(true);
 }
 
 void MY_DemonSpirit::getBackInThere(){
