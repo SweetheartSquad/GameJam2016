@@ -14,6 +14,9 @@ public:
 	// alternates between true and false on each correct button press
 	bool nextIsRight;
 
+	NodeUI * pressDisplay;
+
+
 	Timeout * timer;
 	// ripit, gripit, or sipit (in that order)
 	std::string curTarget;

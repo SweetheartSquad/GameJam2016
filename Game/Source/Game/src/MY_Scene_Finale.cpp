@@ -2,6 +2,7 @@
 
 #include <MY_Scene_Finale.h>
 #include <MY_Scene_Loss.h>
+#include <HorizontalLinearLayout.h>
 
 MY_Scene_Finale::MY_Scene_Finale(Game * _game) :
 	MY_Scene_MenuBase(_game),
@@ -20,6 +21,22 @@ MY_Scene_Finale::MY_Scene_Finale(Game * _game) :
 	layout->setBackgroundColour(1.f, 1.f, 1.f);
 	layout->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("finale_ripit")->texture);
 	layout->background->mesh->setScaleMode(GL_NEAREST);
+
+
+	HorizontalLinearLayout * hl = new HorizontalLinearLayout(uiLayer->world);
+	layout->addChild(hl);
+	hl->setRationalHeight(1.f);
+	hl->setRationalWidth(1.f);
+	hl->setMarginBottom(0.2f);
+	hl->horizontalAlignment = kCENTER;
+	hl->verticalAlignment = kMIDDLE;
+
+	pressDisplay = new NodeUI(uiLayer->world);
+	pressDisplay->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("press_right")->texture);
+	pressDisplay->setWidth(512);
+	pressDisplay->setHeight(512);
+
+	hl->addChild(pressDisplay);
 
 	// add the layout to the uiLayer
 	uiLayer->addChild(layout);
@@ -94,6 +111,11 @@ void MY_Scene_Finale::correctPress(){
 		passTarget();
 	}
 	nextIsRight = !nextIsRight;
+	if(nextIsRight){
+		pressDisplay->background->mesh->replaceTextures(MY_ResourceManager::globalAssets->getTexture("press_right")->texture);
+	}else{
+		pressDisplay->background->mesh->replaceTextures(MY_ResourceManager::globalAssets->getTexture("press_left")->texture);
+	}
 }
 
 void MY_Scene_Finale::incorrectPress(){

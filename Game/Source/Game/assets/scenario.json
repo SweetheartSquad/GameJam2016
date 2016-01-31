@@ -97,6 +97,18 @@
 
     {  
       "type":"texture",
+      "id":"press_left",
+      "src":"ui/press_left.png"
+    },
+    {  
+      "type":"texture",
+      "id":"press_right",
+      "src":"ui/press_right.png"
+    },
+
+
+    {  
+      "type":"texture",
       "id":"CURSOR_OPEN",
       "src":"cursor_open.png"
     },
