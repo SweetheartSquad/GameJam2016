@@ -45,9 +45,6 @@ MY_Scene_Menu::MY_Scene_Menu(Game * _game) :
 	exitButton->setMarginBottom(exitBtnY);
 	exitButton->setMarginTop(1.f - exitBtnY - exitBtnH);
 	
-	gameButton->setBackgroundColour(1,0,1,0.5f);
-	exitButton->setBackgroundColour(1,1,0,0.5f);
-	
 	// make the buttons clickable
 	gameButton->setMouseEnabled(true);
 	exitButton->setMouseEnabled(true);
