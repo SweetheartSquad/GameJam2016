@@ -33,6 +33,8 @@ public:
 
 	MY_DemonSpirit * spirit;
 
+	bool quipPlayed;
+
 	bool invincible;
 	float invincibilityTimer; // Counts DOWN
 	float invincibilityTimerLength;
@@ -66,5 +68,7 @@ private :
 
 	//Invicibility timers
 	float flashTimer;
+
+	OpenAL_Sound * voice;
 };
 

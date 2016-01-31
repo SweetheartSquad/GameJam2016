@@ -385,6 +385,19 @@ void MY_Scene_Main::update(Step * _step){
 		gripIt();
 		sipIt();
 	}
+
+	if(!player->quipPlayed) {
+		bool allDead = true;
+		for(auto d : demons) {
+			if(d->state != MY_Demon::kSAVED && d->state != MY_Demon::kDEAD) {
+				allDead = false; 
+				break;
+			}
+		}
+		if(allDead) {
+			player->voiceTimer->start();
+		}
+	}
 }
 
 
@@ -607,7 +620,7 @@ void MY_Scene_Main::ripIt(){
 		float demonResistance = 0.01f;
 		mouse->translate(distToHoverTarget*mouseResistance);
 		ripTarget->firstParent()->translate(glm::vec3(distToHoverTarget.x, distToHoverTarget.y, 0)*-demonResistance);
-	}
+	} 
 }
 
 void MY_Scene_Main::gripIt(){
