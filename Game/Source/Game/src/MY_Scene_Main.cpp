@@ -333,28 +333,59 @@ MY_Player * MY_Scene_Main::spawnPlayer(Room * _room){
 }
 
 MY_DemonSpirit * MY_Scene_Main::getHovered(){
+	float min = hoverRadius;
+	glm::vec3 demonPos, demonPosInScreen;
+	glm::vec2 dist;
+	float distMag;
+	MY_DemonSpirit * res = nullptr;
 	for(auto d : demons){
 		if(d->state == MY_DemonSpirit::kDEAD){
 			continue;
 		}
 
-		calcHover(d->spirit);
-		/*std::cout << "Mouse: " << mouse->mouseX() << " " << mouse->mouseY() << std::endl;
-		std::cout << "Demon: " << demonPosInScreen.x << " " << demonPosInScreen.y << " " << demonPosInScreen.z << std::endl;
-		std::cout << "Dist: " << distToHoverTarget.x << " " << distToHoverTarget.y << std::endl;
-		std::cout << "DistMag: " << distToHoverTargetMag << std::endl;*/
+		
+		demonPos = d->spirit->meshTransform->getWorldPos();
+		demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
+		dist = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
+		distMag = glm::length(dist);
 
-		if(distToHoverTargetMag < hoverRadius){
-			// return the found hoverTarget
-			return d->spirit;
+		if(distMag < min){
+			min = distMag;
+			res = d->spirit;
+		}
+
+
+
+		demonPos = d->spiritFake1->meshTransform->getWorldPos();
+		demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
+		dist = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
+		distMag = glm::length(dist);
+
+		if(distMag < min){
+			min = distMag;
+			res = d->spiritFake1;
+		}
+
+
+		demonPos = d->spiritFake2->meshTransform->getWorldPos();
+		demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
+		dist = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
+		distMag = glm::length(dist);
+
+		if(distMag < min){
+			min = distMag;
+			res = d->spiritFake2;
 		}
 	}
 	// we didn't find a hoverTarget
-	return nullptr;
+	if(res != nullptr){
+		calcHover(res);
+	}
+	return res;
 }
 
-void MY_Scene_Main::calcHover(MY_DemonSpirit * _demon){
-	glm::vec3 demonPos = _demon->meshTransform->getWorldPos();
+void MY_Scene_Main::calcHover(MY_DemonSpirit * _demonSpirit){
+	glm::vec3 demonPos = _demonSpirit->meshTransform->getWorldPos();
 	glm::vec3 demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
 	distToHoverTarget = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
 	distToHoverTargetMag = glm::length(distToHoverTarget);
