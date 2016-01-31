@@ -28,6 +28,11 @@
     },
     {  
       "type":"texture",
+      "id":"win_bg",
+      "src":"ui/win_bg.png"
+    },
+    {  
+      "type":"texture",
       "id":"menu_play",
       "src":"ui/menu_play.png"
     },

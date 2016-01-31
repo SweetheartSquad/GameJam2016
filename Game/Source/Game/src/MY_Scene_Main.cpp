@@ -2,6 +2,7 @@
 
 #include <MY_Scene_Main.h>
 #include <MY_Scene_Loss.h>
+#include <MY_Scene_Finale.h>
 #include <Box2DDebugDrawer.h>
 #include <MeshFactory.h>
 #include <MY_Player.h>
@@ -223,7 +224,8 @@ Room * MY_Scene_Main::goToNewRoom(){
 
 				player->eventManager.addEventListener("newroom", [this](sweet::Event * _event){
 					// go to finale instead of new room
-					goToNewRoom();
+					game->scenes["finale"] = new MY_Scene_Finale(game);
+					game->switchScene("finale", false);
 				});
 			}
 		});
