@@ -1,10 +1,16 @@
 #pragma once
 
 #include <MY_Scene_Finale.h>
+#include <MY_Scene_Loss.h>
 
 MY_Scene_Finale::MY_Scene_Finale(Game * _game) :
-	MY_Scene_MenuBase(_game)
+	MY_Scene_MenuBase(_game),
+	correct(0),
+	nextIsRight(true),
+	curTarget("ripit")
 {
+	eventManager = new sweet::EventManager();
+
 	// Create a linear layout to contain all of our menu items
 	// remember that these elements are all going to exist in the uiLayer, so we pass in its physics world in the constructors
 	NodeUI * layout = new NodeUI(uiLayer->world);
@@ -12,7 +18,7 @@ MY_Scene_Finale::MY_Scene_Finale(Game * _game) :
 	layout->setRationalHeight(1.f);
 	layout->setRationalWidth(1.f);
 	layout->setBackgroundColour(1.f, 1.f, 1.f);
-	layout->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("win_bg")->texture);
+	layout->background->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("finale_ripit")->texture);
 	layout->background->mesh->setScaleMode(GL_NEAREST);
 
 	// add the layout to the uiLayer
@@ -22,12 +28,80 @@ MY_Scene_Finale::MY_Scene_Finale(Game * _game) :
 
 	// add a mouse indicator (AKA a cursor) to the uiLayer so that the user can see what they're doing
 	uiLayer->addMouseIndicator();
+
+	eventManager->addEventListener("ripit", [this, layout](sweet::Event * _event){
+		layout->background->mesh->replaceTextures(MY_ResourceManager::globalAssets->getTexture("finale_gripit")->texture);
+		timer->restart();
+		curTarget = "gripit";
+		MY_ResourceManager::globalAssets->getAudio(curTarget)->sound->play(false);
+	});
+	eventManager->addEventListener("gripit", [this, layout](sweet::Event * _event){
+		layout->background->mesh->replaceTextures(MY_ResourceManager::globalAssets->getTexture("finale_sipit")->texture);
+		timer->restart();
+		curTarget = "sipit";
+		MY_ResourceManager::globalAssets->getAudio(curTarget)->sound->play(false);
+	});
+	eventManager->addEventListener("sipit", [this, layout](sweet::Event * _event){
+		layout->background->mesh->replaceTextures(MY_ResourceManager::globalAssets->getTexture("win_bg")->texture);
+		timer->stop();
+	});
+
+
+	timer = new Timeout(2.f, [this](sweet::Event * _event){
+		game->scenes["loss"] = new MY_Scene_Loss(game);
+		game->switchScene("loss", true);
+	});
+	childTransform->addChild(timer, false);
+
+	timer->start();
+	
+		MY_ResourceManager::globalAssets->getAudio(curTarget)->sound->play(false);
+}
+
+MY_Scene_Finale::~MY_Scene_Finale(){
+	delete eventManager;
 }
 
 void MY_Scene_Finale::update(Step * _step){
+	eventManager->update(_step);
+
+	if(nextIsRight){
+		// make sure to check incorrect first; that way they can't just hit both
+		if(keyboard->keyJustDown(GLFW_KEY_A) || keyboard->keyJustDown(GLFW_KEY_LEFT) || mouse->leftJustPressed()){
+			incorrectPress();
+		}else if(keyboard->keyJustDown(GLFW_KEY_D) || keyboard->keyJustDown(GLFW_KEY_RIGHT) || mouse->rightJustPressed()){
+			correctPress();
+		}
+	}else{
+		if(keyboard->keyJustDown(GLFW_KEY_D) || keyboard->keyJustDown(GLFW_KEY_RIGHT) || mouse->rightJustPressed()){
+			incorrectPress();
+		}else if(keyboard->keyJustDown(GLFW_KEY_A) || keyboard->keyJustDown(GLFW_KEY_LEFT) || mouse->leftJustPressed()){
+			correctPress();
+		}
+	}
+
+
 	if(mouse->leftJustPressed()){
 		game->switchScene("menu", true);
 	}
 
 	MY_Scene_MenuBase::update(_step);
+}
+
+void MY_Scene_Finale::correctPress(){
+	correct += 1;
+	if(correct >= NUM_REQUIRED_PRESSES){
+		passTarget();
+	}
+	nextIsRight = !nextIsRight;
+}
+
+void MY_Scene_Finale::incorrectPress(){
+	// do something bad here
+}
+
+void MY_Scene_Finale::passTarget(){
+	correct = 0;
+	timer->restart();
+	eventManager->triggerEvent(curTarget);
 }
