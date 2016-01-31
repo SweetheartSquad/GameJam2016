@@ -1,7 +1,7 @@
 {
   "assets": [
 	// menu
-	{
+  {
       "type":"texture",
       "id":"menu_bg",
       "src":"ui/menu/menu_bg.png"
@@ -25,6 +25,16 @@
       "type":"texture",
       "id":"menu_quitOver",
       "src":"ui/menu/menu_quitOver.png"
+    },
+  {
+      "type":"texture",
+      "id":"CURSOR_OPEN",
+      "src":"cursor_open.png"
+    },
+  {
+      "type":"texture",
+      "id":"CURSOR_GRAB",
+      "src":"cursor_grab.png"
     },
 
     // enemy
