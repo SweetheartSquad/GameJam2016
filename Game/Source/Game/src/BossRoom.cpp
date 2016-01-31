@@ -20,7 +20,7 @@ BossRoom::~BossRoom(){
 Texture * BossRoom::getRoomTex(){
 	// grab a random floor texture
 	std::stringstream ss;
-	ss << "assets/textures/demon_1.png";//"assets/textures/rooms/" << roomTexIdx.pop() << ".png";
+	ss << "assets/textures/rooms/boss.png";//"assets/textures/rooms/" << roomTexIdx.pop() << ".png";
 	Texture * res = new Texture(ss.str(), false, true, true);
 	res->load();
 	return res;

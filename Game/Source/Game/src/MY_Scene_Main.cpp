@@ -473,7 +473,7 @@ MY_Demon * MY_Scene_Main::spawnDemon(Room * _room){
 MY_DemonBoss * MY_Scene_Main::spawnBoss(Room* _room) {
 	MY_DemonBoss * boss = new MY_DemonBoss(baseShaderWithDepth);
 	_room->gameground->addChild(boss);
-	boss->firstParent()->translate(_room->doorPos*0.9f, 0.f, 0.f, false);
+	boss->firstParent()->translate(_room->doorPos*0.8f, 0.f, 0.f, false);
 
 	// load spewers
 	for(int i = 0; i < 3; ++i){

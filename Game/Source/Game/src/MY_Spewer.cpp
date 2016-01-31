@@ -23,7 +23,7 @@ MY_Spewer::MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos
 	deltaY -= SPEWER_SIZE * 0.5;
 	meshTransform->scale(SPEWER_SIZE, SPEWER_SIZE, 1.f);
 
-	mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture);
+	mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("SPEWER")->texture);
 	
 	spew->meshTransform->scale(glm::vec3(SPEWER_SIZE, 1.f, 1.f));
 	spew->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("SPEW")->texture);

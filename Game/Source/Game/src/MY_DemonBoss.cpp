@@ -17,17 +17,16 @@ MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 	spawnSpewerTimerLength(sweet::NumberUtils::randomFloat(SPEWER_TIMER_MIN, SPEWER_TIMER_MAX)),
 	hits(0)
 {
-	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet_enemy_1")->texture);
-	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("enemy_1")->texture);
+	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet_boss")->texture);
+	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("boss")->texture);
 	
 	auto anim = new SpriteSheetAnimation(0.4f);
-	anim->pushFramesInRange(0, 1, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	anim->pushFramesInRange(0, 1, 1024, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	spriteSheet->addAnimation("idle", anim);
 
 	anim = new SpriteSheetAnimation(0.4f);
-	anim->pushFramesInRange(0, 3, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
-	anim->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
-	spriteSheet->addAnimation("die", anim);
+	anim->pushFramesInRange(2, 3, 1024, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	spriteSheet->addAnimation("attack", anim);
 
 	setSpriteSheet(spriteSheet, "idle");
 
@@ -37,7 +36,7 @@ MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 	mesh->dirty = true;
 	mesh->setScaleMode(GL_NEAREST);
 
-	meshTransform->scale(glm::vec3(DEMON_SCALE));
+	meshTransform->scale(glm::vec3(DEMON_SCALE)*1.5f);
 
 	spewerTimeout = new Timeout(1.f, [this](sweet::Event * _event){
 		enableSpewers();
