@@ -15,6 +15,7 @@ MY_Spewer::MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos
 	moveTimerDuration(std::abs(deltaX)/speed),
 	spewTimer(0),
 	spewTimerDuration(2.f),
+	vOffset(0),
 	spew(new Sprite(_shader)),
 	isComplete(false)
 {
@@ -23,11 +24,14 @@ MY_Spewer::MY_Spewer(Shader * _shader, glm::vec3 _startPos, glm::vec3 _targetPos
 
 	mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture);
 	
-	spew->meshTransform->scale(glm::vec3(SPEWER_SIZE, deltaY, 1.f));
+	spew->meshTransform->scale(glm::vec3(SPEWER_SIZE, 1.f, 1.f));
+	spew->mesh->pushTexture2D(MY_ResourceManager::globalAssets->getTexture("DEFAULT")->texture);
 	// align spew sprite's bottom with the origin
 	for(int i = 0; i < spew->mesh->vertices.size(); ++i){
-		spew->mesh->vertices.at(i).y += 0.5;
+		spew->mesh->vertices.at(i).y = 0;
 	}
+	spew->mesh->dirty = true;
+
 	spew->setVisible(false);
 	childTransform->addChild(spew);
 }
@@ -53,8 +57,30 @@ void MY_Spewer::update(Step * _step){
 		if(spew->isVisible()){
 			// Spew!!!!!
 			if(spewTimer <= spewTimerDuration){
-				spew->firstParent()->translate(0, -spewTimer/spewTimerDuration * deltaY, 0, false);
+
+				if(spewTimer <= spewTimerDuration * 0.5){
+					// Falling
+					float y = -spewTimer/(spewTimerDuration * 0.5) * deltaY;
+
+					spew->mesh->vertices.at(2).y = y;
+					spew->mesh->vertices.at(3).y = y;
+				}else{
+					// Collapsing
+					float y = -(spewTimer - spewTimerDuration * 0.5)/(spewTimerDuration * 0.5) * deltaY;
+
+					spew->mesh->vertices.at(0).y = y;
+					spew->mesh->vertices.at(1).y = y;
+				}
+				vOffset += 0.4;
 				spewTimer += _step->getDeltaTime();
+
+				// Additional offset
+				// align spew sprite's bottom with the origin
+				for(auto &v : spew->mesh->vertices){
+					v.v =  v.y/SPEWER_SIZE + vOffset;
+				}
+
+				spew->mesh->dirty = true;
 			}else{
 				isComplete = true;
 				eventManager.triggerEvent("spewComplete");

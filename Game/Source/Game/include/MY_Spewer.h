@@ -18,6 +18,8 @@ public:
 	float spewTimer;
 	float spewTimerDuration;
 
+	float vOffset;
+
 	bool isComplete;
 
 	Sprite * spew;
