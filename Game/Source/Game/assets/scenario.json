@@ -221,6 +221,12 @@
     },
     {  
       "type":"audio",
+      "id":"BUTTON",
+      "src":"BUTTON.ogg",
+      "category":"sfx"
+    },
+    {  
+      "type":"audio",
       "id":"ripitSound1",
       "src":"GRS/ripitSound1.ogg",
       "category":"sfx"
