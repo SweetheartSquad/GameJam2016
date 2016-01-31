@@ -227,6 +227,14 @@ void MY_DemonSpirit_False::ripIt(){
 	possessed->kill(false);
 }
 
+sweet::ShuffleVector<unsigned long int> MY_Demon::demonIds;
+bool MY_Demon::staticInitialized = staticInit();
+bool MY_Demon::staticInit(){
+	for(unsigned long int i = 1; i <= NUM_DEMON_TEXTURES; ++i){
+		demonIds.push(i);
+	}
+	return true;
+}
 
 MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	Sprite(_shader), 
@@ -253,7 +261,7 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	childTransform->addChild(spiritFake1)->translate(spiritFake1->origin);
 	childTransform->addChild(spiritFake2)->translate(spiritFake2->origin);
 
-	int demonTexId = sweet::NumberUtils::randomInt(1, NUM_DEMON_TEXTURES);
+	unsigned long int demonTexId = demonIds.pop();
 	
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet_enemy_" + std::to_string(demonTexId))->texture);
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("enemy_" + std::to_string(demonTexId))->texture);

@@ -3,6 +3,7 @@
 #include <Sprite.h>
 #include <Timeout.h>
 #include <Animation.h>
+#include <NumberUtils.h>
 
 
 class MY_Player;
@@ -62,6 +63,10 @@ public:
 class MY_Demon : public Sprite {
 private:
 	Animation<float> * idleScaleAnim;
+	
+	static sweet::ShuffleVector<unsigned long int> demonIds;
+	static bool staticInitialized;
+	static bool staticInit();
 public:
 	glm::vec3 scaleAnim;
 	enum DemonState {
