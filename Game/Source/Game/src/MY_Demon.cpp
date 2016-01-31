@@ -234,7 +234,7 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	spirit(nullptr),
 	spiritFake1(nullptr),
 	spiritFake2(nullptr),
-	speed(0.02f),
+	speed(0.03f),
 	damage(10.f),
 	target(_target),
 	scaleAnim(1),
@@ -262,9 +262,8 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 	anim->pushFramesInRange(0, 1, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	spriteSheet->addAnimation("idle", anim);
 
-	anim = new SpriteSheetAnimation(0.1f);
+	anim = new SpriteSheetAnimation(0.2f);
 	anim->pushFramesInRange(2, 3, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
-	anim->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
 	spriteSheet->addAnimation("walk", anim);
 
 	anim = new SpriteSheetAnimation(0.4f);
@@ -274,12 +273,10 @@ MY_Demon::MY_Demon(Shader * _shader, Transform * _target) :
 
 	anim = new SpriteSheetAnimation(0.4f);
 	anim->pushFramesInRange(0, 1, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
-	anim->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
 	spriteSheet->addAnimation("stunned", anim);
 
 	anim = new SpriteSheetAnimation(0.4f);
 	anim->pushFramesInRange(7, 7, 512, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
-	anim->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
 	spriteSheet->addAnimation("saved", anim);
 
 	setSpriteSheet(spriteSheet, "idle");
