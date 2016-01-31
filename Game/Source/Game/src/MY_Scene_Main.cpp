@@ -22,7 +22,7 @@
 #include <NumberUtils.h>
 #include <MY_DemonBoss.h>
 
-MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
+MY_Scene_Main::MY_Scene_Main(MY_Game * _game, bool _bossRoom) :
 	MY_Scene_Base(_game),
 	gameOver(false),
 	started(false),
@@ -109,6 +109,10 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 
 	uiLayer->addChild(livesCounter);
 	uiLayer->addChild(demonsCounter);
+
+	if(_bossRoom) {
+		demonsCounter->setItemCount(MAX_DEMON_COUNT);
+	}
 
 	// Setup a room
 	goToNewRoom();
@@ -544,7 +548,7 @@ MY_Player * MY_Scene_Main::spawnPlayer(Room * _room){
 	p->bounds = _room->doorPos;
 
 	p->eventManager.addEventListener("increaseMusic", [this](sweet::Event * _event){
-		static_cast<MY_Game *>(game)->bgm->setGain(1.3);
+		static_cast<MY_Game *>(game)->bgm->setGain(1.2);
 	});
 	
 	p->eventManager.addEventListener("decreaseMusic", [this](sweet::Event * _event){
