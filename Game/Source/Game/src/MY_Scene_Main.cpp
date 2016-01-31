@@ -220,7 +220,16 @@ Room * MY_Scene_Main::goToNewRoom(){
 			}else{
 				Log::info("gj you beat the boss");
 				// TODO: disable boss, enable walking into trigger
+				boss->animationTimeout->stop();
+				boss->spewerTimeout->stop();
+				boss->setCurrentAnimation("die");
 
+				boss->animationTimeout->eventManager->listeners["complete"].clear();
+				boss->animationTimeout->eventManager->addEventListener("complete", [this](sweet::Event * _event){
+					boss->dead = true;
+				});
+				boss->animationTimeout->targetSeconds = 1.5f;
+				boss->animationTimeout->restart();
 				
 				player->eventManager.addEventListener("newroom", [this](sweet::Event * _event){
 					// go to finale instead of new room

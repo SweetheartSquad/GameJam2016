@@ -13,11 +13,13 @@ private:
 	bool disableSpewer(int _column);
 public:	
 	unsigned long int hits;
+	bool dead;
 	sweet::EventManager eventManager;
 
 	explicit MY_DemonBoss(Shader * _shader);
-
+	
 	Timeout * spewerTimeout;
+	Timeout * animationTimeout;
 	std::vector<MY_Spewer *> spewers;
 	std::vector<int> enabledSpewers;
 	sweet::ShuffleVector<int> spewerIdx;
