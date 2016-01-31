@@ -144,6 +144,8 @@ void MY_Scene_Main::addDummyDemon(Room * _room) {
 }
 
 Room * MY_Scene_Main::goToNewRoom(){
+
+	MY_ResourceManager::globalAssets->getAudio("DOOR")->sound->play();
 	previousRoom = currentRoom;
 
 	// clear out old stuff
@@ -209,6 +211,9 @@ Room * MY_Scene_Main::goToNewRoom(){
 
 	if(isBossRoom){
 		player->eventManager.addEventListener("hitBoss", [this](sweet::Event * _event){
+			
+			int x = sweet::NumberUtils::randomInt(1, 7);
+			MY_ResourceManager::globalAssets->getAudio("DEMON_GRUNT_" + std::to_string(x))->sound->play();
 			// BOSS LOGIC
 			ST_LOG_INFO("COLLIDE");
 			dummyDemon->kill(false);
@@ -539,7 +544,7 @@ MY_Player * MY_Scene_Main::spawnPlayer(Room * _room){
 	p->bounds = _room->doorPos;
 
 	p->eventManager.addEventListener("increaseMusic", [this](sweet::Event * _event){
-		static_cast<MY_Game *>(game)->bgm->setGain(1.0);
+		static_cast<MY_Game *>(game)->bgm->setGain(1.3);
 	});
 	
 	p->eventManager.addEventListener("decreaseMusic", [this](sweet::Event * _event){
