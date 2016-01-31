@@ -61,7 +61,7 @@ MY_DemonSpirit::MY_DemonSpirit(Shader* _shader, MY_Player * _player) :
 	state(kIN),
 	scaleAnim(3),
 	origin(0, 0.9f, 0.2f),
-	possessed(nullptr),
+	possessed(nullptr),	
 	player(_player)
 {
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("demon_spirit")->texture);
