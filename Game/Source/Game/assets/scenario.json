@@ -84,6 +84,11 @@
     },
     {  
       "type":"texture",
+      "id":"spritesheet_enemy_3",
+      "src":"spritesheet_enemy_3.png"
+    },
+    {  
+      "type":"texture",
       "id":"enemy_1",
       "src":"enemy_1.png"
     },
@@ -91,6 +96,11 @@
       "type":"texture",
       "id":"enemy_2",
       "src":"enemy_2.png"
+    },
+    {  
+      "type":"texture",
+      "id":"enemy_3",
+      "src":"enemy_3.png"
     },
     {  
       "type":"texture",

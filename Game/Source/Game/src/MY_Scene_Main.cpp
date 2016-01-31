@@ -259,6 +259,8 @@ void MY_Scene_Main::update(Step * _step){
 
 	if(isBossRoom){
 		screenMagnitude2 = sin(_step->time)*0.75f + 0.25f;
+	}else{
+		screenMagnitude2 = 0;
 	}
 	
 	screenSurfaceShader->bindShader(); // remember that we have to bind the shader before it can be updated
