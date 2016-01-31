@@ -20,9 +20,6 @@
 #include <NumberUtils.h>
 #include <MY_DemonBoss.h>
 
-#define MAX_DEMON_COUNT 1
-#define MAX_SPAWNED_DEMON_COUNT 3
-
 MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	MY_Scene_Base(_game),
 	gameOver(false),
@@ -134,12 +131,14 @@ MY_Scene_Main::~MY_Scene_Main(){
 
 void MY_Scene_Main::addDummyDemon(Room * _room) {
 	dummyDemon = new MY_Demon(baseShaderWithDepth, _room->gameground);
-	_room->gameground->addChild(dummyDemon)->translate(glm::vec3(sweet::NumberUtils::randomFloat(0, _room->doorPos*0.9f), 0, 0), false);
+	_room->gameground->addChild(dummyDemon)->translate(glm::vec3(-_room->doorPos*0.9f, 0, 0), false);
 	demons.push_back(dummyDemon);
 	dummyDemon->spirit->state = MY_DemonSpirit::kOUT;
-	dummyDemon->spirit->setVisible(true);
+	dummyDemon->spirit->meshTransform->setVisible(true);
 	dummyDemon->isDummy = true;
 	dummyDemon->mesh->setVisible(false);
+
+	demonsCounter->decrement();
 }
 
 Room * MY_Scene_Main::goToNewRoom(){
@@ -210,6 +209,35 @@ Room * MY_Scene_Main::goToNewRoom(){
 	player->eventManager.addEventListener("newroom", [this](sweet::Event * _event){
 		goToNewRoom();
 	});
+
+	if(isBossRoom){
+		player->eventManager.addEventListener("hitBoss", [this](sweet::Event * _event){
+			// BOSS LOGIC
+			ST_LOG_INFO("COLLIDE");
+			dummyDemon->kill(false);
+			gripTarget = nullptr;
+
+			++boss->hits;
+			if(boss->hits < MAX_DEMON_COUNT){
+				addDummyDemon(currentRoom);
+			}else{
+				Log::info("gj you beat the boss");
+				// TODO: disable boss, enable walking into trigger
+
+				
+				player->eventManager.addEventListener("newroom", [this](sweet::Event * _event){
+					// go to finale instead of new room
+					goToNewRoom();
+				});
+			}
+		});
+	}else{
+		
+		// anytime we're not in the boss room, going to the next room just means loading a new room
+		player->eventManager.addEventListener("newroom", [this](sweet::Event * _event){
+			goToNewRoom();
+		});
+	}
 
 
 	return res;
@@ -377,17 +405,20 @@ void MY_Scene_Main::disableDebug(){
 void MY_Scene_Main::collideEntities() {
 
 	if(isBossRoom){
-		auto  ptrans = boss->firstParent()->getTranslationVector();
-		float pMin = ptrans.x - (boss->firstParent()->getScaleVector().x  * 0.25f);
-		float pMax = ptrans.x + (boss->firstParent()->getScaleVector().x  * 0.25f);
+		if(gripTarget == dummyDemon->spirit){
+			auto  ptrans = boss->firstParent()->getTranslationVector();
+			float pMin = ptrans.x - (boss->firstParent()->getScaleVector().x  * 0.25f);
+			float pMax = ptrans.x + (boss->firstParent()->getScaleVector().x  * 0.25f);
 	
-		auto dtrans = dummyDemon->spirit->meshTransform->getWorldPos();
-		float dMin = dtrans.x - dummyDemon->spirit->meshTransform->getScaleVector().x;
-		float dMax = dtrans.x + dummyDemon->spirit->meshTransform->getScaleVector().x;
+			auto dtrans = gripTarget->meshTransform->getWorldPos();
+			float dMin = dtrans.x - gripTarget->meshTransform->getScaleVector().x;
+			float dMax = dtrans.x + gripTarget->meshTransform->getScaleVector().x;
 
-		if((pMax >= dMin && pMin <= dMax) ||
-			pMin <= dMax && pMax >= dMin) {
-				boss->eventManager.triggerEvent("spiritCollision");
+			if((pMax >= dMin && pMin <= dMax) ||
+				pMin <= dMax && pMax >= dMin) {
+					boss->eventManager.triggerEvent("spiritCollision");
+					player->eventManager.triggerEvent("hitBoss");
+			}
 		}
 	}else {
 		auto  ptrans = player->firstParent()->getTranslationVector();
@@ -472,25 +503,27 @@ MY_DemonSpirit * MY_Scene_Main::getHovered(){
 			res = d->spirit;
 		}
 
-		demonPos = d->spiritFake1->meshTransform->getWorldPos();
-		demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
-		dist = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
-		distMag = glm::length(dist);
+		if(!d->isDummy){
+			demonPos = d->spiritFake1->meshTransform->getWorldPos();
+			demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
+			dist = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
+			distMag = glm::length(dist);
 
-		if(distMag < min){
-			min = distMag;
-			res = d->spiritFake1;
-		}
+			if(distMag < min){
+				min = distMag;
+				res = d->spiritFake1;
+			}
 
 
-		demonPos = d->spiritFake2->meshTransform->getWorldPos();
-		demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
-		dist = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
-		distMag = glm::length(dist);
+			demonPos = d->spiritFake2->meshTransform->getWorldPos();
+			demonPosInScreen = mainCam->worldToScreen(demonPos, sweet::getWindowDimensions());
+			dist = glm::vec2(demonPosInScreen.x, demonPosInScreen.y) - glm::vec2(mouse->mouseX(), mouse->mouseY());
+			distMag = glm::length(dist);
 
-		if(distMag < min){
-			min = distMag;
-			res = d->spiritFake2;
+			if(distMag < min){
+				min = distMag;
+				res = d->spiritFake2;
+			}
 		}
 	}
 	

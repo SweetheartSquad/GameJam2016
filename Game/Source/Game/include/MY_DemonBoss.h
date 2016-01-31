@@ -8,6 +8,7 @@ private:
 	float spawnSpewerTimer;
 	float spawnSpewerTimerLength;
 public:	
+	unsigned long int hits;
 	sweet::EventManager eventManager;
 
 	explicit MY_DemonBoss(Shader * _shader);

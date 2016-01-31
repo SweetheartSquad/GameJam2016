@@ -14,7 +14,8 @@
 MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 	Sprite(_shader),
 	spawnSpewerTimer(0),
-	spawnSpewerTimerLength(sweet::NumberUtils::randomFloat(SPEWER_TIMER_MIN, SPEWER_TIMER_MAX))
+	spawnSpewerTimerLength(sweet::NumberUtils::randomFloat(SPEWER_TIMER_MIN, SPEWER_TIMER_MAX)),
+	hits(0)
 {
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet_enemy_1")->texture);
 	setPrimaryTexture(MY_ResourceManager::globalAssets->getTexture("enemy_1")->texture);
@@ -46,10 +47,10 @@ MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 	spewerTimeout->start();
 	childTransform->addChild(spewerTimeout);
 
-	eventManager.addEventListener("spiritCollision", [this](sweet::Event * _event){
+	/*eventManager.addEventListener("spiritCollision", [this](sweet::Event * _event){
 		// Take damage and stuff here
 		ST_LOG_INFO("COLLIDE");
-	});
+	});*/
 }
 
 void MY_DemonBoss::render(sweet::MatrixStack* _matrixStack, RenderOptions* _renderOptions) {
