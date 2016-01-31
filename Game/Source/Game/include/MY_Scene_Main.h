@@ -11,12 +11,23 @@
 #include "MY_Cam.h"
 #include <MY_UI_Counter.h>
 
+#include <MY_Scene_ScreenShaders.h>
+#include <RenderSurface.h>
+#include <StandardFrameBuffer.h>
+
 class MY_DemonBoss;
 class Room;
 class MY_Game;
 
 class MY_Scene_Main : public MY_Scene_Base{
 public:
+	Shader * screenSurfaceShader;
+	RenderSurface * screenSurface;
+	StandardFrameBuffer * screenFBO;
+
+	float screenMagnitude;
+
+
 	bool gameOver;
 	bool started;
 	bool isBossRoom;
@@ -41,6 +52,7 @@ public:
 	~MY_Scene_Main();
 
 	virtual void update(Step * _step) override;
+	virtual void render(sweet::MatrixStack * _matrixStack, RenderOptions * _renderOptions) override;
 	
 	// overriden to add physics debug drawing
 	virtual void enableDebug() override;
