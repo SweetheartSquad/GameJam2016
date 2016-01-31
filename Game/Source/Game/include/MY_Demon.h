@@ -52,7 +52,7 @@ public:
 class MY_Demon : public Sprite {
 public:
 	enum DemonState {
-		kWALKING,
+		kWALK,
 		kIDLE,
 		kDEAD,
 		kSTUNNED
