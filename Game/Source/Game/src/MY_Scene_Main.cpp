@@ -139,6 +139,7 @@ Room * MY_Scene_Main::goToNewRoom(){
 
 	if(isBossRoom) {
 		spawnBoss(res);
+		player->spawnDemon();
 	} else{
 		if(demonsCounter->getItemCount() < MAX_DEMON_COUNT){
 			float numSpawnedDemons = sweet::NumberUtils::randomInt(1, MAX_DEMON_COUNT - demonsCounter->getItemCount() < MAX_SPAWNED_DEMON_COUNT ? MAX_DEMON_COUNT - demonsCounter->getItemCount() : MAX_SPAWNED_DEMON_COUNT);
