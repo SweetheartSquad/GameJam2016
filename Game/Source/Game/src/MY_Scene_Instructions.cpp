@@ -5,7 +5,7 @@
 #include <Easing.h>
 
 MY_Scene_Instructions::MY_Scene_Instructions(Game * _game) :
-	MY_Scene_Base(_game)
+	MY_Scene_MenuBase(_game)
 {
 	// Create a linear layout to contain all of our menu items
 	// remember that these elements are all going to exist in the uiLayer, so we pass in its physics world in the constructors
@@ -58,5 +58,5 @@ void MY_Scene_Instructions::update(Step * _step){
 	}
 
 
-	MY_Scene_Base::update(_step);
+	MY_Scene_MenuBase::update(_step);
 }

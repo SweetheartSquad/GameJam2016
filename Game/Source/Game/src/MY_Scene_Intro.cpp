@@ -7,7 +7,7 @@
 #include <Easing.h>
 
 MY_Scene_Intro::MY_Scene_Intro(Game * _game) :
-	MY_Scene_Base(_game)
+	MY_Scene_MenuBase(_game)
 {
 	// Create a linear layout to contain all of our menu items
 	// remember that these elements are all going to exist in the uiLayer, so we pass in its physics world in the constructors
@@ -55,7 +55,7 @@ MY_Scene_Intro::MY_Scene_Intro(Game * _game) :
 }
 
 void MY_Scene_Intro::update(Step * _step){
-	MY_Scene_Base::update(_step);
+	MY_Scene_MenuBase::update(_step);
 
 	if(mouse->leftJustPressed()){
 		game->scenes["game"] = new MY_Scene_Main(dynamic_cast<MY_Game *>(game));

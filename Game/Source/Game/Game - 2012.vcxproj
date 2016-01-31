@@ -29,6 +29,7 @@
     <ClCompile Include="src\MY_Scene_Loss.cpp" />
     <ClCompile Include="src\MY_Scene_Main.cpp" />
     <ClCompile Include="src\MY_Scene_Menu.cpp" />
+    <ClCompile Include="src\MY_Scene_MenuBase.cpp" />
     <ClCompile Include="src\MY_Scene_ScreenShaders.cpp" />
     <ClCompile Include="src\MY_Scene_SurfaceShaders.cpp" />
     <ClCompile Include="src\MY_Scene_VR.cpp" />
@@ -54,6 +55,7 @@
     <ClInclude Include="include\MY_Scene_Loss.h" />
     <ClInclude Include="include\MY_Scene_Main.h" />
     <ClInclude Include="include\MY_Scene_Menu.h" />
+    <ClInclude Include="include\My_Scene_MenuBase.h" />
     <ClInclude Include="include\MY_Scene_ScreenShaders.h" />
     <ClInclude Include="include\MY_Scene_SurfaceShaders.h" />
     <ClInclude Include="include\MY_Scene_VR.h" />
