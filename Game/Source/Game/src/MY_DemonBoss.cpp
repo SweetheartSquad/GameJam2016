@@ -16,6 +16,7 @@ MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 	spawnSpewerTimer(0),
 	spawnSpewerTimerLength(sweet::NumberUtils::randomFloat(SPEWER_TIMER_MIN, SPEWER_TIMER_MAX)),
 	hits(0),
+	active(true),
 	isDead(false)
 {
 	spriteSheet = new SpriteSheet(MY_ResourceManager::globalAssets->getTexture("spritesheet_boss")->texture);
@@ -25,9 +26,13 @@ MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 	anim->pushFramesInRange(0, 1, 1024, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	spriteSheet->addAnimation("idle", anim);
 
-	anim = new SpriteSheetAnimation(0.4f);
+	anim = new SpriteSheetAnimation(0.1f);
 	anim->pushFramesInRange(2, 3, 1024, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
 	spriteSheet->addAnimation("attack", anim);
+
+	anim = new SpriteSheetAnimation(1.0f);
+	anim->pushFramesInRange(4, 5, 1024, 1024, spriteSheet->texture->width, spriteSheet->texture->height);
+	spriteSheet->addAnimation("die", anim);
 
 	setSpriteSheet(spriteSheet, "idle");
 
@@ -38,15 +43,21 @@ MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 	mesh->setScaleMode(GL_NEAREST);
 
 	meshTransform->scale(glm::vec3(DEMON_SCALE)*1.5f);
-
+	
+	animationTimeout = new Timeout(0.5f, [this](sweet::Event * _event){
+		setCurrentAnimation("idle");
+	});
+	childTransform->addChild(animationTimeout, false);
 	spewerTimeout = new Timeout(1.f, [this](sweet::Event * _event){
 		if(!isDead){
 			enableSpewers();
+			setCurrentAnimation("attack");
+			animationTimeout->restart();
 		}
 	});
 
 	spewerTimeout->start();
-	childTransform->addChild(spewerTimeout);
+	childTransform->addChild(spewerTimeout, false);
 
 	/*eventManager.addEventListener("spiritCollision", [this](sweet::Event * _event){
 		// Take damage and stuff here
@@ -59,8 +70,10 @@ void MY_DemonBoss::render(sweet::MatrixStack* _matrixStack, RenderOptions* _rend
 }
 
 void MY_DemonBoss::update(Step* _step) {
-	Sprite::update(_step);
-	eventManager.update(_step);
+	if(active){
+		Sprite::update(_step);
+		eventManager.update(_step);
+	}
 }
 
 void MY_DemonBoss::unload() {
@@ -83,6 +96,16 @@ void MY_DemonBoss::die(){
 		while(enabledSpewers.size() > 0){
 			disableSpewer(spewers.at(enabledSpewers.back())->column);
 		}
+		animationTimeout->stop();
+		spewerTimeout->stop();
+		setCurrentAnimation("die");
+
+		animationTimeout->eventManager->listeners["complete"].clear();
+		animationTimeout->eventManager->addEventListener("complete", [this](sweet::Event * _event){
+			active = false;
+		});
+		animationTimeout->targetSeconds = 1.5f;
+		animationTimeout->restart();
 	}
 }
 

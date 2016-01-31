@@ -221,6 +221,7 @@ Room * MY_Scene_Main::goToNewRoom(){
 				Log::info("gj you beat the boss");
 				// TODO: disable boss, enable walking into trigger
 				boss->die();
+
 				player->eventManager.addEventListener("newroom", [this](sweet::Event * _event){
 					// go to finale instead of new room
 					goToNewRoom();

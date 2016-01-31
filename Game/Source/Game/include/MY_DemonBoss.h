@@ -14,11 +14,13 @@ private:
 public:	
 	bool isDead;
 	unsigned long int hits;
+	bool active;
 	sweet::EventManager eventManager;
 
 	explicit MY_DemonBoss(Shader * _shader);
-
+	
 	Timeout * spewerTimeout;
+	Timeout * animationTimeout;
 	std::vector<MY_Spewer *> spewers;
 	std::vector<int> enabledSpewers;
 	sweet::ShuffleVector<int> spewerIdx;
