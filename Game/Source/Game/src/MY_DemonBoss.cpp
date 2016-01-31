@@ -9,7 +9,6 @@
 #define DEMON_SCALE 10
 #define SPEWER_TIMER_MIN 1
 #define SPEWER_TIMER_MAX 3
-#define SPEWER_COLUMNS 3
 
 MY_DemonBoss::MY_DemonBoss(Shader* _shader) :
 	Sprite(_shader),

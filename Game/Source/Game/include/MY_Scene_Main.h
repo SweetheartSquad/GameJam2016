@@ -25,6 +25,7 @@ class MY_Game;
 // maximum number of demons per room (overriden by total maximum; i.e. if you're only one from the boss, it won't spawn two enemies)
 #define MAX_SPAWNED_DEMON_COUNT 3
 
+#define SPEWER_COUNT 3
 class MY_Scene_Main : public MY_Scene_Base{
 public:
 	Shader * screenSurfaceShader;

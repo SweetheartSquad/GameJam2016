@@ -417,6 +417,7 @@ void MY_Scene_Main::collideEntities() {
 
 	if(isBossRoom){
 		if(!boss->isDead){
+			// Boss-Spirit Collision
 			if(gripTarget == dummyDemon->spirit){
 				auto  btrans = boss->firstParent()->getTranslationVector();
 				float bMin = btrans.x - (boss->firstParent()->getScaleVector().x  * 0.25f);
@@ -435,7 +436,8 @@ void MY_Scene_Main::collideEntities() {
 
 			float pMinY = ptrans.y;
 			float pMaxY = ptrans.y + (player->firstParent()->getScaleVector().y);
-		
+			
+			// Player-Spewer Collision
 			for(auto i : boss->enabledSpewers){
 				Sprite * s = boss->spewers.at(i)->spew;
 				if(s->isVisible()){
@@ -450,6 +452,11 @@ void MY_Scene_Main::collideEntities() {
 							player->eventManager.triggerEvent("demonCollision");
 					}
 				}
+			}
+
+			// Player-Boss Collision
+			if(pMax > currentRoom->doorPos * 0.5){
+				player->eventManager.triggerEvent("demonCollision");
 			}
 		}
 	}else {
@@ -494,8 +501,8 @@ MY_DemonBoss * MY_Scene_Main::spawnBoss(Room* _room) {
 }
 
 MY_Spewer * MY_Scene_Main::spawnSpewer(Room * _room, MY_DemonBoss * _boss, int _column){
-	float w = _room->doorPos * 2 * 1/4;
-	float x = _room->doorPos * 2 * _column / 4 - _room->doorPos;
+	float w = _room->doorPos * 2 * 1/(SPEWER_COUNT + 1);
+	float x = _room->doorPos * 2 * _column / (SPEWER_COUNT + 1) - _room->doorPos;
 	glm::vec3 targetPos = glm::vec3(x, _room->mesh->calcBoundingBox().height, 0);
 
 	MY_Spewer * spewer = new MY_Spewer(baseShaderWithDepth, _boss->firstParent()->getTranslationVector(), targetPos, _column, w);
