@@ -162,6 +162,11 @@ void MY_DemonSpirit::sipIt(){
 	possessed->state = MY_Demon::kDEAD;
 	possessed->setCurrentAnimation("die");
 	possessed->currentAnimation->frameIndices.loopType = Animation<unsigned long int>::kCONSTANT;
+	Timeout * t = new Timeout(0.5f, [this](sweet::Event * _event){
+		possessed->setVisible(false);
+	});
+	possessed->childTransform->addChild(t);
+	t->start();
 	setVisible(true);
 }
 
