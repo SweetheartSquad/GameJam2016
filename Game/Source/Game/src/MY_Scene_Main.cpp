@@ -7,6 +7,7 @@
 #include <MY_Game.h>
 #include <Room.h>
 #include <BossRoom.h>
+#include <RenderOptions.h>
 
 #include <shader\ComponentShaderBase.h>
 #include <shader\ComponentShaderText.h>
@@ -37,7 +38,12 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 	ripTarget(nullptr),
 	gripTarget(nullptr),
 	playerSpirit(nullptr),
-	dummyDemon(nullptr)
+	dummyDemon(nullptr),
+	screenSurfaceShader(new Shader("assets/RenderSurface_1", false, true)),
+	screenSurface(new RenderSurface(screenSurfaceShader)),
+	screenFBO(new StandardFrameBuffer(true)),
+	screenMagnitude(0)
+
 {
 	
 	baseShaderWithDepth->addComponent(new ShaderComponentMVP(baseShaderWithDepth));
@@ -107,12 +113,22 @@ MY_Scene_Main::MY_Scene_Main(MY_Game * _game) :
 
 	// Setup a room
 	goToNewRoom();
+	
 
+	// memory management
+	++screenSurface->referenceCount;
+	++screenSurfaceShader->referenceCount;
+	++screenFBO->referenceCount;
 }
 
 MY_Scene_Main::~MY_Scene_Main(){
 	// we need to destruct the scene elements before the physics world to avoid memory issues
 	deleteChildTransform();
+
+	// memory management
+	screenSurface->decrementAndDelete();
+	screenSurfaceShader->decrementAndDelete();
+	screenFBO->decrementAndDelete();
 }
 
 
@@ -149,7 +165,7 @@ Room * MY_Scene_Main::goToNewRoom(){
 
 	if(isBossRoom) {
 		spawnBoss(res);
-		addDummyDemon(res);a
+		addDummyDemon(res);
 	} else{
 		if(demonsCounter->getItemCount() < MAX_DEMON_COUNT){
 			float numSpawnedDemons = sweet::NumberUtils::randomInt(1, MAX_DEMON_COUNT - demonsCounter->getItemCount() < MAX_SPAWNED_DEMON_COUNT ? MAX_DEMON_COUNT - demonsCounter->getItemCount() : MAX_SPAWNED_DEMON_COUNT);
@@ -198,6 +214,34 @@ Room * MY_Scene_Main::goToNewRoom(){
 }
 
 void MY_Scene_Main::update(Step * _step){
+	// Screen shader update
+	// Screen shaders are typically loaded from a file instead of built using components, so to update their uniforms
+	// we need to use the OpenGL API calls
+	if(player->state == MY_Player::kRIP_AND_GRIP){
+		screenMagnitude += 0.1f;
+	}else{
+		screenMagnitude *= 0.8f;
+		screenMagnitude -= 0.1f;
+		if(screenMagnitude < 0){
+			screenMagnitude = 0;
+		}
+	}
+	
+	screenSurfaceShader->bindShader(); // remember that we have to bind the shader before it can be updated
+	GLint test = glGetUniformLocation(screenSurfaceShader->getProgramId(), "time");
+	checkForGlError(0,__FILE__,__LINE__);
+	if(test != -1){
+		glUniform1f(test, _step->time);
+		checkForGlError(0,__FILE__,__LINE__);
+	}
+	test = glGetUniformLocation(screenSurfaceShader->getProgramId(), "magnitude");
+	checkForGlError(0,__FILE__,__LINE__);
+	if(test != -1){
+		glUniform1f(test, screenMagnitude);
+		checkForGlError(0,__FILE__,__LINE__);
+	}
+
+
 	// Scene update
 	MY_Scene_Base::update(_step);
 
@@ -220,6 +264,11 @@ void MY_Scene_Main::update(Step * _step){
 		if(roomTransition->complete){
 			player->eventManager.triggerEvent("newroom");
 		}
+	}
+	if(keyboard->keyJustDown(GLFW_KEY_L)){
+		screenSurfaceShader->unload();
+		screenSurfaceShader->loadFromFile(screenSurfaceShader->vertSource, screenSurfaceShader->fragSource);
+		screenSurfaceShader->load();
 	}
 
 
@@ -289,6 +338,32 @@ void MY_Scene_Main::update(Step * _step){
 		sipIt();
 	}
 }
+
+
+
+
+void MY_Scene_Main::render(sweet::MatrixStack * _matrixStack, RenderOptions * _renderOptions){
+	// keep our screen framebuffer up-to-date with the game's viewport
+	screenFBO->resize(game->viewPortWidth, game->viewPortHeight);
+
+	// bind our screen framebuffer
+	FrameBufferInterface::pushFbo(screenFBO);
+	// render the scene
+	_renderOptions->clear();
+	Scene::render(_matrixStack, _renderOptions);
+	// unbind our screen framebuffer, rebinding the previously bound framebuffer
+	// since we didn't have one bound before, this will be the default framebuffer (i.e. the one visible to the player)
+	FrameBufferInterface::popFbo();
+
+	// render our screen framebuffer using the standard render surface
+	screenSurface->render(screenFBO->getTextureId());
+
+	// render the uiLayer after the screen surface in order to avoid hiding it through shader code
+	uiLayer->render(_matrixStack, _renderOptions);
+}
+
+
+
 
 void MY_Scene_Main::enableDebug(){
 	MY_Scene_Base::enableDebug();
