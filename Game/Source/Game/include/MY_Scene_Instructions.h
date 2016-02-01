@@ -1,11 +1,8 @@
 #pragma once
 
-#include <MY_Scene_MenuBase.h>
+#include <SlideShowScene.h>
 
-class MY_Scene_Instructions : public MY_Scene_MenuBase{
+class MY_Scene_Instructions : public SlideShowScene{
 public:
 	MY_Scene_Instructions(Game * _game);
-	Timeout * t;
-
-	virtual void update(Step * _step) override;
 };

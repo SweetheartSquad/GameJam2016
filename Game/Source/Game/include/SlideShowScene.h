@@ -1,10 +1,14 @@
 #pragma once
 
 #include <MY_Scene_Base.h>
-#include <Slide.h>
-#include <MeshEntity.h>
-#include <sweet\UI.h>
-#include <Timeout.h>
+
+namespace sweet{
+	class EventManager;
+};
+class Timeout;
+class NodeUI;
+class Slide;
+
 class SlideShowScene : public MY_Scene_Base{
 private:
 	Slide * currSlide;
@@ -28,7 +32,7 @@ public:
 	virtual void update(Step * _step) override;
 
 	Timeout * transition;
-	sweet::EventManager eventManager;
+	sweet::EventManager * eventManager;
 
 	void push(Slide * _slide);
 	

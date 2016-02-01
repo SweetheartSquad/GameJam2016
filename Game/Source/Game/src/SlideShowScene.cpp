@@ -2,10 +2,11 @@
 
 #include <SlideShowScene.h>
 #include <MeshInterface.h>
-#include <MY_Scene_Main.h>
 #include <MY_Game.h>
 #include <EventManager.h>
 #include <Keyboard.h>
+#include <Slide.h>
+
 SlideShowScene::SlideShowScene(Game * _game) :
 	MY_Scene_Base(_game),
 	currSlide(nullptr),
@@ -13,6 +14,7 @@ SlideShowScene::SlideShowScene(Game * _game) :
 	isTransitioningForwards(true),
 	slide(nullptr)
 {
+	eventManager = new sweet::EventManager();
 
 	slideOld = new NodeUI(uiLayer->world);
 	slideOld->setRationalWidth(1.f, uiLayer);
@@ -29,7 +31,7 @@ SlideShowScene::SlideShowScene(Game * _game) :
 
 	// initialize transition
 	transition = new Timeout(1.f, [this](sweet::Event * _event){
-		eventManager.triggerEvent("transitionComplete");
+		eventManager->triggerEvent("transitionComplete");
 	});
 
 	// add a default fade-in/out transition
@@ -46,7 +48,7 @@ SlideShowScene::SlideShowScene(Game * _game) :
 		}
 	});
 
-	eventManager.addEventListener("transitionComplete", [this](sweet::Event * _event){
+	eventManager->addEventListener("transitionComplete", [this](sweet::Event * _event){
 		isTransitioning = false;
 		slide = slideNew;
 		if(currSlide->sound != nullptr){
@@ -60,7 +62,7 @@ SlideShowScene::~SlideShowScene(){
 }
 
 void SlideShowScene::update(Step * _step){
-	eventManager.update(_step);
+	eventManager->update(_step);
 	transition->update(_step);
 	MY_Scene_Base::update(_step);
 }
@@ -96,13 +98,13 @@ void SlideShowScene::changeSlide(bool _isForwards){
 		if(forwards.size() > 0){
 			setNewSlide(true);
 		}else{
-			eventManager.triggerEvent("overflow");
+			eventManager->triggerEvent("overflow");
 		}
 	}else{
 		if(backwards.size() > 0){
 			setNewSlide(false);
 		}else{
-			eventManager.triggerEvent("underflow");
+			eventManager->triggerEvent("underflow");
 		}
 	}
 }

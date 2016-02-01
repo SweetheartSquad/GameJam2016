@@ -7,7 +7,7 @@
 #include <Timeout.h>
 #include <OpenALSound.h>
 
-#define MAX_LIVES 5
+#define MAX_LIVES 8
 
 class MY_DemonSpirit;
 

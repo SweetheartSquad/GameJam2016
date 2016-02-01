@@ -2,6 +2,7 @@
 
 #include <MY_Scene_Win.h>
 #include <MY_ResourceManager.h>
+#include <Slide.h>
 
 MY_Scene_Win::MY_Scene_Win(Game * _game) :
 	SlideShowScene(_game)
@@ -15,7 +16,7 @@ MY_Scene_Win::MY_Scene_Win(Game * _game) :
 		changeSlide(true);
 	});
 
-	eventManager.addEventListener("overflow", [this](sweet::Event * _event){
+	eventManager->addEventListener("overflow", [this](sweet::Event * _event){
 		game->switchScene("menu", true);
 	});
 

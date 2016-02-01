@@ -3,6 +3,7 @@
 #include <MY_Game.h>
 #include <MY_Scene_Intro.h>
 #include <MY_Scene_Main.h>
+#include <Slide.h>
 
 MY_Scene_Intro::MY_Scene_Intro(Game * _game) :
 	SlideShowScene(_game)
@@ -13,7 +14,7 @@ MY_Scene_Intro::MY_Scene_Intro(Game * _game) :
 		changeSlide(true);
 	});
 
-	eventManager.addEventListener("overflow", [this](sweet::Event * _event){
+	eventManager->addEventListener("overflow", [this](sweet::Event * _event){
 		game->scenes["game"] = new MY_Scene_Main(dynamic_cast<MY_Game *>(game));
 		game->switchScene("game", true);
 	});

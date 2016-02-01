@@ -16,6 +16,11 @@
       "id":"instructions_bg",
       "src":"ui/instructions_bg.png"
     },
+	{  
+      "type":"texture",
+      "id":"instructions_bg2",
+      "src":"ui/instructions_bg2.png"
+    },
     {  
       "type":"texture",
       "id":"intro_bg",

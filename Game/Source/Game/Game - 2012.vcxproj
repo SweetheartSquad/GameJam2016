@@ -28,9 +28,6 @@
     <ClCompile Include="src\MY_Scene_Main.cpp" />
     <ClCompile Include="src\MY_Scene_Menu.cpp" />
     <ClCompile Include="src\MY_Scene_MenuBase.cpp" />
-    <ClCompile Include="src\MY_Scene_ScreenShaders.cpp" />
-    <ClCompile Include="src\MY_Scene_SurfaceShaders.cpp" />
-    <ClCompile Include="src\MY_Scene_VR.cpp" />
     <ClCompile Include="src\MY_Scene_Win.cpp" />
     <ClCompile Include="src\MY_Spewer.cpp" />
     <ClCompile Include="src\MY_UI_Counter.cpp" />
